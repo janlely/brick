@@ -1,6 +1,6 @@
 package org.brick;
 
-public class PureProc4 implements PureProcess<String, String, Integer>{
+public class PureProc4 implements IPureProcess<String, String, Integer> {
     @Override
     public String process(String input, Integer context) {
         System.out.println("Proc4 input: " + input);

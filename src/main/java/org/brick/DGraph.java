@@ -18,6 +18,6 @@ public class DGraph<C> {
     @Builder
     public static class Node<I,O> {
         Node<?,I> parent;
-        Flow<I,O> flow;
+        IFlow<I,O> IFlow;
     }
 }

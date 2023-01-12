@@ -3,7 +3,7 @@ package org.brick;
 
 import org.apache.commons.lang3.StringUtils;
 
-public class YesNoBranch1 implements YesNoBranchProcess<String, String, Integer>{
+public class YesNoBranch1 implements IYesNoBranchProcess<String, String, Integer> {
 
     @Override
     public boolean isYes(String input, Integer context) {
@@ -11,12 +11,12 @@ public class YesNoBranch1 implements YesNoBranchProcess<String, String, Integer>
     }
 
     @Override
-    public Flow<String, String> yes(Integer context) {
+    public IFlow<String, String> yes(Integer context) {
         return FlowHelper.fromPure(new PureProc3(), context);
     }
 
     @Override
-    public Flow<String, String> no(Integer context) {
+    public IFlow<String, String> no(Integer context) {
         return FlowHelper.fromPure(new PureProc4(), context);
     }
 }

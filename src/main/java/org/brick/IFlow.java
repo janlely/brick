@@ -1,5 +1,5 @@
 package org.brick;
 
-public interface Flow<I,O> {
+public interface IFlow<I,O> {
     O run(I input);
 }
