@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.function.BiFunction;
 import java.util.stream.Collector;
 
-public class ParallelProcess<I,O,C,E1,E2> implements IParallelProcess<I,O,C,E1,E2> {
+public class ParallelProcess<I,O,C,E1,E2> implements IParallelFlow<I,O,C,E1,E2> {
 
     private BiFunction<I,C,List<E1>> lister;
     private BiFunction<E1,C,Boolean> filter;

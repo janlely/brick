@@ -1,5 +1,10 @@
 package org.brick;
 
-public interface IPureProcess<I,O,C> extends IProcess<I,O,C> {
-    O process(I input, C context);
+public interface IPureProcess<I,O,C> extends IFlow<I, O, C> {
+
+    O pureCalculate(I input, C context);
+
+    default O run(I input, C context) {
+        return pureCalculate(input, context);
+    }
 }

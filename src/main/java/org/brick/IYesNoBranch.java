@@ -3,13 +3,14 @@ package org.brick;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-public class IYesNoBranch<I,O,C> implements IYesNoBranchProcess<I,O,C> {
+public class IYesNoBranch<I,O,C> implements IYesNoBranchFlow<I,O,C> {
 
 	private BiFunction<I,C,Boolean> condChecker;
-	private Function<C, IFlow<I,O>> yesFlow;
-	private Function<C, IFlow<I,O>> noFlow;
+	private Function<C, IFlow<I,O,C>> yesFlow;
+	private Function<C, IFlow<I,O,C>> noFlow;
 
-	public IYesNoBranch(BiFunction<I,C,Boolean> condChecker, Function<C, IFlow<I,O>> yesFlow, Function<C, IFlow<I,O>> noFlow) {
+	public IYesNoBranch(BiFunction<I,C,Boolean> condChecker, Function<C, IFlow<I,O,C>> yesFlow,
+						Function<C, IFlow<I,O,C>> noFlow) {
 		this.condChecker = condChecker;
 		this.yesFlow = yesFlow;
 		this.noFlow = noFlow;
@@ -21,12 +22,12 @@ public class IYesNoBranch<I,O,C> implements IYesNoBranchProcess<I,O,C> {
 	}
 
 	@Override
-	public IFlow<I, O> yes(C context) {
+	public IFlow<I,O,C> yes(C context) {
 		return this.yesFlow.apply(context);
 	}
 
 	@Override
-	public IFlow<I, O> no(C context) {
+	public IFlow<I,O,C> no(C context) {
 		return this.noFlow.apply(context);
 	}
 	
