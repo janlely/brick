@@ -1,5 +1,7 @@
 package org.brick;
 
+import org.brick.core.IPureProcess;
+
 public class PureProc4 implements IPureProcess<String, String, Integer> {
 
     @Override

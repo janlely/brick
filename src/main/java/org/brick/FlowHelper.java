@@ -1,5 +1,8 @@
 package org.brick;
 
+import org.brick.core.IFlow;
+import org.brick.core.IPureProcess;
+
 import java.util.function.Function;
 
 public class FlowHelper {

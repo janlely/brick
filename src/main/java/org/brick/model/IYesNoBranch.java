@@ -1,4 +1,7 @@
-package org.brick;
+package org.brick.model;
+
+import org.brick.core.IFlow;
+import org.brick.core.IYesNoBranchFlow;
 
 import java.util.function.BiFunction;
 import java.util.function.Function;

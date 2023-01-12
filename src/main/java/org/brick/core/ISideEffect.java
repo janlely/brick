@@ -1,4 +1,4 @@
-package org.brick;
+package org.brick.core;
 
 public interface ISideEffect<I,O,C> extends IFlow<I,O,C> {
 

@@ -1,4 +1,6 @@
-package org.brick;
+package org.brick.model;
+
+import org.brick.core.IFlow;
 
 import java.util.List;
 import java.util.function.Function;

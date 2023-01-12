@@ -1,4 +1,4 @@
-package org.brick;
+package org.brick.model;
 
 import java.util.List;
 import java.util.function.BiFunction;

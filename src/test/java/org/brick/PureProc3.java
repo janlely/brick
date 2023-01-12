@@ -1,6 +1,7 @@
 package org.brick;
 
 import org.apache.commons.lang3.StringUtils;
+import org.brick.core.IPureProcess;
 
 public class PureProc3 implements IPureProcess<String, String, Integer> {
 

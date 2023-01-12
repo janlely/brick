@@ -1,4 +1,4 @@
-package org.brick;
+package org.brick.core;
 
 public interface IFlow<I,O,C> {
     O run(I input, C context);

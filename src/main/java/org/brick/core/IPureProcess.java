@@ -1,4 +1,4 @@
-package org.brick;
+package org.brick.core;
 
 public interface IPureProcess<I,O,C> extends IFlow<I, O, C> {
 

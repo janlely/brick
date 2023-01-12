@@ -1,4 +1,4 @@
-package org.brick;
+package org.brick.core;
 
 import net.jodah.typetools.TypeResolver;
 import org.apache.commons.lang3.SerializationUtils;
@@ -33,7 +33,7 @@ public class FlowMaker<I,O,C> {
             this.flowMaker = fLowMaker;
             this.cls = cls;
         }
-        public IFlow<I,O,C> build() {
+        public Flow<I,O,C> build() {
             return (input,context) -> {
                 Object i = input;
                 Object o = null;
@@ -63,20 +63,32 @@ public class FlowMaker<I,O,C> {
             this.cls = cls;
         }
 
+        public <O1> Builder<I,O,C,O1> subFlow(Flow<T,O1,C> flow) {
+            this.flowMaker.flows.add(flow);
+            Class<?>[] classes = TypeResolver.resolveRawArguments(Flow.class, flow.getClass());
+            return new Builder<>(this.flowMaker, (Class<O1>) classes[1]);
+        }
 
-        <O1, TC> Builder<I,O,C,O1> next(Class<TC> targetClass, IFlow<T,O1,C> flow) {
+
+        public <O1, TC> Builder<I,O,C,O1> next(Class<TC> targetClass, IFlow<T,O1,C> flow) {
             this.flowMaker.flows.add(flow);
             Class<?>[] classes = TypeResolver.resolveRawArguments(targetClass, flow.getClass());
             return new Builder<>(this.flowMaker, (Class<O1>) classes[1]);
         }
 
-        <TC> Builder<I,O,C,T> async(IAsyncFlow<T,?,C> flow) {
+        public <I1 extends Serializable> Builder<I,O,C,I1> async(IAsyncFlow<I1,?,C> flow) {
             this.flowMaker.flows.add(flow);
-            return this;
+            return (Builder<I, O, C, I1>) this;
+        }
+
+        public Finisher<I,O,C> last(Flow<T,O,C> flow) {
+            this.flowMaker.flows.add(flow);
+            Class<?>[] classes = TypeResolver.resolveRawArguments(Flow.class, flow.getClass());
+            return new Finisher<>(this.flowMaker, (Class<O>) classes[1]);
         }
 
 
-        <TC> Finisher<I,O,C> last(Class<TC> targetClass, IFlow<T,O,C> flow) {
+        public <TC> Finisher<I,O,C> last(Class<TC> targetClass, IFlow<T,O,C> flow) {
             this.flowMaker.flows.add(flow);
             Class<?>[] classes = TypeResolver.resolveRawArguments(targetClass, flow.getClass());
             return new Finisher<>(this.flowMaker, (Class<O>) classes[1]);

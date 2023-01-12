@@ -1,6 +1,16 @@
 package org.brick;
 
 import org.apache.commons.lang3.StringUtils;
+import org.brick.core.CaseFlow;
+import org.brick.core.Flow;
+import org.brick.core.FlowMaker;
+import org.brick.core.IMultiBranch;
+import org.brick.core.IPureProcess;
+import org.brick.core.IYesNoBranchFlow;
+import org.brick.model.CaseBatch;
+import org.brick.model.IParallelFlow;
+import org.brick.model.IYesNoBranch;
+import org.brick.model.ParallelProcess;
 import org.junit.Test;
 
 import java.util.List;
@@ -14,10 +24,19 @@ public class FlowTest {
 
         Integer a = 10;
 
-        IFlow<Integer, String, Integer> subFlow = new FlowMaker<Integer, String, Integer>(Executors.newSingleThreadExecutor())
+        Flow<Integer, String, Integer> subFlow = new FlowMaker<Integer, String, Integer>(Executors.newSingleThreadExecutor())
                 .builder()
                 .last(IPureProcess.class, new PureProc5())
                 .build();
+        Flow<Integer, Integer, Integer> case1 = new FlowMaker<Integer, Integer, Integer>(Executors.newSingleThreadExecutor())
+                .builder()
+                .last(IPureProcess.class, new PureProc6())
+                .build();
+        Flow<Integer, Integer, Integer> case2 = new FlowMaker<Integer, Integer, Integer>(Executors.newSingleThreadExecutor())
+                .builder()
+                .last(IPureProcess.class, new PureProc7())
+                .build();
+
         String result = new FlowMaker<String, String, Integer>(Executors.newSingleThreadExecutor())
                 .builder()
                 .next(IPureProcess.class, new PureProc1())
@@ -31,9 +50,13 @@ public class FlowTest {
                         (e, c) -> e % 2 == 0,
                         (e, c) -> e * 2,
                         Collectors.summingInt(i -> i)))
-                .last(IFlow.class, subFlow)
+                .next(IMultiBranch.class, new CaseBatch<>(i -> i,
+                        new CaseFlow<>(1, case1),
+                        new CaseFlow<>(2, case2)
+                ))
+                .last(subFlow)
                 .build()
                 .run("hello", a);
-
+        System.out.println("result: " + result);
     }
 }

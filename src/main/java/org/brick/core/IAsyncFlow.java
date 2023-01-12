@@ -1,6 +1,8 @@
-package org.brick;
+package org.brick.core;
 
-public interface IAsyncFlow<I,O,C> extends IFlow<I,O,C>{
+import java.io.Serializable;
+
+public interface IAsyncFlow<I extends Serializable,O,C> extends IFlow<I,O,C> {
 
     void async(I input, C context);
 

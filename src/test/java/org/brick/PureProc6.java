@@ -2,12 +2,12 @@ package org.brick;
 
 import org.brick.core.IPureProcess;
 
-public class PureProc5 implements IPureProcess<Integer, String, Integer> {
+public class PureProc6 implements IPureProcess<Integer, Integer, Integer> {
 
     @Override
-    public String pureCalculate(Integer input, Integer context) {
+    public Integer pureCalculate(Integer input, Integer context) {
         System.out.println("Proc5 input: " + input);
         System.out.println("Proc5 output: " + (input + 1));
-        return String.valueOf(input + 1);
+        return input + 1;
     }
 }
