@@ -8,6 +8,8 @@ import org.brick.core.IMultiBranch;
 import org.brick.core.IPureProcess;
 import org.brick.core.IYesNoBranchFlow;
 import org.brick.model.CaseBatch;
+import org.brick.model.IModifyCachePureProcess;
+import org.brick.model.IModifyDBPureProcess;
 import org.brick.model.IParallelFlow;
 import org.brick.model.IYesNoBranch;
 import org.brick.model.ParallelProcess;
@@ -36,6 +38,18 @@ public class FlowTest {
                 .builder()
                 .last(IPureProcess.class, new PureProc7())
                 .build();
+        IModifyDBPureProcess<Integer, Integer> modifyDBPure = new IModifyDBPureProcess<>() {
+
+            @Override
+            public void doDBModifyPure(Integer input, Integer context) {
+                System.out.println("updating table brick_test");
+            }
+
+            @Override
+            public String getPseudoSql() {
+                return "UPDATE brick_text set user = ?";
+            }
+        };
 
         String result = new FlowMaker<String, String, Integer>(Executors.newSingleThreadExecutor())
                 .builder()
@@ -54,6 +68,7 @@ public class FlowTest {
                         new CaseFlow<>(1, case1),
                         new CaseFlow<>(2, case2)
                 ))
+                .next(IModifyCachePureProcess.class, modifyDBPure)
                 .last(subFlow)
                 .build()
                 .run("hello", a);
