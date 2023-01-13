@@ -69,8 +69,19 @@ public class FlowMaker<I,O,C> {
             return new Builder<>(this.flowMaker, (Class<O1>) classes[1]);
         }
 
+        public <O1, TC extends ISideEffect> Builder<I,O,C,O1> effect(Class<TC> targetClass, IFlow<T,O1,C> flow) {
+            this.flowMaker.flows.add(flow);
+            Class<?>[] classes = TypeResolver.resolveRawArguments(targetClass, flow.getClass());
+            return new Builder<>(this.flowMaker, (Class<O1>) classes[1]);
+        }
 
-        public <O1, TC> Builder<I,O,C,O1> next(Class<TC> targetClass, IFlow<T,O1,C> flow) {
+        public <O1, TC extends IPureProcess> Builder<I,O,C,O1> pure(Class<TC> targetClass, IFlow<T,O1,C> flow) {
+            this.flowMaker.flows.add(flow);
+            Class<?>[] classes = TypeResolver.resolveRawArguments(targetClass, flow.getClass());
+            return new Builder<>(this.flowMaker, (Class<O1>) classes[1]);
+        }
+
+        public <O1, TC extends Flow> Builder<I,O,C,O1> subFlow(Class<TC> targetClass, IFlow<T,O1,C> flow) {
             this.flowMaker.flows.add(flow);
             Class<?>[] classes = TypeResolver.resolveRawArguments(targetClass, flow.getClass());
             return new Builder<>(this.flowMaker, (Class<O1>) classes[1]);

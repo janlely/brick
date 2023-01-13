@@ -53,22 +53,22 @@ public class FlowTest {
 
         String result = new FlowMaker<String, String, Integer>(Executors.newSingleThreadExecutor())
                 .builder()
-                .next(IPureProcess.class, new PureProc1())
-                .next(IPureProcess.class, new PureProc2())
-                .next(IYesNoBranchFlow.class, new IYesNoBranch<String, String, Integer>(
+                .pure(IPureProcess.class, new PureProc1())
+                .pure(IPureProcess.class, new PureProc2())
+                .subFlow(IYesNoBranchFlow.class, new IYesNoBranch<String, String, Integer>(
                         (i, c) -> StringUtils.equals(i, "yes"),
                         FlowHelper.fromPure(new PureProc3()),
                         FlowHelper.fromPure(new PureProc4())))
                 .async(new AsyncProc1())
-                .next(IParallelFlow.class, new ParallelProcess<>((s, c) -> List.of(1, 2, 3, 4),
+                .pure(IParallelFlow.class, new ParallelProcess<>((s, c) -> List.of(1, 2, 3, 4),
                         (e, c) -> e % 2 == 0,
                         (e, c) -> e * 2,
                         Collectors.summingInt(i -> i)))
-                .next(IMultiBranch.class, new CaseBatch<>(i -> i,
+                .subFlow(IMultiBranch.class, new CaseBatch<>(i -> i % 2 == 0 ? 1 : 2,
                         new CaseFlow<>(1, case1),
                         new CaseFlow<>(2, case2)
                 ))
-                .next(IModifyCachePureProcess.class, modifyDBPure)
+                .effect(IModifyCachePureProcess.class, modifyDBPure)
                 .last(subFlow)
                 .build()
                 .run("hello", a);

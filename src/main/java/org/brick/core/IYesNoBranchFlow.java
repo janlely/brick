@@ -1,9 +1,9 @@
 package org.brick.core;
 
-public interface IYesNoBranchFlow<I,O,C> extends IFlow<I, O, C> {
+public interface IYesNoBranchFlow<I,O,C> extends Flow<I, O, C> {
     boolean isYes(I input, C context);
-    IFlow<I,O,C> yes(C context);
-    IFlow<I,O,C> no(C context);
+    Flow<I,O,C> yes(C context);
+    Flow<I,O,C> no(C context);
 
     default O run(I input, C context) {
         if (isYes(input, context)) {

@@ -1,5 +1,6 @@
 package org.brick.model;
 
+import org.brick.core.Flow;
 import org.brick.core.IFlow;
 import org.brick.core.IYesNoBranchFlow;
 
@@ -9,11 +10,11 @@ import java.util.function.Function;
 public class IYesNoBranch<I,O,C> implements IYesNoBranchFlow<I,O,C> {
 
 	private BiFunction<I,C,Boolean> condChecker;
-	private Function<C, IFlow<I,O,C>> yesFlow;
-	private Function<C, IFlow<I,O,C>> noFlow;
+	private Function<C, Flow<I,O,C>> yesFlow;
+	private Function<C, Flow<I,O,C>> noFlow;
 
-	public IYesNoBranch(BiFunction<I,C,Boolean> condChecker, Function<C, IFlow<I,O,C>> yesFlow,
-						Function<C, IFlow<I,O,C>> noFlow) {
+	public IYesNoBranch(BiFunction<I,C,Boolean> condChecker, Function<C, Flow<I,O,C>> yesFlow,
+						Function<C, Flow<I,O,C>> noFlow) {
 		this.condChecker = condChecker;
 		this.yesFlow = yesFlow;
 		this.noFlow = noFlow;
@@ -25,12 +26,12 @@ public class IYesNoBranch<I,O,C> implements IYesNoBranchFlow<I,O,C> {
 	}
 
 	@Override
-	public IFlow<I,O,C> yes(C context) {
+	public Flow<I,O,C> yes(C context) {
 		return this.yesFlow.apply(context);
 	}
 
 	@Override
-	public IFlow<I,O,C> no(C context) {
+	public Flow<I,O,C> no(C context) {
 		return this.noFlow.apply(context);
 	}
 	
