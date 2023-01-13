@@ -2,7 +2,7 @@ package org.brick.core;
 
 import java.io.Serializable;
 
-public interface IAsyncFlow<I extends Serializable,O,C> extends IFlow<I,O,C> {
+public interface IAsyncFlow<I extends Serializable,O,C> extends Flow<I,O,C> {
 
     void async(I input, C context);
 
@@ -15,5 +15,11 @@ public interface IAsyncFlow<I extends Serializable,O,C> extends IFlow<I,O,C> {
     @Override
     default boolean isAsync() {
         return true;
+    }
+
+
+    @Override
+    default String getFlowType() {
+        return "IAsyncFlow";
     }
 }

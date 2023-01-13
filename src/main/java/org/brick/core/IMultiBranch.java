@@ -9,4 +9,9 @@ public interface IMultiBranch<I,O,C,P> extends Flow<I,O,C> {
     default O run(I input, C context) {
         return select(pattern(input)).run(input, context);
     }
+
+    @Override
+    default String getFlowType() {
+        return "IMultiBranch";
+    }
 }

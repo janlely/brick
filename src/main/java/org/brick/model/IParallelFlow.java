@@ -1,13 +1,13 @@
 package org.brick.model;
 
-import org.brick.core.IPureProcess;
+import org.brick.core.IPureFunction;
 
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collector;
 
-public interface IParallelFlow<I,O,C,E1,E2> extends IPureProcess<I, O, C> {
+public interface IParallelFlow<I,O,C,E1,E2> extends IPureFunction<I, O, C> {
 
 	List<E1> toList(I input, C context);
 
@@ -25,5 +25,10 @@ public interface IParallelFlow<I,O,C,E1,E2> extends IPureProcess<I, O, C> {
 				.filter(predicate)
 				.map(mapper)
 				.collect(collector(context));
+	}
+
+	@Override
+	default String getFlowType() {
+		return "IParallelFlow";
 	}
 }

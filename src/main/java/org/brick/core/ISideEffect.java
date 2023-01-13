@@ -1,6 +1,6 @@
 package org.brick.core;
 
-public interface ISideEffect<I,O,C> extends IFlow<I,O,C> {
+public interface ISideEffect<I,O,C> extends Flow<I,O,C> {
 
     O processWithSideEffect(I input, C context);
 

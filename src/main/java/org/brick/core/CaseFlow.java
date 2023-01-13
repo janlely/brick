@@ -22,4 +22,14 @@ public class CaseFlow<I,O,C,P> implements Flow<I,O,C>{
     public O run(I input, C context) {
         return this.flow.run(input, context);
     }
+
+    @Override
+    public FlowDoc<I, O, C> getFlowDoc() {
+        return this.flow.getFlowDoc();
+    }
+
+    @Override
+    public String getFlowType() {
+        return "CaseFlow";
+    }
 }
