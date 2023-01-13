@@ -7,8 +7,8 @@ public class PureProc3 implements IPureProcess<String, String, Integer> {
 
     @Override
     public String pureCalculate(String input, Integer context) {
-        System.out.println("Proc3 input: " + input);
-        System.out.println("Proc3 output: " + StringUtils.reverse(input));
+        System.out.println(String.format("Proc3 input: %s, context: %d", input, context));
+        System.out.println(String.format("Proc3 output: ", StringUtils.reverse(input)));
         return StringUtils.reverse(input);
     }
 }
