@@ -1,6 +1,9 @@
-package org.brick.core;
+package org.brick.model;
 
 import net.jodah.typetools.TypeResolver;
+import org.brick.core.FlowDoc;
+import org.brick.core.YesNoBranch;
+import org.brick.model.IParallelFlow;
 
 import java.util.List;
 import java.util.function.BiFunction;

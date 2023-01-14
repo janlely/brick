@@ -1,4 +1,4 @@
-package org.brick.core;
+package org.brick.model;
 
 import org.brick.core.ISideEffect;
 

@@ -1,4 +1,4 @@
-package org.brick.core;
+package org.brick.model;
 
 public interface IModifyCachePureFlow<I,C> extends IModifyCacheFlow<I,I,C> {
 

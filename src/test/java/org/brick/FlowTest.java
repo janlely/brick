@@ -4,10 +4,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.brick.core.*;
 import org.brick.core.AsyncFlow;
 import org.brick.core.CaseBranch;
-import org.brick.core.IModifyDBPureFlow;
+import org.brick.model.IModifyDBPureFlow;
 import org.brick.core.PureFunction;
 import org.brick.core.YesNoBranch;
-import org.brick.core.ParallelFlow;
+import org.brick.model.ParallelFlow;
 import org.junit.Test;
 
 import java.util.List;
