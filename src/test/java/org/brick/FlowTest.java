@@ -21,7 +21,8 @@ public class FlowTest {
 
         Integer a = 10;
 
-        Flow<Integer, String, Integer> subFlow = new FlowMaker<Integer, String, Integer>(Executors.newSingleThreadExecutor())
+        Flow<Integer, String, Integer> subFlow = new FlowMaker<Integer, String, Integer>("Test Sub flow")
+                .asyncExecutor(Executors.newSingleThreadExecutor())
                 .flowBuilder()
                 .pure(new PureFunction<>("PureFunction5", (i,c) -> {
                     System.out.println(String.format("PureFunction5 input: %d, context: %d", i, c));
@@ -29,7 +30,8 @@ public class FlowTest {
                 }))
                 .finish()
                 .build();
-        Flow<Integer, Integer, Integer> case1 = new FlowMaker<Integer, Integer, Integer>(Executors.newSingleThreadExecutor())
+        Flow<Integer, Integer, Integer> case1 = new FlowMaker<Integer, Integer, Integer>("Test Case 1")
+                .asyncExecutor(Executors.newSingleThreadExecutor())
                 .flowBuilder()
                 .pure(new PureFunction<>("PureProc6", (i,c) -> {
                     System.out.println(String.format("PureFunction6 input: %d, context: %d", i, c));
@@ -37,7 +39,8 @@ public class FlowTest {
                 }))
                 .finish()
                 .build();
-        Flow<Integer, Integer, Integer> case2 = new FlowMaker<Integer, Integer, Integer>(Executors.newSingleThreadExecutor())
+        Flow<Integer, Integer, Integer> case2 = new FlowMaker<Integer, Integer, Integer>("Test case 2")
+                .asyncExecutor(Executors.newSingleThreadExecutor())
                 .flowBuilder()
                 .pure(new PureFunction<>("PureProc7", (i,c) -> {
                     System.out.println(String.format("PureFunction7 input: %d, context: %d", i, c));
@@ -69,8 +72,8 @@ public class FlowTest {
             }
         };
 
-        String result = new FlowMaker<String, String, Integer>(Executors.newSingleThreadExecutor())
-                .withDesc("this is a test flow")
+        String result = new FlowMaker<String, String, Integer>("Main Flow")
+                .asyncExecutor(Executors.newSingleThreadExecutor())
                 .flowBuilder()
                 .pure(new PureFunction<>("PureFlow", (i,c) -> {
                     System.out.println(String.format("PureFunction7 input: %s, context: %d", i, c));
@@ -125,18 +128,5 @@ public class FlowTest {
 
     }
 
-    @Test
-    public void testClass() {
-
-        Flow<Integer, String, Integer> testFlow = new FlowMaker<Integer, String, Integer>(Executors.newSingleThreadExecutor())
-                .flowBuilder()
-                .pure(new PureFunction<>("PureFunction5", (i,c) -> {
-                    System.out.println(String.format("PureFunction5 input: %d, context: %d", i, c));
-                    return String.valueOf(i + 1);
-                }))
-                .finish()
-                .build();
-
-    }
 
 }

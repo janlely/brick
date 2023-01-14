@@ -14,13 +14,13 @@ public class FlowMaker<I,O,C> {
     private ExecutorService executor;
     private FlowDoc<I,O,C> flowDoc;
 
-    public FlowMaker(ExecutorService executor) {
-        this.executor = executor;
+    public FlowMaker(String desc) {
         this.flowDoc = new FlowDoc<>();
+        this.flowDoc.desc = desc;
     }
 
-    public FlowMaker<I,O,C> withDesc(String desc) {
-        this.flowDoc.desc = desc;
+    public FlowMaker<I,O,C> asyncExecutor(ExecutorService executor) {
+        this.executor = executor;
         return this;
     }
 
@@ -107,6 +107,7 @@ public class FlowMaker<I,O,C> {
         }
 
         public <I1 extends Serializable> Builder<I,O,C,I1> async(IAsyncFlow<I1,?,C> flow) {
+            assert this.flowMaker.executor != null;
             this.flowMaker.flows.add(flow);
             return (Builder<I, O, C, I1>) this;
         }
