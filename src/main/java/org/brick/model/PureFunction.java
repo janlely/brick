@@ -25,7 +25,7 @@ public class PureFunction<I,O,C> implements IPureFunction<I,O,C> {
     }
 
     @Override
-    public O pureCalculate(I input, C context) {
+    public O pureCalculate(final I input, C context) {
         return this.func.apply(input,context);
     }
 }

@@ -10,6 +10,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
+
+/**
+ * @param <I> input type
+ * @param <O> output type
+ * @param <C> context type
+ * @param <P> pattern type
+ */
 public class CaseBranch<I,O,C,P> implements IMultiBranch<I,O,C,P> {
 
     private Map<P, Flow> flowMap = new HashMap<>();

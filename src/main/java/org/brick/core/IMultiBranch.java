@@ -6,7 +6,7 @@ public interface IMultiBranch<I,O,C,P> extends Flow<I,O,C> {
 
     Flow<I,O,C> select(P value);
 
-    default O run(I input, C context) {
+    default O run(final I input, C context) {
         return select(pattern(input)).run(input, context);
     }
 

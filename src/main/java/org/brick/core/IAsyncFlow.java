@@ -7,7 +7,7 @@ public interface IAsyncFlow<I extends Serializable,O,C> extends Flow<I,O,C> {
     void async(I input, C context);
 
     @Override
-    default O run(I input, C context) {
+    default O run(final I input, C context) {
         async(input, context);
         return null;
     }

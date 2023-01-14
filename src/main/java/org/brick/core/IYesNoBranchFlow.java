@@ -7,7 +7,7 @@ public interface IYesNoBranchFlow<I,O,C> extends Flow<I, O, C> {
     Flow<I,O,C> yes();
     Flow<I,O,C> no();
 
-    default O run(I input, C context) {
+    default O run(final I input, C context) {
         if (isYes().apply(input, context)) {
             return yes().run(input, context);
         }

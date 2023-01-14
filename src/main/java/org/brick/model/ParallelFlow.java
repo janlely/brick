@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.function.BiFunction;
 import java.util.stream.Collector;
 
-public class ParallelProcess<I,O,C,E1,E2> implements IParallelFlow<I,O,C,E1,E2> {
+public class ParallelFlow<I,O,C,E1,E2> implements IParallelFlow<I,O,C,E1,E2> {
 
     private BiFunction<I,C,List<E1>> lister;
     private BiFunction<E1,C,Boolean> filter;
@@ -15,10 +15,10 @@ public class ParallelProcess<I,O,C,E1,E2> implements IParallelFlow<I,O,C,E1,E2> 
     private Collector<E2,?,O> collector;
     private String desc;
 
-    public ParallelProcess(String desc, BiFunction<I, C, List<E1>> lister,
-                           BiFunction<E1, C, Boolean> filter,
-                           BiFunction<E1, C, E2> mapper,
-                           Collector<E2, ?, O> collector) {
+    public ParallelFlow(String desc, BiFunction<I, C, List<E1>> lister,
+                        BiFunction<E1, C, Boolean> filter,
+                        BiFunction<E1, C, E2> mapper,
+                        Collector<E2, ?, O> collector) {
         this.desc = desc;
         this.lister = lister;
         this.filter = filter;

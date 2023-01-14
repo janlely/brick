@@ -26,7 +26,7 @@ public class AsyncFlow<I extends Serializable,O,C> implements IAsyncFlow<I,O,C> 
     }
 
     @Override
-    public void async(I input, C context) {
+    public void async(final I input, C context) {
         this.proc.accept(input, context);
     }
 }

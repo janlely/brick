@@ -6,7 +6,7 @@ public interface Flow<I,O,C>  {
 
     String getFlowType();
 
-    O run(I input, C context);
+    O run(final I input, C context);
 
     default boolean isAsync() {
         return false;
