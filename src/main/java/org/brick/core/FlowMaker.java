@@ -108,6 +108,7 @@ public class FlowMaker<I,O,C> {
 
         public <I1 extends Serializable, F extends SubFlow.ISubFlow<I1,?,C>> Builder<I,O,C,I1> async(F flow) {
             assert this.flowMaker.executor != null;
+            assert SubFlow.ISubFlow.class.isAssignableFrom(flow.getClass());
             this.flowMaker.flows.add(flow);
             return (Builder<I, O, C, I1>) this;
         }
