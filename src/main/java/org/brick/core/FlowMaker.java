@@ -106,7 +106,7 @@ public class FlowMaker<I,O,C> {
             return new Builder<>(this.flowMaker, (Class<O1>) classes[1]);
         }
 
-        public <I1 extends Serializable> Builder<I,O,C,I1> async(IAsyncFlow<I1,?,C> flow) {
+        public <I1 extends Serializable, F extends SubFlow.ISubFlow<I1,?,C>> Builder<I,O,C,I1> async(F flow) {
             assert this.flowMaker.executor != null;
             this.flowMaker.flows.add(flow);
             return (Builder<I, O, C, I1>) this;

@@ -99,8 +99,8 @@ public class FlowTest {
                             System.out.println(String.format("PureFunction7 input: %s, context: %d", i, c));
                             return StringUtils.upperCase(i);
                         }))))
-                .async(new AsyncFlow<>("Sample AsyncFlow",
-                        (i,c) -> System.out.println("this is a AsyncFlow")))
+                .async(FlowHelper.fromAsync(new AsyncFlow<>("Sample AsyncFlow",
+                        (i,c) -> System.out.println("this is a AsyncFlow"))))
                 .pure(new ParallelFlow<>(
                         "Sample ParallelFlow",
                         (s, c) -> List.of(1, 2, 3, 4),
