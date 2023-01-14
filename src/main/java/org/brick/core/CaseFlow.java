@@ -1,20 +1,21 @@
 package org.brick.core;
 
-public class CaseFlow<I,O,C,P> implements Flow<I,O,C>{
+public class CaseFlow<I,O,C,P> implements SubFlow.ISubFlow<I,O,C> {
 
     private P value;
-    private Flow<I,O,C> flow;
+    private SubFlow.ISubFlow<I,O,C> flow;
 
     public CaseFlow(P value, Flow<I,O,C> flow) {
+        assert SubFlow.ISubFlow.class.isAssignableFrom(flow.getClass());
         this.value = value;
-        this.flow = flow;
+        this.flow = (SubFlow.ISubFlow<I, O, C>) flow;
     }
 
     public P getValue() {
         return this.value;
     }
 
-    public Flow<I,O,C> getFlow() {
+    public SubFlow.ISubFlow<I,O,C> getFlow() {
         return this.flow;
     }
 

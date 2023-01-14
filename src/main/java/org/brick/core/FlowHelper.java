@@ -4,8 +4,8 @@ import net.jodah.typetools.TypeResolver;
 
 public class FlowHelper {
 
-    public static <I,O,C> Flow<I,O,C> fromPure(IPureFunction<I,O,C> process) {
-        return new Flow<I, O, C>() {
+    public static <I,O,C> SubFlow.ISubFlow<I,O,C> fromPure(IPureFunction<I,O,C> process) {
+        return new SubFlow.ISubFlow<>() {
             @Override
             public FlowDoc<I, O, C> getFlowDoc() {
                 Class<?>[] classes = TypeResolver.resolveRawArguments(IPureFunction.class, process.getClass());

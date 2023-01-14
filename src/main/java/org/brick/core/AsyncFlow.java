@@ -1,12 +1,9 @@
-package org.brick.model;
+package org.brick.core;
 
 import net.jodah.typetools.TypeResolver;
-import org.brick.core.FlowDoc;
-import org.brick.core.IAsyncFlow;
 
 import java.io.Serializable;
 import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
 
 public class AsyncFlow<I extends Serializable,O,C> implements IAsyncFlow<I,O,C> {
 

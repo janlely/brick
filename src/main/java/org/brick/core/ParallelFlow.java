@@ -1,7 +1,6 @@
-package org.brick.model;
+package org.brick.core;
 
 import net.jodah.typetools.TypeResolver;
-import org.brick.core.FlowDoc;
 
 import java.util.List;
 import java.util.function.BiFunction;

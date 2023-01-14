@@ -1,4 +1,4 @@
-package org.brick.model;
+package org.brick.core;
 
 public interface IModifyDBPureFlow<I,C> extends IModifyDBFlow<I,I,C> {
 

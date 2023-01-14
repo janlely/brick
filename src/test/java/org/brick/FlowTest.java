@@ -1,22 +1,13 @@
 package org.brick;
 
 import org.apache.commons.lang3.StringUtils;
-import org.brick.core.CaseFlow;
-import org.brick.core.Flow;
-import org.brick.core.FlowDoc;
-import org.brick.core.FlowHelper;
-import org.brick.core.FlowMaker;
-import org.brick.core.IMultiBranch;
-import org.brick.core.IPureFunction;
-import org.brick.core.IYesNoBranchFlow;
-import org.brick.model.AsyncFlow;
-import org.brick.model.CaseBranch;
-import org.brick.model.IModifyCachePureFlow;
-import org.brick.model.IModifyDBPureFlow;
-import org.brick.model.IParallelFlow;
-import org.brick.model.PureFunction;
-import org.brick.model.YesNoBranch;
-import org.brick.model.ParallelFlow;
+import org.brick.core.*;
+import org.brick.core.AsyncFlow;
+import org.brick.core.CaseBranch;
+import org.brick.core.IModifyDBPureFlow;
+import org.brick.core.PureFunction;
+import org.brick.core.YesNoBranch;
+import org.brick.core.ParallelFlow;
 import org.junit.Test;
 
 import java.util.List;
@@ -32,24 +23,27 @@ public class FlowTest {
 
         Flow<Integer, String, Integer> subFlow = new FlowMaker<Integer, String, Integer>(Executors.newSingleThreadExecutor())
                 .flowBuilder()
-                .last(IPureFunction.class, new PureFunction<>("PureProc5", (i,c) -> {
+                .pure(new PureFunction<>("PureFunction5", (i,c) -> {
                     System.out.println(String.format("PureFunction5 input: %d, context: %d", i, c));
                     return String.valueOf(i + 1);
                 }))
+                .finish()
                 .build();
         Flow<Integer, Integer, Integer> case1 = new FlowMaker<Integer, Integer, Integer>(Executors.newSingleThreadExecutor())
                 .flowBuilder()
-                .last(IPureFunction.class, new PureFunction<>("PureProc6", (i,c) -> {
+                .pure(new PureFunction<>("PureProc6", (i,c) -> {
                     System.out.println(String.format("PureFunction6 input: %d, context: %d", i, c));
                     return i+1;
                 }))
+                .finish()
                 .build();
         Flow<Integer, Integer, Integer> case2 = new FlowMaker<Integer, Integer, Integer>(Executors.newSingleThreadExecutor())
                 .flowBuilder()
-                .last(IPureFunction.class, new PureFunction<>("PureProc7", (i,c) -> {
+                .pure(new PureFunction<>("PureProc7", (i,c) -> {
                     System.out.println(String.format("PureFunction7 input: %d, context: %d", i, c));
                     return i * 10;
                 }))
+                .finish()
                 .build();
         IModifyDBPureFlow<Integer, Integer> modifyDBPure = new IModifyDBPureFlow<>() {
 
@@ -78,11 +72,11 @@ public class FlowTest {
         String result = new FlowMaker<String, String, Integer>(Executors.newSingleThreadExecutor())
                 .withDesc("this is a test flow")
                 .flowBuilder()
-                .pure(new PureFunction<>("PureProc1", (i,c) -> {
+                .pure(new PureFunction<>("PureFlow", (i,c) -> {
                     System.out.println(String.format("PureFunction7 input: %s, context: %d", i, c));
                     return c + 1;
                 }))
-                .pure(new PureFunction<>("PureProc2", (i,c) -> {
+                .pure(new PureFunction<>("PureFlow", (i,c) -> {
                     System.out.println(String.format("PureFunction7 input: %d, context: %d", i, c));
                     return String.valueOf(i*2);
                 }))
@@ -91,18 +85,18 @@ public class FlowTest {
                             System.out.println("this is a sample PureFunction");
                             return "yes";
                         }))
-                .subFlow(new YesNoBranch<String, String, Integer>(
+                .subFlow(new YesNoBranch<>(
                         "Sample YesNoBranchFlow",
                         (i, c) -> StringUtils.equals(i, "yes"),
-                        FlowHelper.fromPure(new PureFunction<>("PureProc3", (i,c) -> {
+                        FlowHelper.fromPure(new PureFunction<>("PureFunction3", (i,c) -> {
                             System.out.println(String.format("PureFunction7 input: %s, context: %d", i, c));
                             return StringUtils.reverse(i);
                         })),
-                        FlowHelper.fromPure(new PureFunction<>("PureProc3", (i,c) -> {
+                        FlowHelper.fromPure(new PureFunction<>("PureFunction3", (i,c) -> {
                             System.out.println(String.format("PureFunction7 input: %s, context: %d", i, c));
                             return StringUtils.upperCase(i);
                         }))))
-                .async(new AsyncFlow<>("Sample AsyncProc",
+                .async(new AsyncFlow<>("Sample AsyncFlow",
                         (i,c) -> System.out.println("this is a AsyncFlow")))
                 .pure(new ParallelFlow<>(
                         "Sample ParallelFlow",
@@ -110,16 +104,39 @@ public class FlowTest {
                         (e, c) -> e % 2 == 0,
                         (e, c) -> e * 2,
                         Collectors.summingInt(i -> i)))
-                .subFlow(new CaseBranch<Integer, Integer, Integer, Integer>(
+                .subFlow(new CaseBranch<>(
                         "Sample CaseBranch",
                         i -> i % 2 == 0 ? 1 : 2,
                         new CaseFlow<>(1, case1),
                         new CaseFlow<>(2, case2)
                 ))
                 .effect(modifyDBPure)
-                .last(subFlow)
+                .subFlow(subFlow)
+                .finish()
                 .build()
                 .run("hello", a);
         System.out.println("result: " + result);
     }
+
+
+    @Test
+    public void testClassEqual() {
+        System.out.println(Integer.class.equals(Integer.class));
+
+    }
+
+    @Test
+    public void testClass() {
+
+        Flow<Integer, String, Integer> testFlow = new FlowMaker<Integer, String, Integer>(Executors.newSingleThreadExecutor())
+                .flowBuilder()
+                .pure(new PureFunction<>("PureFunction5", (i,c) -> {
+                    System.out.println(String.format("PureFunction5 input: %d, context: %d", i, c));
+                    return String.valueOf(i + 1);
+                }))
+                .finish()
+                .build();
+
+    }
+
 }

@@ -9,7 +9,7 @@ public interface IPureFunction<I,O,C> extends Flow<I, O, C> {
     }
 
     default String getFlowType() {
-        return "IPureProcess";
+        return "IPureFunction";
     }
 
 }

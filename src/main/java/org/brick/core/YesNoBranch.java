@@ -1,21 +1,18 @@
-package org.brick.model;
+package org.brick.core;
 
 import net.jodah.typetools.TypeResolver;
-import org.brick.core.Flow;
-import org.brick.core.FlowDoc;
-import org.brick.core.IYesNoBranchFlow;
 
 import java.util.function.BiFunction;
 
 public class YesNoBranch<I,O,C> implements IYesNoBranchFlow<I,O,C> {
 
 	private BiFunction<I,C,Boolean> condChecker;
-	private Flow<I,O,C> yesFlow;
-	private Flow<I,O,C> noFlow;
+	private SubFlow.ISubFlow<I,O,C> yesFlow;
+	private SubFlow.ISubFlow<I,O,C> noFlow;
 	private String desc;
 
-	public YesNoBranch(String desc, BiFunction<I,C,Boolean> condChecker, Flow<I,O,C> yesFlow,
-					   Flow<I,O,C> noFlow) {
+	public YesNoBranch(String desc, BiFunction<I,C,Boolean> condChecker, SubFlow.ISubFlow<I,O,C> yesFlow,
+					   SubFlow.ISubFlow<I,O,C> noFlow) {
 		this.condChecker = condChecker;
 		this.yesFlow = yesFlow;
 		this.noFlow = noFlow;
@@ -28,12 +25,12 @@ public class YesNoBranch<I,O,C> implements IYesNoBranchFlow<I,O,C> {
 	}
 
 	@Override
-	public Flow<I, O, C> yes() {
+	public SubFlow.ISubFlow<I, O, C> yes() {
 		return this.yesFlow;
 	}
 
 	@Override
-	public Flow<I, O, C> no() {
+	public SubFlow.ISubFlow<I, O, C> no() {
 		return this.noFlow;
 	}
 

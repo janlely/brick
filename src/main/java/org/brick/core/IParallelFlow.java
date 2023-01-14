@@ -1,4 +1,4 @@
-package org.brick.model;
+package org.brick.core;
 
 import org.brick.core.IPureFunction;
 

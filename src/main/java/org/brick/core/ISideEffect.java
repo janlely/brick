@@ -7,4 +7,10 @@ public interface ISideEffect<I,O,C> extends Flow<I,O,C> {
     default O run(final I input, C context) {
         return processWithSideEffect(input, context);
     }
+
+    @Override
+    default String getFlowType() {
+        return "ISideEffect";
+    }
+
 }

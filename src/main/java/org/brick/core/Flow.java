@@ -11,4 +11,5 @@ public interface Flow<I,O,C>  {
     default boolean isAsync() {
         return false;
     }
+
 }

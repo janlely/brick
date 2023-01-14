@@ -1,10 +1,6 @@
-package org.brick.model;
+package org.brick.core;
 
 import net.jodah.typetools.TypeResolver;
-import org.brick.core.CaseFlow;
-import org.brick.core.Flow;
-import org.brick.core.FlowDoc;
-import org.brick.core.IMultiBranch;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,7 +15,7 @@ import java.util.function.Function;
  */
 public class CaseBranch<I,O,C,P> implements IMultiBranch<I,O,C,P> {
 
-    private Map<P, Flow> flowMap = new HashMap<>();
+    private Map<P, SubFlow.ISubFlow> flowMap = new HashMap<>();
     private Function<I,P> caseValueFunc;
     private String desc;
 
@@ -37,7 +33,7 @@ public class CaseBranch<I,O,C,P> implements IMultiBranch<I,O,C,P> {
     }
 
     @Override
-    public Flow<I, O, C> select(P value) {
+    public SubFlow.ISubFlow<I, O, C> select(P value) {
         return flowMap.get(value);
     }
 
