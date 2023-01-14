@@ -13,7 +13,7 @@ import java.util.function.Function;
  * @param <C> context type
  * @param <P> pattern type
  */
-public class CaseBranch<I,O,C,P> implements IMultiBranch<I,O,C,P> {
+public class CaseBranch<I,O,C,P> implements IMultiBranchFlow<I,O,C,P> {
 
     private Map<P, SubFlow.ISubFlow> flowMap = new HashMap<>();
     private Function<I,P> caseValueFunc;

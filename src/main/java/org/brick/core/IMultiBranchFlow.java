@@ -1,6 +1,6 @@
 package org.brick.core;
 
-public interface IMultiBranch<I,O,C,P> extends SubFlow.ISubFlow<I,O,C> {
+public interface IMultiBranchFlow<I,O,C,P> extends SubFlow.ISubFlow<I,O,C> {
 
     P pattern(I input);
 
