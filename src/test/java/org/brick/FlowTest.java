@@ -7,6 +7,7 @@ import org.brick.core.PureFunction;
 import org.brick.core.YesNoBranch;
 import org.brick.model.ModifyDBFlow;
 import org.brick.model.ParallelFlow;
+import org.brick.util.F;
 import org.junit.Test;
 
 import java.util.List;
@@ -101,6 +102,7 @@ public class FlowTest {
                         (s, c) -> List.of(1, 2, 3, 4),
                         (e, c) -> e % 2 == 0,
                         (e, c) -> e * 2,
+                        F.constBiFunction(true),
                         Collectors.summingInt(i -> i)))
                 .subFlow(new CaseBranch<>(
                         "Sample CaseBranch",

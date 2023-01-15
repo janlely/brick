@@ -13,18 +13,21 @@ import java.util.stream.Collector;
 public class ParallelFlow<I,O,C,E1,E2> implements IParallelFlow<I,O,C,E1,E2> {
 
     private BiFunction<I,C,List<E1>> lister;
-    private BiFunction<E1,C,Boolean> filter;
+    private BiFunction<E1,C,Boolean> filter1;
+    private BiFunction<E2,C,Boolean> filter2;
     private BiFunction<E1,C,E2> mapper;
     private Collector<E2,?,O> collector;
     private String desc;
 
     public ParallelFlow(String desc, BiFunction<I, C, List<E1>> lister,
-                        BiFunction<E1, C, Boolean> filter,
+                        BiFunction<E1, C, Boolean> filter1,
                         BiFunction<E1, C, E2> mapper,
+                        BiFunction<E2, C, Boolean> filter2,
                         Collector<E2, ?, O> collector) {
         this.desc = desc;
         this.lister = lister;
-        this.filter = filter;
+        this.filter1 = filter1;
+        this.filter2 = filter2;
         this.mapper = mapper;
         this.collector = collector;
     }
@@ -36,8 +39,13 @@ public class ParallelFlow<I,O,C,E1,E2> implements IParallelFlow<I,O,C,E1,E2> {
     }
 
     @Override
-    public boolean filter(E1 elem, C context) {
-        return this.filter.apply(elem, context);
+    public boolean filter1(E1 elem, C context) {
+        return this.filter1.apply(elem, context);
+    }
+
+    @Override
+    public boolean filter2(E2 elem, C context) {
+        return this.filter2.apply(elem, context);
     }
 
     @Override
