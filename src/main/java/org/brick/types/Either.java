@@ -18,25 +18,26 @@ public class Either<L,R> {
         return new Either<>(right, false);
     }
 
-    public L left() {
-        if (!this.isLeft) {
+
+    public static <L,R> L getLeft(Either<L,R> either) {
+        if (!either.isLeft) {
             throw new RuntimeException("This either instance does not have left value");
         }
-        return (L) this.value;
+        return (L) either.value;
     }
 
-    public R right() {
-        if (this.isLeft) {
+    public static <L,R> R getRight(Either<L,R> either) {
+        if (either.isLeft) {
             throw new RuntimeException("This either instance does not have left value");
         }
-        return (R) this.value;
+        return (R) either.value;
     }
 
-    public boolean isLeft() {
-        return this.isLeft;
+    public static <L,R> boolean isLeft(Either<L,R> either) {
+        return either.isLeft;
     }
 
-    public boolean isRight() {
-        return !this.isLeft;
+    public static <L,R> boolean isRight(Either<L,R> either) {
+        return !either.isLeft;
     }
 }

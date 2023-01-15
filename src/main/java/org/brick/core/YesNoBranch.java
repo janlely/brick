@@ -43,10 +43,9 @@ public class YesNoBranch<I,O,C> implements IYesNoBranchFlow<I,O,C> {
 	@Override
 	public FlowDoc<I, O, C> getFlowDoc() {
 		FlowDoc<I,O,C> flowDoc = new FlowDoc<>(this.desc, getFlowType());
-		Class<?>[] classes = TypeResolver.resolveRawArguments(YesNoBranch.class, this.getClass());
-		flowDoc.types((Class<I>) classes[0], (Class<O>) classes[1], (Class<C>) classes[2]);
 		flowDoc.add(this.yesFlow.getFlowDoc());
 		flowDoc.add(this.noFlow.getFlowDoc());
-		return flowDoc;
+		Class<?>[] classes = TypeResolver.resolveRawArguments(YesNoBranch.class, this.getClass());
+		return flowDoc.types((Class<I>) classes[0], (Class<O>) classes[1], (Class<C>) classes[2]);
 	}
 }

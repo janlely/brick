@@ -8,8 +8,13 @@ public interface Flow<I,O,C>  {
 
     O run(final I input, C context);
 
+    default boolean isEnd() {
+        return false;
+    }
+
     default boolean isAsync() {
         return false;
     }
+
 
 }

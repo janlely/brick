@@ -75,7 +75,7 @@ public class FlowTest {
                             System.out.println("this is a sample PureFunction");
                             return "yes";
                         }))
-                .subFlow(new YesNoBranch<>(
+                .flow(new YesNoBranch<>(
                         "Sample YesNoBranchFlow",
                         (i, c) -> StringUtils.equals(i, "yes"),
                         FlowHelper.fromPure(new PureFunction<>("PureFunction3", (i,c) -> {
@@ -104,7 +104,7 @@ public class FlowTest {
                         (e, c) -> e * 2,
                         F.constBiFunction(true),
                         Collectors.summingInt(i -> i)))
-                .subFlow(new CaseBranch<>(
+                .flow(new CaseBranch<>(
                         "Sample CaseBranch",
                         i -> i % 2 == 0 ? 1 : 2,
                         new CaseFlow<>(1, case1),
@@ -116,7 +116,7 @@ public class FlowTest {
                             System.out.println(String.format("IModifyDBPureProcess input: %d, context: %d", i, c));
                             return i;
                         }))
-                .subFlow(subFlow)
+                .flow(subFlow)
                 .finish()
                 .build()
                 .run("hello", a);
