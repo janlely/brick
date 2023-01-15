@@ -101,10 +101,27 @@ public class FlowMaker<I,O,C> {
             return new Builder<>(this.flowMaker, (Class<O1>) classes[1]);
         }
 
-        public <I1 extends Serializable, F extends SubFlow.ISubFlow<I1,?,C>> Builder<I,O,C,I1> async(F flow) {
+        public <I1 extends Serializable, O1, F extends Flow<I1,O1,C>> Builder<I,O,C,I1> subFlowAsync(F flow) {
             assert this.flowMaker.executor != null;
             assert SubFlow.ISubFlow.class.isAssignableFrom(flow.getClass());
-            this.flowMaker.flows.add(flow);
+            this.flowMaker.flows.add(new SubFlow.ISubFlow<I1,O1,C>() {
+                @Override
+                public FlowDoc getFlowDoc() {
+                    return flow.getFlowDoc();
+                }
+                @Override
+                public O1 run(I1 input, C context) {
+                    return flow.run(input, context);
+                }
+                @Override
+                public boolean isAsync() {
+                    return true;
+                }
+                @Override
+                public String getFlowType() {
+                    return "Async: " + flow.getFlowType();
+                }
+            });
             return (Builder<I, O, C, I1>) this;
         }
 

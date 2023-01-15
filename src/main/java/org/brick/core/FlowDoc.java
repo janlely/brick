@@ -26,6 +26,11 @@ public class FlowDoc<I,O,C> {
         this.innerFlowDocs.add(doc);
     }
 
+    protected FlowDoc<I,O,C> setFlowType(String flowType) {
+        this.flowType = flowType;
+        return this;
+    }
+
     public FlowDoc<I,O,C> types(Class<I> inputClass, Class<O> outputClass, Class<C> contextClass) {
         this.inputClass = inputClass;
         this.outputClass = outputClass;

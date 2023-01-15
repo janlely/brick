@@ -2,7 +2,6 @@ package org.brick;
 
 import org.apache.commons.lang3.StringUtils;
 import org.brick.core.*;
-import org.brick.core.AsyncFlow;
 import org.brick.core.CaseBranch;
 import org.brick.core.PureFunction;
 import org.brick.core.YesNoBranch;
@@ -49,6 +48,16 @@ public class FlowTest {
                 .finish()
                 .build();
 
+        Flow<String, String, Integer> asyncFlow = new FlowMaker<String, String, Integer>("Test async flow")
+                .flowBuilder()
+                .pure(new PureFunction<>("Test AsyncPure", (i, c) -> {
+                    System.out.println(String.format("AsyncPure input: %s, context: %d", i, c));
+                    return "hello world";
+                }))
+                .finish()
+                .build();
+
+
         String result = new FlowMaker<String, String, Integer>("Main Flow")
                 .asyncExecutor(Executors.newSingleThreadExecutor())
                 .flowBuilder()
@@ -76,8 +85,17 @@ public class FlowTest {
                             System.out.println(String.format("PureFunction7 input: %s, context: %d", i, c));
                             return StringUtils.upperCase(i);
                         }))))
-                .async(new AsyncFlow<>("Sample AsyncFlow",
-                        (i,c) -> System.out.println("this is a AsyncFlow")))
+                .subFlowAsync(asyncFlow)
+                .subFlowAsync(FlowHelper.fromPure(new PureFunction<>("Test async fromPure",
+                        (i,c) -> {
+                            System.out.println(String.format("Test async fromPure, input: %s, context: %d", i, c));
+                            return i;
+                        })))
+                .subFlowAsync(FlowHelper.fromEffect(new SideEffect<>("Test async sideEffect",
+                        (i,c) -> {
+                            System.out.println(String.format("Test async fromEffect, input: %s, context: %d", i, c));
+                            return i;
+                        })))
                 .pure(new ParallelFlow<>(
                         "Sample ParallelFlow",
                         (s, c) -> List.of(1, 2, 3, 4),

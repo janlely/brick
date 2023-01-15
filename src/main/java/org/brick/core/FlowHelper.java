@@ -6,17 +6,40 @@ import java.io.Serializable;
 
 public class FlowHelper {
 
-    public static <I,O,C> SubFlow.ISubFlow<I,O,C> fromPure(IPureFunction<I,O,C> func) {
+    public static <I,O,C> SubFlow.ISubFlow<I,O,C> fromPure(PureFunction<I,O,C> func) {
         return new SubFlow.ISubFlow<>() {
             @Override
             public FlowDoc<I, O, C> getFlowDoc() {
-                Class<?>[] classes = TypeResolver.resolveRawArguments(IPureFunction.class, func.getClass());
-                return new FlowDoc<I,O,C>(func.getFlowDoc().desc, getFlowType()).types((Class<I>) classes[0], (Class<O>) classes[1], (Class<C>) classes[2]);
+                return func.getFlowDoc().setFlowType(getFlowType());
             }
 
             @Override
             public O run(I input, C context) {
                 return func.pureCalculate(input, context);
+            }
+
+            @Override
+            public String getFlowType() {
+                return SubFlow.ISubFlow.super.getFlowType() + ":" + func.getFlowType();
+            }
+        };
+    }
+
+    public static <I,O,C> SubFlow.ISubFlow<I,O,C> fromEffect(SideEffect<I,O,C> func) {
+        return new SubFlow.ISubFlow<>() {
+            @Override
+            public FlowDoc<I, O, C> getFlowDoc() {
+                return func.getFlowDoc().setFlowType(getFlowType());
+            }
+
+            @Override
+            public O run(I input, C context) {
+                return func.processWithSideEffect(input, context);
+            }
+
+            @Override
+            public String getFlowType() {
+                return SubFlow.ISubFlow.super.getFlowType() + ":" + func.getFlowType();
             }
         };
     }
