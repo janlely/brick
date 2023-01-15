@@ -109,6 +109,7 @@ public interface IImportFlow<ERR,E,S,O,C> extends IFlow<ImportEnv<ERR,E,S>,O,C> 
                             before(i,c);
                             return i;
                         }))
+                //TODO progress related
                 .effect(new ModifyInputFlow<>("call parseData which will modify ImportEnv",
                         (i,c) -> i.setElements(parseData(i.getIns(), c))))
                 .effect(new ModifyInputFlow<>("check data validity",
