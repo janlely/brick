@@ -4,9 +4,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.brick.core.*;
 import org.brick.core.AsyncFlow;
 import org.brick.core.CaseBranch;
-import org.brick.model.IModifyDBPureFlow;
 import org.brick.core.PureFunction;
 import org.brick.core.YesNoBranch;
+import org.brick.model.ModifyDBFlow;
 import org.brick.model.ParallelFlow;
 import org.junit.Test;
 
@@ -48,25 +48,6 @@ public class FlowTest {
                 }))
                 .finish()
                 .build();
-        IModifyDBPureFlow<Integer, Integer> modifyDBPure = new IModifyDBPureFlow<>() {
-
-            @Override
-            public void doDBModifyPure(Integer input, Integer context) {
-                System.out.println(String.format("IModifyDBPureProcess input: %d, context: %d", input, context));
-            }
-
-            @Override
-            public String getPseudoSql() {
-                return "UPDATE table SET value = ?";
-            }
-
-            @Override
-            public FlowDoc<Integer, Integer, Integer> getFlowDoc() {
-                return new FlowDoc<Integer, Integer, Integer>("this is a demo IModifyDBPureProcess", IModifyDBPureFlow.super.getFlowType())
-                        .types(Integer.class, Integer.class, Integer.class);
-            }
-
-        };
 
         String result = new FlowMaker<String, String, Integer>("Main Flow")
                 .asyncExecutor(Executors.newSingleThreadExecutor())
@@ -109,7 +90,12 @@ public class FlowTest {
                         new CaseFlow<>(1, case1),
                         new CaseFlow<>(2, case2)
                 ))
-                .effect(modifyDBPure)
+                .effect(new ModifyDBFlow<>("this is a demo IModifyDBPureProcess",
+                        "UPDATE table SET value = ?",
+                        (i,c) -> {
+                            System.out.println(String.format("IModifyDBPureProcess input: %d, context: %d", i, c));
+                            return i;
+                        }))
                 .subFlow(subFlow)
                 .finish()
                 .build()
