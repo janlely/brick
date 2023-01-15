@@ -1,6 +1,7 @@
 package org.brick.core;
 
 import net.jodah.typetools.TypeResolver;
+import org.apache.commons.lang3.ClassUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -28,6 +29,11 @@ public class CaseBranch<I,O,C,P> implements IMultiBranchFlow<I,O,C,P> {
     }
 
     @Override
+    public String getFlowType() {
+        return IMultiBranchFlow.super.getFlowType() + ":" + ClassUtils.getShortClassName(CaseBranch.class);
+    }
+
+    @Override
     public P pattern(I input) {
         return caseValueFunc.apply(input);
     }
@@ -39,7 +45,7 @@ public class CaseBranch<I,O,C,P> implements IMultiBranchFlow<I,O,C,P> {
 
     @Override
     public FlowDoc<I, O, C> getFlowDoc() {
-        FlowDoc<I,O,C> flowDoc = new FlowDoc<>(this.desc);
+        FlowDoc<I,O,C> flowDoc = new FlowDoc<>(this.desc, this.getFlowType());
         Class<?>[] classes = TypeResolver.resolveRawArguments(CaseBranch.class, this.getClass());
         for (Flow<I,O,C> flow : this.flowMap.values()) {
             flowDoc.add(flow.getFlowDoc());

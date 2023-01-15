@@ -1,5 +1,7 @@
 package org.brick.core;
 
+import org.apache.commons.lang3.ClassUtils;
+
 import java.util.function.BiFunction;
 
 public interface IYesNoBranchFlow<I,O,C> extends SubFlow.ISubFlow<I, O, C> {
@@ -16,6 +18,6 @@ public interface IYesNoBranchFlow<I,O,C> extends SubFlow.ISubFlow<I, O, C> {
 
     @Override
     default String getFlowType() {
-        return "IYesNoBranchFlow";
+        return SubFlow.ISubFlow.super.getFlowType() + ":" + ClassUtils.getShortClassName(IYesNoBranchFlow.class);
     }
 }

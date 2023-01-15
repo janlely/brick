@@ -1,6 +1,7 @@
 package org.brick.core;
 
 import net.jodah.typetools.TypeResolver;
+import org.apache.commons.lang3.ClassUtils;
 
 import java.util.function.BiFunction;
 
@@ -35,8 +36,13 @@ public class YesNoBranch<I,O,C> implements IYesNoBranchFlow<I,O,C> {
 	}
 
 	@Override
+	public String getFlowType() {
+		return IYesNoBranchFlow.super.getFlowType() + ":" + ClassUtils.getShortClassName(YesNoBranch.class);
+	}
+
+	@Override
 	public FlowDoc<I, O, C> getFlowDoc() {
-		FlowDoc<I,O,C> flowDoc = new FlowDoc<>(this.desc);
+		FlowDoc<I,O,C> flowDoc = new FlowDoc<>(this.desc, getFlowType());
 		Class<?>[] classes = TypeResolver.resolveRawArguments(YesNoBranch.class, this.getClass());
 		flowDoc.types((Class<I>) classes[0], (Class<O>) classes[1], (Class<C>) classes[2]);
 		flowDoc.add(this.yesFlow.getFlowDoc());

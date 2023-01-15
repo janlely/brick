@@ -1,5 +1,7 @@
 package org.brick.core;
 
+import org.apache.commons.lang3.ClassUtils;
+
 public class CaseFlow<I,O,C,P> implements SubFlow.ISubFlow<I,O,C> {
 
     private P value;
@@ -31,6 +33,6 @@ public class CaseFlow<I,O,C,P> implements SubFlow.ISubFlow<I,O,C> {
 
     @Override
     public String getFlowType() {
-        return "CaseFlow";
+        return SubFlow.ISubFlow.super.getFlowType() + ":" + ClassUtils.getShortClassName(CaseFlow.class);
     }
 }

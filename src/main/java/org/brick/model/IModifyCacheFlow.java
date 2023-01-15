@@ -1,5 +1,6 @@
 package org.brick.model;
 
+import org.apache.commons.lang3.ClassUtils;
 import org.brick.core.ISideEffect;
 
 public interface IModifyCacheFlow<I,O,C> extends ISideEffect<I,O,C> {
@@ -14,4 +15,8 @@ public interface IModifyCacheFlow<I,O,C> extends ISideEffect<I,O,C> {
         return doCacheModify(input, context);
     }
 
+    @Override
+    default String getFlowType() {
+        return ISideEffect.super.getFlowType() + ":" + ClassUtils.getShortClassName(IModifyCacheFlow.class);
+    }
 }

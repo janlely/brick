@@ -9,6 +9,7 @@ public class FlowDoc<I,O,C> {
     protected Class<O> outputClass;
     protected Class<C> contextClass;
     protected String desc;
+    protected String flowType;
 
     List<FlowDoc> innerFlowDocs;
 
@@ -16,8 +17,9 @@ public class FlowDoc<I,O,C> {
         this.innerFlowDocs = new ArrayList<>();
     }
 
-    public FlowDoc(String desc) {
+    public FlowDoc(String desc, String flowType) {
         this.desc = desc;
+        this.flowType = flowType;
     }
 
     public void add(FlowDoc doc) {

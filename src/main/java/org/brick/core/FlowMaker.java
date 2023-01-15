@@ -52,11 +52,6 @@ public class FlowMaker<I,O,C> {
                 }
 
                 @Override
-                public String getFlowType() {
-                    return "By FlowMaker";
-                }
-
-                @Override
                 public O run(I input, C context) {
                     Object i = input;
                     Object o = null;

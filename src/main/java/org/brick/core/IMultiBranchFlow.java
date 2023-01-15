@@ -1,5 +1,7 @@
 package org.brick.core;
 
+import org.apache.commons.lang3.ClassUtils;
+
 public interface IMultiBranchFlow<I,O,C,P> extends SubFlow.ISubFlow<I,O,C> {
 
     P pattern(I input);
@@ -12,6 +14,6 @@ public interface IMultiBranchFlow<I,O,C,P> extends SubFlow.ISubFlow<I,O,C> {
 
     @Override
     default String getFlowType() {
-        return "IMultiBranch";
+        return SubFlow.ISubFlow.super.getFlowType() + ":" + ClassUtils.getShortClassName(IMultiBranchFlow.class);
     }
 }

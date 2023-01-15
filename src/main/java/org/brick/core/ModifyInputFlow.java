@@ -1,6 +1,7 @@
 package org.brick.core;
 
 import net.jodah.typetools.TypeResolver;
+import org.apache.commons.lang3.ClassUtils;
 
 import java.util.function.BiConsumer;
 
@@ -16,14 +17,14 @@ public class ModifyInputFlow<I,C> implements ISideEffect<I,I,C> {
 
     @Override
     public FlowDoc<I, I, C> getFlowDoc() {
-        FlowDoc<I,I,C> flowDoc = new FlowDoc<>(this.desc);
+        FlowDoc<I,I,C> flowDoc = new FlowDoc<>(this.desc, getFlowType());
         Class<?>[] classes = TypeResolver.resolveRawArguments(ModifyInputFlow.class, this.getClass());
         return flowDoc.types((Class<I>) classes[0], (Class<I>) classes[1], (Class<C>) classes[2]);
     }
 
     @Override
     public String getFlowType() {
-        return "ModifyInputFlow";
+        return ISideEffect.super.getFlowType() + ":" + ClassUtils.getShortClassName(ModifyInputFlow.class);
     }
 
     @Override

@@ -1,8 +1,10 @@
 package org.brick.core;
 
+import org.apache.commons.lang3.ClassUtils;
+
 import java.io.Serializable;
 
-public interface IAsyncFlow<I extends Serializable,O,C> extends Flow<I,O,C> {
+public interface IAsyncFlow<I extends Serializable,O,C> extends SubFlow.ISubFlow<I,O,C> {
 
     void async(I input, C context);
 
@@ -20,6 +22,6 @@ public interface IAsyncFlow<I extends Serializable,O,C> extends Flow<I,O,C> {
 
     @Override
     default String getFlowType() {
-        return "IAsyncFlow";
+        return SubFlow.ISubFlow.super.getFlowType() + ":" + ClassUtils.getShortClassName(IAsyncFlow.class);
     }
 }

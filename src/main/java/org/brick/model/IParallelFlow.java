@@ -1,5 +1,6 @@
 package org.brick.model;
 
+import org.apache.commons.lang3.ClassUtils;
 import org.brick.core.IPureFunction;
 
 import java.util.List;
@@ -29,6 +30,6 @@ public interface IParallelFlow<I,O,C,E1,E2> extends IPureFunction<I, O, C> {
 
 	@Override
 	default String getFlowType() {
-		return "IParallelFlow";
+		return IPureFunction.super.getFlowType() + ":" + ClassUtils.getShortClassName(IParallelFlow.class);
 	}
 }

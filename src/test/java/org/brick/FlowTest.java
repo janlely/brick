@@ -62,14 +62,10 @@ public class FlowTest {
 
             @Override
             public FlowDoc<Integer, Integer, Integer> getFlowDoc() {
-                return new FlowDoc<Integer, Integer, Integer>("this is a demo IModifyDBPureProcess")
+                return new FlowDoc<Integer, Integer, Integer>("this is a demo IModifyDBPureProcess", IModifyDBPureFlow.super.getFlowType())
                         .types(Integer.class, Integer.class, Integer.class);
             }
 
-            @Override
-            public String getFlowType() {
-                return "IModifyDBPureProcess";
-            }
         };
 
         String result = new FlowMaker<String, String, Integer>("Main Flow")
@@ -99,8 +95,8 @@ public class FlowTest {
                             System.out.println(String.format("PureFunction7 input: %s, context: %d", i, c));
                             return StringUtils.upperCase(i);
                         }))))
-                .async(FlowHelper.fromAsync(new AsyncFlow<>("Sample AsyncFlow",
-                        (i,c) -> System.out.println("this is a AsyncFlow"))))
+                .async(new AsyncFlow<>("Sample AsyncFlow",
+                        (i,c) -> System.out.println("this is a AsyncFlow")))
                 .pure(new ParallelFlow<>(
                         "Sample ParallelFlow",
                         (s, c) -> List.of(1, 2, 3, 4),
@@ -127,6 +123,7 @@ public class FlowTest {
         System.out.println(Integer.class.equals(Integer.class));
 
     }
+
 
 
 }

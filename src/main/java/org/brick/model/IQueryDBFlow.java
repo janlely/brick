@@ -1,5 +1,6 @@
 package org.brick.model;
 
+import org.apache.commons.lang3.ClassUtils;
 import org.brick.core.ISideEffect;
 
 public interface IQueryDBFlow<I,O,C> extends ISideEffect<I,O,C> {
@@ -10,4 +11,8 @@ public interface IQueryDBFlow<I,O,C> extends ISideEffect<I,O,C> {
         return doDBQuery(input, context);
     }
 
+    @Override
+    default String getFlowType() {
+        return ISideEffect.super.getFlowType() + ":" + ClassUtils.getShortClassName(IQueryDBFlow.class);
+    }
 }
