@@ -1,5 +1,10 @@
 package org.brick.types;
 
+/**
+ * like (,) in Haskell
+ * @param <L>
+ * @param <R>
+ */
 public class Pair<L,R> {
 
     private L left;

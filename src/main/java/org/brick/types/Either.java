@@ -1,5 +1,10 @@
 package org.brick.types;
 
+/**
+ * like Either in Haskell
+ * @param <L>
+ * @param <R>
+ */
 public class Either<L,R> {
 
     private Object value;
