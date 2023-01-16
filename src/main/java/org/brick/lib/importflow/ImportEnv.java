@@ -2,6 +2,7 @@ package org.brick.lib.importflow;
 
 import lombok.Data;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.io.InputStream;
 import java.util.List;
@@ -12,8 +13,9 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @param <ERR> type of error
  * @param <ELEM> type of element
  * @param <SUP> type of supporting data
+ * @param <T> type of userDefined env
  */
-public class ImportEnv<ERR,ELEM,SUP> {
+public class ImportEnv<ERR,ELEM,SUP,T> {
     //InputStream of raw data
     @Getter
     private final InputStream ins;
@@ -40,9 +42,15 @@ public class ImportEnv<ERR,ELEM,SUP> {
     private String id;
     //progress of the importing
     private Progress progress;
+    //user defined env
+    @Getter
+    @Setter
+    private T userEnv;
 
-    public ImportEnv(InputStream ins) {
+
+    public ImportEnv(InputStream ins, T userEnv) {
         this.ins = ins;
+        this.userEnv = userEnv;
     }
 
     public static class Progress {
@@ -51,40 +59,39 @@ public class ImportEnv<ERR,ELEM,SUP> {
         private int total;
     }
 
-    public ImportEnv<ERR,ELEM,SUP> setElements(List<ELEM> elements) {
+    public ImportEnv<ERR,ELEM,SUP,T> setElements(List<ELEM> elements) {
         this.elements = elements;
         return this;
     }
 
-    public ImportEnv<ERR,ELEM,SUP> setPrepareActions(List<ActionInfo> prepareActions) {
+    public ImportEnv<ERR,ELEM,SUP,T> setPrepareActions(List<ActionInfo> prepareActions) {
         this.prepareActions = prepareActions;
         return this;
     }
 
-    public ImportEnv<ERR,ELEM,SUP> setPrepareActionResponses(List<ActionResponse> prepareActionResponses) {
+    public ImportEnv<ERR,ELEM,SUP,T> setPrepareActionResponses(List<ActionResponse> prepareActionResponses) {
         this.prepareActionResponses = prepareActionResponses;
         return this;
     }
 
-    public ImportEnv<ERR,ELEM,SUP> setFinalActionResponses(List<ActionResponse> finalActionResponses) {
+    public ImportEnv<ERR,ELEM,SUP,T> setFinalActionResponses(List<ActionResponse> finalActionResponses) {
         this.finalActionResponses = finalActionResponses;
         return this;
     }
 
-    public ImportEnv<ERR,ELEM,SUP> setSupportData(SUP supportData) {
+    public ImportEnv<ERR,ELEM,SUP,T> setSupportData(SUP supportData) {
         this.supportData = supportData;
         return this;
     }
 
-    public ImportEnv<ERR,ELEM,SUP> setErrors(List<ERR> errors) {
+    public ImportEnv<ERR,ELEM,SUP,T> setErrors(List<ERR> errors) {
         this.errors = errors;
         return this;
     }
 
-    public ImportEnv<ERR,ELEM,SUP> setFinaActions(List<ActionInfo> finaActions) {
+    public ImportEnv<ERR,ELEM,SUP,T> setFinaActions(List<ActionInfo> finaActions) {
         this.finalActions = finaActions;
         return this;
     }
-
 
 }

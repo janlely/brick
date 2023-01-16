@@ -3,20 +3,20 @@ package org.brick.lib.importflow;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Combinators {
+public class ActionCombinators {
 
-    private Map<Integer, Combinator> combinators = new HashMap<>();
+    private Map<Integer, ActionCombinator> combinators = new HashMap<>();
 
     /**
      *
      * @param type: ActionInfo.type
      * @return
      */
-    public Combinator getCombinator(Integer type) {
+    public ActionCombinator getCombinator(Integer type) {
         return combinators.getOrDefault(type, a -> a);
     }
 
-    private void registerCombinator(Integer type, Combinator combinator) {
+    private void registerCombinator(Integer type, ActionCombinator combinator) {
         combinators.put(type, combinator);
     }
 }

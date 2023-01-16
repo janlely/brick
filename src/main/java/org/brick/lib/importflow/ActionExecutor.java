@@ -15,7 +15,7 @@ public class ActionExecutor {
             }
             Object response = this.actionMap.get(actionInfo.getType()).run(actionInfo);
             return ActionResponse.builder()
-                    .type(actionInfo.getType())
+                    .info(actionInfo)
                     .response(response)
                     .build();
 

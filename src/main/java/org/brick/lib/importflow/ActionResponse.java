@@ -6,6 +6,6 @@ import lombok.Data;
 @Data
 @Builder
 public class ActionResponse {
-    private Integer type;
+    private ActionInfo info;
     private Object response;
 }

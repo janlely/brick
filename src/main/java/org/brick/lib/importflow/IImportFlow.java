@@ -20,8 +20,9 @@ import java.util.stream.Collectors;
  * @param <E> type of element
  * @param <S> type of suppoting data
  * @param <O> type of output
+ * @param <T> type of user defined env
  */
-public interface IImportFlow<ERR,E,S,O> extends IFlow<ImportEnv<ERR,E,S>,O,ImportContext> {
+public interface IImportFlow<ERR,E,S,O,T> extends IFlow<ImportEnv<ERR,E,S,T>,O,ImportContext> {
 
     /**
      * parse raw InputStream to List of T
@@ -37,8 +38,8 @@ public interface IImportFlow<ERR,E,S,O> extends IFlow<ImportEnv<ERR,E,S>,O,Impor
      * @param context
      * @return error if exist
      */
-    Optional<ERR> preCheck(ImportEnv<ERR,E,S> input, E elem, ImportContext context);
-    Optional<ERR> postCheck(ImportEnv<ERR,E,S> input, E elem, ImportContext context);
+    Optional<ERR> preCheck(ImportEnv<ERR,E,S,T> input, E elem, ImportContext context);
+    Optional<ERR> postCheck(ImportEnv<ERR,E,S,T> input, E elem, ImportContext context);
 
 
     /**
@@ -47,13 +48,13 @@ public interface IImportFlow<ERR,E,S,O> extends IFlow<ImportEnv<ERR,E,S>,O,Impor
      * @param context
      * @return
      */
-    O handlerError(ImportEnv<ERR,E,S> input, ImportContext context);
+    O handlerError(ImportEnv<ERR,E,S,T> input, ImportContext context);
 
     /**
      * Combinators
      * @return
      */
-    Combinators getCombinators();
+    ActionCombinators getCombinators();
 
     /**
      * ActionExecutor
@@ -68,10 +69,10 @@ public interface IImportFlow<ERR,E,S,O> extends IFlow<ImportEnv<ERR,E,S>,O,Impor
      * @param context
      * @return
      */
-    List<ActionInfo> toPrepareActions(ImportEnv<ERR,E,S> input, E elem, ImportContext context);
-    boolean ifAbortAfterPrepared(ImportEnv<ERR,E,S> input, ImportContext context);
-    O abortAfterPrepared(ImportEnv<ERR,E,S> input, ImportContext context);
-    S collect(ImportEnv<ERR,E,S> input, ImportContext context);
+    List<ActionInfo> toPrepareActions(ImportEnv<ERR,E,S,T> input, E elem, ImportContext context);
+    boolean ifAbortAfterPrepared(ImportEnv<ERR,E,S,T> input, ImportContext context);
+    O abortAfterPrepared(ImportEnv<ERR,E,S,T> input, ImportContext context);
+    S collect(ImportEnv<ERR,E,S,T> input, ImportContext context);
 
     /**
      * final action related
@@ -80,10 +81,10 @@ public interface IImportFlow<ERR,E,S,O> extends IFlow<ImportEnv<ERR,E,S>,O,Impor
      * @param context
      * @return
      */
-    List<ActionInfo> toFinalActions(ImportEnv<ERR,E,S> input, E elem, ImportContext context);
-    boolean ifAbortAfterFinal(ImportEnv<ERR,E,S> input, ImportContext context);
-    O abortAfterFinal(ImportEnv<ERR,E,S> input, ImportContext context);
-    O toFinalResponse(ImportEnv<ERR,E,S> input, ImportContext context);
+    List<ActionInfo> toFinalActions(ImportEnv<ERR,E,S,T> input, E elem, ImportContext context);
+//    boolean ifAbortAfterFinal(ImportEnv<ERR,E,S,T> input, ImportContext context);
+//    O abortAfterFinal(ImportEnv<ERR,E,S,T> input, ImportContext context);
+    O toFinalResponse(ImportEnv<ERR,E,S,T> input, ImportContext context);
 
 
     /**
@@ -91,17 +92,17 @@ public interface IImportFlow<ERR,E,S,O> extends IFlow<ImportEnv<ERR,E,S>,O,Impor
      * @param input
      * @param context
      */
-    void before(ImportEnv<ERR,E,S> input, ImportContext context);
+    void before(ImportEnv<ERR,E,S,T> input, ImportContext context);
 
     /**
      * do something after
      * @param input
      * @param context
      */
-    void after(ImportEnv<ERR,E,S> input, ImportContext context);
+    void after(ImportEnv<ERR,E,S,T> input, ImportContext context);
 
-    default Flow<ImportEnv<ERR,E,S>, O, ImportContext> getFlow() {
-        return new FlowMaker<ImportEnv<ERR,E,S>, O, ImportContext>("Main flow of importing date from excel")
+    default Flow<ImportEnv<ERR,E,S,T>, O, ImportContext> getFlow() {
+        return new FlowMaker<ImportEnv<ERR,E,S,T>, O, ImportContext>("Main flow of importing date from excel")
                 .flowBuilder()
                 .effect(new SideEffect<>("call before function which may produce side effects",
                         (i,c) -> { before(i,c);return i; }))
@@ -156,10 +157,10 @@ public interface IImportFlow<ERR,E,S,O> extends IFlow<ImportEnv<ERR,E,S>,O,Impor
                         (i,c) -> c.getConfig().isIfFinalParallel()
                         ? i.setFinalActionResponses(i.getFinalActions().stream().map(info -> getActionExecutor().execute(info)).collect(Collectors.toList()))
                         : i.setFinalActionResponses(c.getConfig().getFinalForkJoin().submit(() -> i.getFinalActions().stream().map(info -> getActionExecutor().execute(info)).collect(Collectors.toList())).join())))
-                .abort(new AbortWhenFlow<>("abort after finalActions executed",
-                        (i,c) -> ifAbortAfterFinal(i,c),
-                        FlowHelper.fromEffect(new SideEffect<>("do abort after prepare action response",
-                                (i,c) -> abortAfterFinal(i, c)))))
+//                .abort(new AbortWhenFlow<>("abort after finalActions executed",
+//                        (i,c) -> ifAbortAfterFinal(i,c),
+//                        FlowHelper.fromEffect(new SideEffect<>("do abort after prepare action response",
+//                                (i,c) -> abortAfterFinal(i, c)))))
                 .effect(new SideEffect<>("do after import",
                         (i,c) -> { after(i,c); return i; }))
                 .pure(new PureFunction<>("produce final response",

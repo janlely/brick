@@ -41,6 +41,11 @@
       <artifactId>typetools</artifactId>
       <version>0.6.3</version>
     </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <version>2.13.2.2</version>
+    </dependency>
 
   </dependencies>
 
