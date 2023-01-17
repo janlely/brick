@@ -94,6 +94,10 @@ public interface IImportFlow<ERR,E,S,O,T> extends IFlow<ImportEnv<ERR,E,S,T>,O,I
      */
     void before(ImportEnv<ERR,E,S,T> input, ImportContext context);
 
+    Class<O> getOutputClass();
+
+    Class<ImportEnv<ERR,E,S,T>> getInputClass();
+
     /**
      * do something after
      * @param input
@@ -165,7 +169,6 @@ public interface IImportFlow<ERR,E,S,O,T> extends IFlow<ImportEnv<ERR,E,S,T>,O,I
                         (i,c) -> { after(i,c); return i; }))
                 .pure(new PureFunction<>("produce final response",
                         (i,c) -> toFinalResponse(i,c)))
-                .finish()
-                .build();
+                .build(getInputClass(), getOutputClass(), ImportContext.class);
     }
 }

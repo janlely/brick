@@ -28,32 +28,31 @@ public class FlowMaker<I,O,C> {
     //创建新的带Context的流程
     public Builder<I,O,C,I> flowBuilder() {
         this.flows = new ArrayList<>();
-        return new Builder<>(this, null);
+        return new Builder<>(this);
     }
 
-    //流程终结者
-    public static class Finisher<I,O,C> {
+
+    //流程构造器
+    public static class Builder<I,O,C,T> {
 
         private FlowMaker<I,O,C> flowMaker;
-        private Class<O> cls;
 
-        public Finisher(FlowMaker<I,O,C> fLowMaker, Class<O> cls) {
+        public Builder(FlowMaker<I,O,C> fLowMaker) {
             this.flowMaker = fLowMaker;
-            this.cls = cls;
         }
-        public Flow<I,O,C> build() {
+
+        public Flow<I,T,C> build(Class<I> i, Class<O> t, Class<C> c) {
             return new SubFlow.ISubFlow<>() {
                 @Override
-                public FlowDoc<I, O, C> getFlowDoc() {
+                public FlowDoc<I, T, C> getFlowDoc() {
                     for (Flow flow : flowMaker.flows) {
                         flowMaker.flowDoc.add(flow.getFlowDoc());
                     }
-                    Class<?>[] classes = TypeResolver.resolveRawArguments(FlowMaker.class, flowMaker.getClass());
-                    return flowMaker.flowDoc.types((Class<I>)classes[0], (Class<O>)classes[1], (Class<C>)classes[2]);
+                    return (FlowDoc<I, T, C>) flowMaker.flowDoc.types(i,t,c);
                 }
 
                 @Override
-                public O run(I input, C context) {
+                public T run(I input, C context) {
                     Object i = input;
                     Object o = null;
                     for (Flow flow : flowMaker.flows) {
@@ -65,30 +64,16 @@ public class FlowMaker<I,O,C> {
                         if (flow.isEnd()) {
                             Either either = (Either) flow.run(i, context);
                             if (Either.isRight(either)) {
-                                return (O) Either.getRight(either);
+                                return (T) Either.getRight(either);
                             }
                             continue;
                         }
                         o = flow.run(i, context);
                         i = o;
                     }
-                    return (O) o;
+                    return (T) o;
                 }
             };
-        }
-    }
-
-    //流程构造器
-    public static class Builder<I,O,C,T> {
-
-        private FlowMaker<I,O,C> flowMaker;
-        //class of the last flow's output
-        private Class<T> cls;
-
-
-        public Builder(FlowMaker<I,O,C> fLowMaker, Class<T> cls) {
-            this.flowMaker = fLowMaker;
-            this.cls = cls;
         }
 
         /**
@@ -101,27 +86,23 @@ public class FlowMaker<I,O,C> {
         public <O1, F extends Flow<T,O1,C>> Builder<I,O,C,O1> flow(F flow) {
             assert SubFlow.ISubFlow.class.isAssignableFrom(flow.getClass());
             this.flowMaker.flows.add(flow);
-            Class<?>[] classes = TypeResolver.resolveRawArguments(Flow.class, flow.getClass());
-            return new Builder<>(this.flowMaker, (Class<O1>) classes[1]);
+            return (Builder<I, O, C, O1>) this;
         }
 
         public Builder<I,O,C,T> abort(AbortWhenFlow<T,O,C> flow) {
             this.flowMaker.flows.add(flow);
             PhantomFlow<T, C> phantomFlow = new PhantomFlow<>();
-            Class<?>[] classes = TypeResolver.resolveRawArguments(PhantomFlow.class, phantomFlow.getClass());
-            return new Builder<>(this.flowMaker, (Class<T>) classes[0]);
+            return this;
         }
 
         public <O1, S extends ISideEffect<T,O1,C>> Builder<I,O,C,O1> effect(S flow) {
             this.flowMaker.flows.add(flow);
-            Class<?>[] classes = TypeResolver.resolveRawArguments(ISideEffect.class, flow.getClass());
-            return new Builder<>(this.flowMaker, (Class<O1>) classes[1]);
+            return (Builder<I, O, C, O1>) this;
         }
 
         public <O1, P extends IPureFunction<T,O1,C>> Builder<I,O,C,O1> pure(P flow) {
             this.flowMaker.flows.add(flow);
-            Class<?>[] classes = TypeResolver.resolveRawArguments(IPureFunction.class, flow.getClass());
-            return new Builder<>(this.flowMaker, (Class<O1>) classes[1]);
+            return (Builder<I, O, C, O1>) this;
         }
 
         public <I1 extends Serializable, O1, F extends Flow<I1,O1,C>> Builder<I,O,C,I1> subFlowAsync(F flow) {
@@ -147,14 +128,6 @@ public class FlowMaker<I,O,C> {
             });
             return (Builder<I, O, C, I1>) this;
         }
-
-        public Finisher<I,O,C> finish() {
-            PhantomFlow<T, C> flow = new PhantomFlow<>();
-            Class<?>[] classes = TypeResolver.resolveRawArguments(PhantomFlow.class, flow.getClass());
-            assert classes[0].equals(this.cls);
-            return new Finisher<>(this.flowMaker, (Class<O>) classes[0]);
-        }
-
 
     }
 }

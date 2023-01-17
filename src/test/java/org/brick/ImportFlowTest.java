@@ -22,6 +22,7 @@ import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.lang.reflect.ParameterizedType;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
@@ -170,6 +171,19 @@ public class ImportFlowTest {
         @Override
         public void before(ImportEnv<String, Element, FormatChecker, UserEnv> input, ImportContext context) {
             input.getUserEnv().setStartTime(System.currentTimeMillis());
+        }
+
+        @Override
+        public Class<Result> getOutputClass() {
+            return Result.class;
+        }
+
+        @Override
+        public Class<ImportEnv<String, Element, FormatChecker, UserEnv>> getInputClass() {
+            TypeReference<ImportEnv<String, Element, FormatChecker, UserEnv>> tr = new TypeReference<>() {};
+            ParameterizedType type = (ParameterizedType) tr.getClass().getGenericSuperclass();
+            Class<?> cls = new ObjectMapper().getTypeFactory().constructType(type).getRawClass();
+            return (Class<ImportEnv<String, Element, FormatChecker, UserEnv>>) new ObjectMapper().getTypeFactory().constructType(type).getRawClass();
         }
 
         @Override

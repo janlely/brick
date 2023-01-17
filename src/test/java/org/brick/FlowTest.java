@@ -32,8 +32,7 @@ public class FlowTest {
                     System.out.println(String.format("PureFunction5 input: %d, context: %d", i, c));
                     return String.valueOf(i + 1);
                 }))
-                .finish()
-                .build();
+                .build(Integer.class, String.class, Integer.class);
         Flow<Integer, Integer, Integer> case1 = new FlowMaker<Integer, Integer, Integer>("Test Case 1")
                 .asyncExecutor(Executors.newSingleThreadExecutor())
                 .flowBuilder()
@@ -41,8 +40,7 @@ public class FlowTest {
                     System.out.println(String.format("PureFunction6 input: %d, context: %d", i, c));
                     return i+1;
                 }))
-                .finish()
-                .build();
+                .build(Integer.class, Integer.class, Integer.class);
         Flow<Integer, Integer, Integer> case2 = new FlowMaker<Integer, Integer, Integer>("Test case 2")
                 .asyncExecutor(Executors.newSingleThreadExecutor())
                 .flowBuilder()
@@ -50,8 +48,7 @@ public class FlowTest {
                     System.out.println(String.format("PureFunction7 input: %d, context: %d", i, c));
                     return i * 10;
                 }))
-                .finish()
-                .build();
+                .build(Integer.class, Integer.class, Integer.class);
 
         Flow<String, String, Integer> asyncFlow = new FlowMaker<String, String, Integer>("Test async flow")
                 .flowBuilder()
@@ -59,8 +56,7 @@ public class FlowTest {
                     System.out.println(String.format("AsyncPure input: %s, context: %d", i, c));
                     return "hello world";
                 }))
-                .finish()
-                .build();
+                .build(String.class, String.class, Integer.class);
 
 
         String result = new FlowMaker<String, String, Integer>("Main Flow")
@@ -121,9 +117,7 @@ public class FlowTest {
                             return i;
                         }))
                 .flow(subFlow)
-                .pure(new PureFunction<>("hello pur", (i,c) -> 10))
-                .finish()
-                .build()
+                .build(String.class, String.class, Integer.class)
                 .run("hello", a);
         System.out.println("result: " + result);
     }
