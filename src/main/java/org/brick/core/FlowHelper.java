@@ -1,9 +1,5 @@
 package org.brick.core;
 
-import net.jodah.typetools.TypeResolver;
-
-import java.io.Serializable;
-
 public class FlowHelper {
 
     public static <I,O,C> SubFlow.ISubFlow<I,O,C> fromPure(PureFunction<I,O,C> func) {

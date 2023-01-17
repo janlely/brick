@@ -19,7 +19,7 @@ public class ModifyInputFlow<I,C> implements ISideEffect<I,I,C> {
     public FlowDoc<I, I, C> getFlowDoc() {
         FlowDoc<I,I,C> flowDoc = new FlowDoc<>(this.desc, getFlowType());
         Class<?>[] classes = TypeResolver.resolveRawArguments(ModifyInputFlow.class, this.getClass());
-        return flowDoc.types((Class<I>) classes[0], (Class<I>) classes[1], (Class<C>) classes[2]);
+        return flowDoc.types((Class<I>) classes[0], (Class<I>) classes[0], (Class<C>) classes[1]);
     }
 
     @Override

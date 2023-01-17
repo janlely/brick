@@ -4,7 +4,6 @@ import net.jodah.typetools.TypeResolver;
 import org.apache.commons.lang3.ClassUtils;
 import org.brick.core.FlowDoc;
 
-import javax.swing.plaf.basic.BasicViewportUI;
 import java.util.function.BiFunction;
 
 public class QueryCacheFlow<I,O,C> implements IQueryCacheFlow<I,O,C>{

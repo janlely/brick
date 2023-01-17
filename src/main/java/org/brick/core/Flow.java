@@ -16,5 +16,4 @@ public interface Flow<I,O,C>  {
         return false;
     }
 
-
 }

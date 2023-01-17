@@ -1,19 +1,24 @@
 package org.brick;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.StringUtils;
+import org.brick.core.Flow;
+import org.brick.lib.importflow.ActionCombinators;
 import org.brick.lib.importflow.ActionExecutor;
 import org.brick.lib.importflow.ActionInfo;
 import org.brick.lib.importflow.ActionResponse;
-import org.brick.lib.importflow.ActionCombinators;
 import org.brick.lib.importflow.IImportFlow;
 import org.brick.lib.importflow.ImportContext;
 import org.brick.lib.importflow.ImportEnv;
+import org.brick.types.Pair;
+import org.brick.util.FlowVisualizer;
+import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -24,10 +29,6 @@ import java.util.Optional;
 import java.util.concurrent.ForkJoinPool;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.brick.types.Pair;
-import org.junit.Test;
 
 public class ImportFlowTest {
 
@@ -57,8 +58,10 @@ public class ImportFlowTest {
                         .finalForkJoin(new ForkJoinPool(1))
                         .build())
                 .build();
-        Result result = new SampleImport(actionExecutor, new ActionCombinators()).getFlow().run(new ImportEnv<>(new ByteArrayInputStream(ins.getBytes(StandardCharsets.UTF_8)), userEnv), context);
+        Flow<ImportEnv<String, Element, FormatChecker, UserEnv>, Result, ImportContext> importFlow = new SampleImport(actionExecutor, new ActionCombinators()).getFlow();
+        Result result = importFlow.run(new ImportEnv<>(new ByteArrayInputStream(ins.getBytes(StandardCharsets.UTF_8)), userEnv), context);
         System.out.println(new ObjectMapper().writer().writeValueAsString(result));
+        System.out.println(FlowVisualizer.toJson(importFlow));
     }
 
 

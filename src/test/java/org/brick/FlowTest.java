@@ -1,9 +1,13 @@
 package org.brick;
 
 import org.apache.commons.lang3.StringUtils;
-import org.brick.core.*;
 import org.brick.core.CaseBranch;
+import org.brick.core.CaseFlow;
+import org.brick.core.Flow;
+import org.brick.core.FlowHelper;
+import org.brick.core.FlowMaker;
 import org.brick.core.PureFunction;
+import org.brick.core.SideEffect;
 import org.brick.core.YesNoBranch;
 import org.brick.model.ModifyDBFlow;
 import org.brick.model.ParallelFlow;
@@ -117,6 +121,7 @@ public class FlowTest {
                             return i;
                         }))
                 .flow(subFlow)
+                .pure(new PureFunction<>("hello pur", (i,c) -> 10))
                 .finish()
                 .build()
                 .run("hello", a);

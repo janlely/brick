@@ -1,16 +1,24 @@
 package org.brick.core;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ClassSerializer;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class FlowDoc<I,O,C> {
 
+    @JsonSerialize(using = ClassSerializer.class)
     protected Class<I> inputClass;
+    @JsonSerialize(using = ClassSerializer.class)
     protected Class<O> outputClass;
+    @JsonSerialize(using = ClassSerializer.class)
     protected Class<C> contextClass;
     protected String desc;
     protected String flowType;
 
+    @JsonManagedReference
     List<FlowDoc> innerFlowDocs;
 
     public FlowDoc() {
@@ -20,6 +28,7 @@ public class FlowDoc<I,O,C> {
     public FlowDoc(String desc, String flowType) {
         this.desc = desc;
         this.flowType = flowType;
+        this.innerFlowDocs = new ArrayList<>();
     }
 
     public void add(FlowDoc doc) {
