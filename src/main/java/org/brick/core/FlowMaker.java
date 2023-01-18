@@ -1,6 +1,5 @@
 package org.brick.core;
 
-import net.jodah.typetools.TypeResolver;
 import org.apache.commons.lang3.SerializationUtils;
 import org.brick.types.Either;
 
@@ -99,7 +98,6 @@ public class FlowMaker<I,O,C> {
 
         public Builder<I,O,C,T> abort(AbortWhenFlow<T,O,C> flow) {
             this.flowMaker.flows.add(flow);
-            PhantomFlow<T, C> phantomFlow = new PhantomFlow<>();
             return this;
         }
 

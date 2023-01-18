@@ -1,6 +1,5 @@
 package org.brick;
 
-import net.jodah.typetools.TypeResolver;
 import org.brick.core.FlowMaker;
 import org.brick.core.PureFunction;
 import org.junit.Test;
