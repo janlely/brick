@@ -33,6 +33,14 @@ public class FlowMaker<I,O,C> {
 
 
     //流程构造器
+
+    /**
+     *
+     * @param <I>
+     * @param <O>
+     * @param <C>
+     * @param <T> type of output of current step
+     */
     public static class Builder<I,O,C,T> {
 
         private FlowMaker<I,O,C> flowMaker;
