@@ -101,31 +101,69 @@ public class FlowMaker<I,O,C> {
             return (Builder<I, O, C, O1>) this;
         }
 
+        /**
+         * like if-return
+         * @param flow
+         * @return
+         */
         public Builder<I,O,C,T> abort(AbortWhenFlow<T,O,C> flow) {
             this.flowMaker.flows.add(flow);
             return this;
         }
 
+        /**
+         * modify context
+         * like Reader.local in haskell
+         * @param modifyFlow
+         * @return
+         */
         public Builder<I,O,C,T> local(ModifyContext<I,C> modifyFlow) {
             this.flowMaker.flows.add(modifyFlow);
             return this;
         }
 
+        /**
+         * loop a flow
+         * @param flow
+         * @return
+         */
         public Builder<I,O,C,O> loop(LoopFlow<T,O,C,?> flow) {
             this.flowMaker.flows.add(flow);
             return (Builder<I, O, C, O>) this;
         }
 
+        /**
+         * add a effect flow into flow list
+         * @param flow
+         * @param <O1>
+         * @param <S>
+         * @return
+         */
         public <O1, S extends ISideEffect<T,O1,C>> Builder<I,O,C,O1> effect(S flow) {
             this.flowMaker.flows.add(flow);
             return (Builder<I, O, C, O1>) this;
         }
 
+        /**
+         * add a pure function into flow list
+         * @param flow
+         * @param <O1>
+         * @param <P>
+         * @return
+         */
         public <O1, P extends IPureFunction<T,O1,C>> Builder<I,O,C,O1> pure(P flow) {
             this.flowMaker.flows.add(flow);
             return (Builder<I, O, C, O1>) this;
         }
 
+        /**
+         * add a async flow
+         * @param flow
+         * @param <I1>
+         * @param <O1>
+         * @param <F>
+         * @return
+         */
         public <I1 extends Serializable, O1, F extends Flow<I1,O1,C>> Builder<I,O,C,I1> flowAsync(F flow) {
             assert this.flowMaker.executor != null;
             assert SubFlow.ISubFlow.class.isAssignableFrom(flow.getClass());
