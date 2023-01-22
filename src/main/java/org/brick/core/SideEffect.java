@@ -1,6 +1,5 @@
 package org.brick.core;
 
-import net.jodah.typetools.TypeResolver;
 import org.apache.commons.lang3.ClassUtils;
 
 import java.util.function.BiFunction;

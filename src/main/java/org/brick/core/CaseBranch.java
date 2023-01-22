@@ -1,9 +1,7 @@
 package org.brick.core;
 
-import net.jodah.typetools.TypeResolver;
 import org.apache.commons.lang3.ClassUtils;
 
-import javax.lang.model.type.ErrorType;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;

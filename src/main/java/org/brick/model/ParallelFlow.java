@@ -1,10 +1,8 @@
 package org.brick.model;
 
-import net.jodah.typetools.TypeResolver;
 import org.apache.commons.lang3.ClassUtils;
 import org.brick.core.FlowDoc;
 import org.brick.core.FlowType;
-import org.brick.core.YesNoBranch;
 
 import java.util.List;
 import java.util.function.BiFunction;

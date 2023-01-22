@@ -3,9 +3,6 @@ package org.brick.core;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.databind.ser.std.ClassSerializer;
-import com.fasterxml.jackson.databind.ser.std.EnumSerializer;
-import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import com.fasterxml.jackson.databind.ser.std.StringSerializer;
 
 import java.util.ArrayList;

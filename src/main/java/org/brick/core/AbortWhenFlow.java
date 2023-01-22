@@ -4,7 +4,6 @@ import net.jodah.typetools.TypeResolver;
 import org.apache.commons.lang3.ClassUtils;
 import org.brick.types.Either;
 
-import java.util.concurrent.Flow;
 import java.util.function.BiFunction;
 
 public class AbortWhenFlow<I,O,C> implements SubFlow.ISubFlow<I, Either<I,O>,C> {

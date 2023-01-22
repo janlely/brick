@@ -1,11 +1,9 @@
 package org.brick.model;
 
-import net.jodah.typetools.TypeResolver;
 import org.apache.commons.lang3.ClassUtils;
 import org.brick.core.FlowDoc;
 import org.brick.core.FlowType;
 
-import java.util.concurrent.Flow;
 import java.util.function.BiFunction;
 
 public class QueryDBFlow<I,O,C> implements IQueryDBFlow<I,O,C>{

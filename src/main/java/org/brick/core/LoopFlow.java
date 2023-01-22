@@ -1,7 +1,6 @@
 package org.brick.core;
 
 import org.apache.commons.lang3.ClassUtils;
-import org.brick.types.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
