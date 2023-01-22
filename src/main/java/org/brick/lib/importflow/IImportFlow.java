@@ -207,7 +207,7 @@ public interface IImportFlow<ERR,E,S,O1,O, UE, UC> extends IFlow<ImportEnv<ERR,E
                 .loop(new LoopFlow<>("handler input chunk by chunk", (i, c) -> c.getConfig().isQuickAbort()
                         ? i.isNoMoreDataToParse() || !i.getErrors().isEmpty()
                         : i.isNoMoreDataToParse(), chunkFlow, c -> getCollector(c)))
-                .local(new ModifyContext<>("call before function which may produce side effects", this::after))
+                .local(new ModifyContext<>("call after function which may produce side effects", this::after))
                 .build(null, null, null);
     }
 }
