@@ -119,10 +119,7 @@ public interface IImportFlow<ERR,E,S,O1,O, UE, UC> extends IFlow<ImportEnv<ERR,E
      */
     O1 empty();
 
-    default void handlerParseException(Exception e) {
-        System.out.println(e.getMessage());
-//        throw new RuntimeException(e);
-    }
+    void handlerParseException(Exception e);
 
     default Flow<ImportEnv<ERR,E,S, UE,O1>, O, ImportContext<UC>> getFlow() {
         Flow<ImportEnv<ERR,E,S, UE,O1>, O1, ImportContext<UC>> chunkFlow = new FlowMaker<ImportEnv<ERR,E,S, UE,O1>, O1, ImportContext<UC>>("flow for every chunk")

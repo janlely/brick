@@ -207,6 +207,11 @@ public class ImportFlowTest {
         public Result empty() {
             return new Result();
         }
+
+        @Override
+        public void handlerParseException(Exception e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     @Data
