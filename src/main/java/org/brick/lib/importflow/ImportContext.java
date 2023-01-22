@@ -26,7 +26,7 @@ public class ImportContext<T> {
         //abort quickly when error happens
         private boolean quickAbort;
         //processing between chunks are independent
-        private boolean totallyChunked;
+//        private boolean totallyChunked;
     }
 
 }

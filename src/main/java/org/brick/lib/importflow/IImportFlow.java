@@ -137,11 +137,11 @@ public interface IImportFlow<ERR,E,S,O1,O, UE, UC> extends IFlow<ImportEnv<ERR,E
                                 i.setNoMoreDataToParse(true);
                                 return;
                             }
-                            if (c.getConfig().isTotallyChunked()) {
-                                i.setElements(Either.getRight(chunk));
-                            }else {
-                                i.addElements(Either.getRight(chunk));
-                            }
+//                            if (c.getConfig().isTotallyChunked()) {
+                            i.setElements(Either.getRight(chunk));
+//                            }else {
+//                                i.addElements(Either.getRight(chunk));
+//                            }
                         }))
                 .abort(new AbortWhenFlow<>("abort when no data parsed", (i,c) -> i.isNoMoreDataToParse(),
                         FlowHelper.fromPure(new PureFunction<>("no more data to parse,just return empty", (i,c) -> empty()))))
