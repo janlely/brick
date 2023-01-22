@@ -44,11 +44,19 @@ public interface IImportFlow<ERR,E,S,O1,O, UE, UC> extends IFlow<ImportEnv<ERR,E
      * @return error if exist
      */
     Optional<ERR> preCheck(ImportEnv<ERR,E,S, UE,O1> input, E elem, ImportContext<UC> context);
+
+    /**
+     * check data validity base on supporting data
+     * @param input
+     * @param elem
+     * @param context
+     * @return error if exist
+     */
     Optional<ERR> postCheck(ImportEnv<ERR,E,S, UE,O1> input, E elem, ImportContext<UC> context);
 
 
     /**
-     * handler errord
+     * handler error
      * @param input
      * @param context
      * @return
@@ -98,8 +106,17 @@ public interface IImportFlow<ERR,E,S,O1,O, UE, UC> extends IFlow<ImportEnv<ERR,E
     ImportContext<UC> after(ImportContext<UC> context);
 
 
+    /**
+     * collect list of O1 to final O
+     * @param context
+     * @return
+     */
     Collector<O1,?,O> getCollector(ImportContext<UC> context);
 
+    /**
+     * get a empty O1
+     * @return O1
+     */
     O1 empty();
 
     default void handlerParseException(Exception e) {
