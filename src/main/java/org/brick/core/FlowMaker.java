@@ -1,5 +1,6 @@
 package org.brick.core;
 
+import org.apache.commons.lang3.ClassUtils;
 import org.apache.commons.lang3.SerializationUtils;
 import org.brick.types.Either;
 
@@ -16,8 +17,7 @@ public class FlowMaker<I,O,C> {
     private FlowDoc<I,O,C> flowDoc;
 
     public FlowMaker(String desc) {
-        this.flowDoc = new FlowDoc<>();
-        this.flowDoc.desc = desc;
+        this.flowDoc = new FlowDoc<>(desc, FlowType.SUB_FLOW, ClassUtils.getShortClassName(FlowMaker.class));
     }
 
     public FlowMaker<I,O,C> asyncExecutor(ExecutorService executor) {

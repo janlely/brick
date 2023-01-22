@@ -1,8 +1,12 @@
 package org.brick.core;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ClassSerializer;
+import com.fasterxml.jackson.databind.ser.std.EnumSerializer;
+import com.fasterxml.jackson.databind.ser.std.StdSerializer;
+import com.fasterxml.jackson.databind.ser.std.StringSerializer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,8 +19,11 @@ public class FlowDoc<I,O,C> {
 //    protected Class<O> outputClass;
 //    @JsonSerialize(using = ClassSerializer.class)
 //    protected Class<C> contextClass;
+    @JsonSerialize(using = StringSerializer.class)
     protected String desc;
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
     protected FlowType flowType;
+    @JsonSerialize(using = StringSerializer.class)
     protected String flowName;
 
     @JsonManagedReference

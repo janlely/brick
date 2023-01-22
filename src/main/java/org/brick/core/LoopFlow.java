@@ -26,7 +26,9 @@ public class LoopFlow<I,O,C,O1> implements Flow<I,O,C>{
 
     @Override
     public FlowDoc<I, O, C> getFlowDoc() {
-        return new FlowDoc<>(this.desc, FlowType.LOOP, this.getFlowName());
+        FlowDoc<I, O, C> flowDoc = new FlowDoc<>(this.desc, FlowType.LOOP, this.getFlowName());
+        flowDoc.add(innerFlow.getFlowDoc());
+        return flowDoc;
     }
 
     @Override
