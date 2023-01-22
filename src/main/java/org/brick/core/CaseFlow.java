@@ -32,7 +32,7 @@ public class CaseFlow<I,O,C,P> implements SubFlow.ISubFlow<I,O,C> {
     }
 
     @Override
-    public String getFlowType() {
-        return SubFlow.ISubFlow.super.getFlowType() + ":" + ClassUtils.getShortClassName(CaseFlow.class);
+    public String getFlowName() {
+        return SubFlow.ISubFlow.super.getFlowName() + ":" + ClassUtils.getShortClassName(CaseFlow.class);
     }
 }

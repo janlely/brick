@@ -3,6 +3,7 @@ package org.brick.model;
 import net.jodah.typetools.TypeResolver;
 import org.apache.commons.lang3.ClassUtils;
 import org.brick.core.FlowDoc;
+import org.brick.core.FlowType;
 
 import java.util.function.BiFunction;
 
@@ -23,9 +24,10 @@ public class ModifyCacheFlow<I,O,C> implements IModifyCacheFlow<I,O,C> {
 
     @Override
     public FlowDoc<I, O, C> getFlowDoc() {
-        FlowDoc<I,O,C> flowDoc = new FlowDoc<>(this.desc, getFlowType());
-        Class<?>[] classes = TypeResolver.resolveRawArguments(ModifyCacheFlow.class, this.getClass());
-        return flowDoc.types((Class<I>) classes[0], (Class<O>) classes[1], (Class<C>) classes[2]);
+        FlowDoc<I,O,C> flowDoc = new FlowDoc<>(this.desc, FlowType.EFFECT, this.getFlowName());
+//        Class<?>[] classes = TypeResolver.resolveRawArguments(ModifyCacheFlow.class, this.getClass());
+//        return flowDoc.types((Class<I>) classes[0], (Class<O>) classes[1], (Class<C>) classes[2]);
+        return flowDoc;
     }
 
     @Override
@@ -44,7 +46,7 @@ public class ModifyCacheFlow<I,O,C> implements IModifyCacheFlow<I,O,C> {
     }
 
     @Override
-    public String getFlowType() {
-        return IModifyCacheFlow.super.getFlowType() + ":" + ClassUtils.getShortClassName(ModifyCacheFlow.class);
+    public String getFlowName() {
+        return IModifyCacheFlow.super.getFlowName() + ":" + ClassUtils.getShortClassName(ModifyCacheFlow.class);
     }
 }

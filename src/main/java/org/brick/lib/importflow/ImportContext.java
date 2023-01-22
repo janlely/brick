@@ -23,6 +23,10 @@ public class ImportContext<T> {
         private ForkJoinPool prepareForkJoin;
         //fork join pool of final actions
         private ForkJoinPool finalForkJoin;
+        //abort quickly when error happens
+        private boolean quickAbort;
+        //processing between chunks are independent
+        private boolean totallyChunked;
     }
 
 }

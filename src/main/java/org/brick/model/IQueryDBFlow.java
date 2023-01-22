@@ -12,7 +12,7 @@ public interface IQueryDBFlow<I,O,C> extends ISideEffect<I,O,C> {
     }
 
     @Override
-    default String getFlowType() {
-        return ISideEffect.super.getFlowType() + ":" + ClassUtils.getShortClassName(IQueryDBFlow.class);
+    default String getFlowName() {
+        return ISideEffect.super.getFlowName() + ":" + ClassUtils.getShortClassName(IQueryDBFlow.class);
     }
 }

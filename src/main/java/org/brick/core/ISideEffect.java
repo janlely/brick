@@ -11,7 +11,7 @@ public interface ISideEffect<I,O,C> extends Flow<I,O,C> {
     }
 
     @Override
-    default String getFlowType() {
+    default String getFlowName() {
         return ClassUtils.getShortClassName(ISideEffect.class);
     }
 

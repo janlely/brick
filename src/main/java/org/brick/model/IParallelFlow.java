@@ -32,7 +32,7 @@ public interface IParallelFlow<I,O,C,E1,E2> extends IPureFunction<I, O, C> {
 	}
 
 	@Override
-	default String getFlowType() {
-		return IPureFunction.super.getFlowType() + ":" + ClassUtils.getShortClassName(IParallelFlow.class);
+	default String getFlowName() {
+		return IPureFunction.super.getFlowName() + ":" + ClassUtils.getShortClassName(IParallelFlow.class);
 	}
 }

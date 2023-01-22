@@ -9,14 +9,15 @@ import java.util.List;
 
 public class FlowDoc<I,O,C> {
 
-    @JsonSerialize(using = ClassSerializer.class)
-    protected Class<I> inputClass;
-    @JsonSerialize(using = ClassSerializer.class)
-    protected Class<O> outputClass;
-    @JsonSerialize(using = ClassSerializer.class)
-    protected Class<C> contextClass;
+//    @JsonSerialize(using = ClassSerializer.class)
+//    protected Class<I> inputClass;
+//    @JsonSerialize(using = ClassSerializer.class)
+//    protected Class<O> outputClass;
+//    @JsonSerialize(using = ClassSerializer.class)
+//    protected Class<C> contextClass;
     protected String desc;
-    protected String flowType;
+    protected FlowType flowType;
+    protected String flowName;
 
     @JsonManagedReference
     List<FlowDoc> innerFlowDocs;
@@ -25,9 +26,10 @@ public class FlowDoc<I,O,C> {
         this.innerFlowDocs = new ArrayList<>();
     }
 
-    public FlowDoc(String desc, String flowType) {
+    public FlowDoc(String desc, FlowType flowType, String flowName) {
         this.desc = desc;
         this.flowType = flowType;
+        this.flowName = flowName;
         this.innerFlowDocs = new ArrayList<>();
     }
 
@@ -35,16 +37,21 @@ public class FlowDoc<I,O,C> {
         this.innerFlowDocs.add(doc);
     }
 
-    protected FlowDoc<I,O,C> setFlowType(String flowType) {
+    protected FlowDoc<I,O,C> setFlowType(FlowType flowType) {
         this.flowType = flowType;
         return this;
     }
 
-    public FlowDoc<I,O,C> types(Class<I> inputClass, Class<O> outputClass, Class<C> contextClass) {
-        this.inputClass = inputClass;
-        this.outputClass = outputClass;
-        this.contextClass = contextClass;
+    protected FlowDoc<I,O,C> setFlowName(String flowName) {
+        this.flowName = flowName;
         return this;
     }
+
+//    public FlowDoc<I,O,C> types(Class<I> inputClass, Class<O> outputClass, Class<C> contextClass) {
+//        this.inputClass = inputClass;
+//        this.outputClass = outputClass;
+//        this.contextClass = contextClass;
+//        return this;
+//    }
 
 }

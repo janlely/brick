@@ -86,13 +86,13 @@ public class FlowTest {
                             System.out.println(String.format("PureFunction7 input: %s, context: %d", i, c));
                             return StringUtils.upperCase(i);
                         }))))
-                .subFlowAsync(asyncFlow)
-                .subFlowAsync(FlowHelper.fromPure(new PureFunction<>("Test async fromPure",
+                .flowAsync(asyncFlow)
+                .flowAsync(FlowHelper.fromPure(new PureFunction<>("Test async fromPure",
                         (i,c) -> {
                             System.out.println(String.format("Test async fromPure, input: %s, context: %d", i, c));
                             return i;
                         })))
-                .subFlowAsync(FlowHelper.fromEffect(new SideEffect<>("Test async sideEffect",
+                .flowAsync(FlowHelper.fromEffect(new SideEffect<>("Test async sideEffect",
                         (i,c) -> {
                             System.out.println(String.format("Test async fromEffect, input: %s, context: %d", i, c));
                             return i;

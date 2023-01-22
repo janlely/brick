@@ -13,7 +13,7 @@ public interface IMultiBranchFlow<I,O,C,P> extends SubFlow.ISubFlow<I,O,C> {
     }
 
     @Override
-    default String getFlowType() {
-        return SubFlow.ISubFlow.super.getFlowType() + ":" + ClassUtils.getShortClassName(IMultiBranchFlow.class);
+    default String getFlowName() {
+        return SubFlow.ISubFlow.super.getFlowName() + ":" + ClassUtils.getShortClassName(IMultiBranchFlow.class);
     }
 }

@@ -6,7 +6,7 @@ public class FlowHelper {
         return new SubFlow.ISubFlow<>() {
             @Override
             public FlowDoc<I, O, C> getFlowDoc() {
-                return func.getFlowDoc().setFlowType(getFlowType());
+                return func.getFlowDoc().setFlowName(getFlowName());
             }
 
             @Override
@@ -15,8 +15,8 @@ public class FlowHelper {
             }
 
             @Override
-            public String getFlowType() {
-                return SubFlow.ISubFlow.super.getFlowType() + ":" + func.getFlowType();
+            public String getFlowName() {
+                return SubFlow.ISubFlow.super.getFlowName() + ":" + func.getFlowName();
             }
         };
     }
@@ -25,7 +25,7 @@ public class FlowHelper {
         return new SubFlow.ISubFlow<>() {
             @Override
             public FlowDoc<I, O, C> getFlowDoc() {
-                return func.getFlowDoc().setFlowType(getFlowType());
+                return func.getFlowDoc().setFlowName(getFlowName());
             }
 
             @Override
@@ -34,8 +34,8 @@ public class FlowHelper {
             }
 
             @Override
-            public String getFlowType() {
-                return SubFlow.ISubFlow.super.getFlowType() + ":" + func.getFlowType();
+            public String getFlowName() {
+                return SubFlow.ISubFlow.super.getFlowName() + ":" + func.getFlowName();
             }
         };
     }

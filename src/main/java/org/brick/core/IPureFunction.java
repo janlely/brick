@@ -10,7 +10,7 @@ public interface IPureFunction<I,O,C> extends Flow<I, O, C> {
         return pureCalculate(input, context);
     }
 
-    default String getFlowType() {
+    default String getFlowName() {
         return ClassUtils.getShortClassName(IPureFunction.class);
     }
 

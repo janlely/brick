@@ -17,14 +17,15 @@ public class ModifyInputFlow<I,C> implements ISideEffect<I,I,C> {
 
     @Override
     public FlowDoc<I, I, C> getFlowDoc() {
-        FlowDoc<I,I,C> flowDoc = new FlowDoc<>(this.desc, getFlowType());
-        Class<?>[] classes = TypeResolver.resolveRawArguments(ModifyInputFlow.class, this.getClass());
-        return flowDoc.types((Class<I>) classes[0], (Class<I>) classes[0], (Class<C>) classes[1]);
+        FlowDoc<I,I,C> flowDoc = new FlowDoc<>(this.desc, FlowType.EFFECT, this.getFlowName());
+//        Class<?>[] classes = TypeResolver.resolveRawArguments(ModifyInputFlow.class, this.getClass());
+//        return flowDoc.types((Class<I>) classes[0], (Class<I>) classes[0], (Class<C>) classes[1]);
+        return flowDoc;
     }
 
     @Override
-    public String getFlowType() {
-        return ISideEffect.super.getFlowType() + ":" + ClassUtils.getShortClassName(ModifyInputFlow.class);
+    public String getFlowName() {
+        return ISideEffect.super.getFlowName() + ":" + ClassUtils.getShortClassName(ModifyInputFlow.class);
     }
 
     @Override

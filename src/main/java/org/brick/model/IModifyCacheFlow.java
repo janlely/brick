@@ -16,7 +16,7 @@ public interface IModifyCacheFlow<I,O,C> extends ISideEffect<I,O,C> {
     }
 
     @Override
-    default String getFlowType() {
-        return ISideEffect.super.getFlowType() + ":" + ClassUtils.getShortClassName(IModifyCacheFlow.class);
+    default String getFlowName() {
+        return ISideEffect.super.getFlowName() + ":" + ClassUtils.getShortClassName(IModifyCacheFlow.class);
     }
 }

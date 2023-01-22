@@ -2,6 +2,7 @@ package org.brick.model;
 
 import net.jodah.typetools.TypeResolver;
 import org.brick.core.FlowDoc;
+import org.brick.core.FlowType;
 
 import java.util.function.BiFunction;
 
@@ -20,9 +21,10 @@ public class ModifyDBFlow<I,O,C> implements IModifyDBFlow<I,O,C>{
     }
     @Override
     public FlowDoc<I, O, C> getFlowDoc() {
-        FlowDoc<I,O,C> flowDoc = new FlowDoc<>(this.desc, getFlowType());
-        Class<?>[] classes = TypeResolver.resolveRawArguments(ModifyDBFlow.class, this.getClass());
-        return flowDoc.types((Class<I>) classes[0], (Class<O>) classes[1], (Class<C>) classes[2]);
+        FlowDoc<I,O,C> flowDoc = new FlowDoc<>(this.desc, FlowType.EFFECT, this.getFlowName());
+//        Class<?>[] classes = TypeResolver.resolveRawArguments(ModifyDBFlow.class, this.getClass());
+//        return flowDoc.types((Class<I>) classes[0], (Class<O>) classes[1], (Class<C>) classes[2]);
+        return flowDoc;
     }
 
     @Override

@@ -12,7 +12,7 @@ public interface IQueryCacheFlow<I,O,C> extends ISideEffect<I,O,C> {
     }
 
     @Override
-    default String getFlowType() {
-        return ISideEffect.super.getFlowType() + ClassUtils.getShortClassName(IQueryCacheFlow.class);
+    default String getFlowName() {
+        return ISideEffect.super.getFlowName() + ClassUtils.getShortClassName(IQueryCacheFlow.class);
     }
 }

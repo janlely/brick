@@ -16,19 +16,21 @@ import org.brick.lib.importflow.ActionResponse;
 import org.brick.lib.importflow.IImportFlow;
 import org.brick.lib.importflow.ImportContext;
 import org.brick.lib.importflow.ImportEnv;
+import org.brick.types.Either;
 import org.brick.types.Pair;
 import org.brick.util.FlowVisualizer;
 import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.ParameterizedType;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ForkJoinPool;
 import java.util.function.Function;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 public class ImportFlowTest {
@@ -51,22 +53,26 @@ public class ImportFlowTest {
         String ins = "[{\"name\":\"jay\",\"desc\":\"hello, this is jay\", \"value\":\"hello jay\"},{\"name\":\"joy\",\"desc\":\"hello, this is joy\",\"value\":\"hello joy\"}]";
         UserEnv userEnv = UserEnv.builder().build();
 
-        ImportContext<Object> context = ImportContext.builder()
+        ImportContext<UserContext> context = ImportContext.<UserContext>builder()
                 .config(ImportContext.Config.builder()
                         .ifFinalParallel(true)
                         .ifPrepareParallel(true)
                         .prepareForkJoin(new ForkJoinPool(1))
                         .finalForkJoin(new ForkJoinPool(1))
                         .build())
+                .userContext(UserContext.builder()
+                        .startTime(0)
+                        .endTime(0)
+                        .build())
                 .build();
-        Flow<ImportEnv<String, Element, FormatChecker, UserEnv>, Result, ImportContext> importFlow = new SampleImport(actionExecutor, new ActionCombinators()).getFlow();
+        Flow<ImportEnv<String, Element, FormatChecker, UserEnv, Result>, Result, ImportContext<UserContext>> importFlow = new SampleImport(actionExecutor, new ActionCombinators()).getFlow();
         Result result = importFlow.run(new ImportEnv<>(new ByteArrayInputStream(ins.getBytes(StandardCharsets.UTF_8)), userEnv), context);
         System.out.println(new ObjectMapper().writer().writeValueAsString(result));
         System.out.println(FlowVisualizer.toJson(importFlow));
     }
 
 
-    public static class SampleImport implements IImportFlow<String, Element, FormatChecker, Result, UserEnv> {
+    public static class SampleImport implements IImportFlow<String, Element, FormatChecker, Result, Result, UserEnv, UserContext> {
 
         private ActionExecutor actionExecutor;
         private ActionCombinators actionCombinators;
@@ -76,15 +82,19 @@ public class ImportFlowTest {
             this.actionExecutor = actionExecutor;
         }
 
-        @SneakyThrows
         @Override
-        public List<Element> parseData(InputStream inputStream, ImportContext context) {
+        public Either<Exception, List<Element>> parseData(InputStream inputStream, ImportContext<UserContext> context) {
             ObjectMapper objectMapper = new ObjectMapper();
-            return objectMapper.readValue(inputStream, new TypeReference<>() {});
+            try {
+                return Either.right(objectMapper.readValue(inputStream, new TypeReference<>() {}));
+            } catch (IOException e) {
+                return Either.left(e);
+            }
         }
 
+
         @Override
-        public Optional<String> preCheck(ImportEnv<String, Element, FormatChecker, UserEnv> input, Element elem, ImportContext context) {
+        public Optional<String> preCheck(ImportEnv<String, Element, FormatChecker, UserEnv, Result> input, Element elem, ImportContext<UserContext> context) {
             if (StringUtils.isBlank(elem.desc)) {
                 return Optional.of("desc should not be empty");
             }
@@ -92,7 +102,7 @@ public class ImportFlowTest {
         }
 
         @Override
-        public Optional<String> postCheck(ImportEnv<String, Element, FormatChecker, UserEnv> input, Element elem, ImportContext context) {
+        public Optional<String> postCheck(ImportEnv<String, Element, FormatChecker, UserEnv, Result> input, Element elem, ImportContext<UserContext> context) {
             if (StringUtils.isBlank(elem.getValue())) {
                 return Optional.of("value should not be empty");
             }
@@ -100,7 +110,7 @@ public class ImportFlowTest {
         }
 
         @Override
-        public Result handlerError(ImportEnv<String, Element, FormatChecker, UserEnv> input, ImportContext context) {
+        public Result handlerError(ImportEnv<String, Element, FormatChecker, UserEnv, Result> input, ImportContext<UserContext> context) {
             return Result.builder()
                     .success(false)
                     .total(-1)
@@ -118,7 +128,7 @@ public class ImportFlowTest {
         }
 
         @Override
-        public List<ActionInfo> toPrepareActions(ImportEnv<String, Element, FormatChecker, UserEnv> input, Element elem, ImportContext context) {
+        public List<ActionInfo> toPrepareActions(ImportEnv<String, Element, FormatChecker, UserEnv, Result> input, Element elem, ImportContext<UserContext> context) {
             return List.of(ActionInfo.builder()
                             .type(1)
                             .actionData(elem)
@@ -126,12 +136,12 @@ public class ImportFlowTest {
         }
 
         @Override
-        public boolean ifAbortAfterPrepared(ImportEnv<String, Element, FormatChecker, UserEnv> input, ImportContext context) {
+        public boolean ifAbortAfterPrepared(ImportEnv<String, Element, FormatChecker, UserEnv, Result> input, ImportContext<UserContext> context) {
             return input.getPrepareActionResponses().size() != input.getElements().size();
         }
 
         @Override
-        public Result abortAfterPrepared(ImportEnv<String, Element, FormatChecker, UserEnv> input, ImportContext context) {
+        public Result abortAfterPrepared(ImportEnv<String, Element, FormatChecker, UserEnv, Result> input, ImportContext<UserContext> context) {
             return Result.builder()
                     .total(0)
                     .success(false)
@@ -140,7 +150,7 @@ public class ImportFlowTest {
         }
 
         @Override
-        public FormatChecker collect(ImportEnv<String, Element, FormatChecker, UserEnv> input, ImportContext context) {
+        public FormatChecker collect(ImportEnv<String, Element, FormatChecker, UserEnv, Result> input, ImportContext<UserContext> context) {
             return FormatChecker.builder()
                     .checker(
                             input.getPrepareActionResponses().stream()
@@ -152,7 +162,7 @@ public class ImportFlowTest {
         }
 
         @Override
-        public List<ActionInfo> toFinalActions(ImportEnv<String, Element, FormatChecker, UserEnv> input, Element elem, ImportContext context) {
+        public List<ActionInfo> toFinalActions(ImportEnv<String, Element, FormatChecker, UserEnv, Result> input, Element elem, ImportContext<UserContext> context) {
             return List.of(ActionInfo.builder()
                     .type(2)
                     .actionData(elem)
@@ -161,34 +171,41 @@ public class ImportFlowTest {
 
 
         @Override
-        public Result toFinalResponse(ImportEnv<String, Element, FormatChecker, UserEnv> input, ImportContext context) {
-            long cost = input.getUserEnv().getEndTime() - input.getUserEnv().getStartTime();
+        public Result toFinalResponse(ImportEnv<String, Element, FormatChecker, UserEnv, Result> input, ImportContext<UserContext> context) {
+//            long cost = input.getUserEnv().getEndTime() - input.getUserEnv().getStartTime();
             return input.getFinalActionResponses().size() >= input.getElements().size()
-                    ? Result.builder().total(input.getElements().size()).cost(cost).success(true).build()
-                    : Result.builder().total(input.getFinalActionResponses().size()).cost(cost).success(false).message("partial success").build();
+                    ? Result.builder().total(input.getElements().size()).cost(0).success(true).build()
+                    : Result.builder().total(input.getFinalActionResponses().size()).cost(0).success(false).message("partial success").build();
         }
 
         @Override
-        public void before(ImportEnv<String, Element, FormatChecker, UserEnv> input, ImportContext context) {
-            input.getUserEnv().setStartTime(System.currentTimeMillis());
+        public ImportContext<UserContext> before(ImportContext<UserContext> context) {
+            context.getUserContext().setStartTime(System.currentTimeMillis());
+            return context;
+        }
+
+
+        @Override
+        public ImportContext<UserContext> after(ImportContext<UserContext> context) {
+            context.getUserContext().setEndTime(System.currentTimeMillis());
+            return context;
         }
 
         @Override
-        public Class<Result> getOutputClass() {
-            return Result.class;
+        public Collector<Result, ?, Result> getCollector(ImportContext<UserContext> context) {
+            final long cost = context.getUserContext().getEndTime() - context.getUserContext().getStartTime();
+            return Collectors.reducing(Result.builder().build(), Function.identity(),
+                    (r1,r2) -> Result.builder()
+                            .success(r1.success)
+                            .total(r1.getTotal() + r2.getTotal())
+                            .message(String.format("%s\n%s", r1.message, r2.message))
+                            .cost(cost)
+                            .build());
         }
 
         @Override
-        public Class<ImportEnv<String, Element, FormatChecker, UserEnv>> getInputClass() {
-            TypeReference<ImportEnv<String, Element, FormatChecker, UserEnv>> tr = new TypeReference<>() {};
-            ParameterizedType type = (ParameterizedType) tr.getClass().getGenericSuperclass();
-            Class<?> cls = new ObjectMapper().getTypeFactory().constructType(type).getRawClass();
-            return (Class<ImportEnv<String, Element, FormatChecker, UserEnv>>) new ObjectMapper().getTypeFactory().constructType(type).getRawClass();
-        }
-
-        @Override
-        public void after(ImportEnv<String, Element, FormatChecker, UserEnv> input, ImportContext context) {
-            input.getUserEnv().setEndTime(System.currentTimeMillis());
+        public Result empty() {
+            return new Result();
         }
     }
 
@@ -226,6 +243,15 @@ public class ImportFlowTest {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class UserEnv {
+        long startTime;
+        long endTime;
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class UserContext{
         long startTime;
         long endTime;
     }

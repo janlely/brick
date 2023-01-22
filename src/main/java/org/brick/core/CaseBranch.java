@@ -3,6 +3,7 @@ package org.brick.core;
 import net.jodah.typetools.TypeResolver;
 import org.apache.commons.lang3.ClassUtils;
 
+import javax.lang.model.type.ErrorType;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
@@ -29,8 +30,8 @@ public class CaseBranch<I,O,C,P> implements IMultiBranchFlow<I,O,C,P> {
     }
 
     @Override
-    public String getFlowType() {
-        return IMultiBranchFlow.super.getFlowType() + ":" + ClassUtils.getShortClassName(CaseBranch.class);
+    public String getFlowName() {
+        return IMultiBranchFlow.super.getFlowName() + ":" + ClassUtils.getShortClassName(CaseBranch.class);
     }
 
     @Override
@@ -45,11 +46,12 @@ public class CaseBranch<I,O,C,P> implements IMultiBranchFlow<I,O,C,P> {
 
     @Override
     public FlowDoc<I, O, C> getFlowDoc() {
-        FlowDoc<I,O,C> flowDoc = new FlowDoc<>(this.desc, this.getFlowType());
-        Class<?>[] classes = TypeResolver.resolveRawArguments(CaseBranch.class, this.getClass());
+        FlowDoc<I,O,C> flowDoc = new FlowDoc<>(this.desc, FlowType.BRANCH, this.getFlowName());
+//        Class<?>[] classes = TypeResolver.resolveRawArguments(CaseBranch.class, this.getClass());
         for (Flow<I,O,C> flow : this.flowMap.values()) {
             flowDoc.add(flow.getFlowDoc());
         }
-        return flowDoc.types((Class<I>) classes[0], (Class<O>) classes[1], (Class<C>) classes[2]);
+//        return flowDoc.types((Class<I>) classes[0], (Class<O>) classes[1], (Class<C>) classes[2]);
+        return flowDoc;
     }
 }

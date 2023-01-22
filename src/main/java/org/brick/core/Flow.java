@@ -1,10 +1,12 @@
 package org.brick.core;
 
+import java.io.Serializable;
+
 public interface Flow<I,O,C>  {
 
     FlowDoc<I,O,C> getFlowDoc();
 
-    String getFlowType();
+    String getFlowName();
 
     O run(final I input, C context);
 

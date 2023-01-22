@@ -17,9 +17,10 @@ public class SideEffect<I,O,C> implements ISideEffect<I,O,C>{
 
     @Override
     public FlowDoc<I, O, C> getFlowDoc() {
-        FlowDoc<I,O,C> flowDoc = new FlowDoc<>(this.desc, getFlowType());
-        Class<?>[] classes = TypeResolver.resolveRawArguments(SideEffect.class, this.getClass());
-        return flowDoc.types((Class<I>) classes[0], (Class<O>) classes[1], (Class<C>) classes[2]);
+        FlowDoc<I,O,C> flowDoc = new FlowDoc<>(this.desc, FlowType.EFFECT, this.getFlowName());
+//        Class<?>[] classes = TypeResolver.resolveRawArguments(SideEffect.class, this.getClass());
+//        return flowDoc.types((Class<I>) classes[0], (Class<O>) classes[1], (Class<C>) classes[2]);
+        return flowDoc;
     }
 
     @Override
@@ -28,7 +29,7 @@ public class SideEffect<I,O,C> implements ISideEffect<I,O,C>{
     }
 
     @Override
-    public String getFlowType() {
-        return ISideEffect.super.getFlowType() + ":" + ClassUtils.getShortClassName(SideEffect.class);
+    public String getFlowName() {
+        return ISideEffect.super.getFlowName() + ":" + ClassUtils.getShortClassName(SideEffect.class);
     }
 }

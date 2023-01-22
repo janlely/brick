@@ -3,6 +3,7 @@ package org.brick.model;
 import net.jodah.typetools.TypeResolver;
 import org.apache.commons.lang3.ClassUtils;
 import org.brick.core.FlowDoc;
+import org.brick.core.FlowType;
 import org.brick.core.YesNoBranch;
 
 import java.util.List;
@@ -59,13 +60,14 @@ public class ParallelFlow<I,O,C,E1,E2> implements IParallelFlow<I,O,C,E1,E2> {
 
     @Override
     public FlowDoc<I, O, C> getFlowDoc() {
-        FlowDoc<I,O,C> flowDoc = new FlowDoc<>(this.desc, getFlowType());
-        Class<?>[] classes = TypeResolver.resolveRawArguments(YesNoBranch.class, this.getClass());
-        return flowDoc.types((Class<I>) classes[0], (Class<O>) classes[1], (Class<C>) classes[2]);
+        FlowDoc<I,O,C> flowDoc = new FlowDoc<>(this.desc, FlowType.PURE_FUNCTION, this.getFlowName());
+//        Class<?>[] classes = TypeResolver.resolveRawArguments(YesNoBranch.class, this.getClass());
+//        return flowDoc.types((Class<I>) classes[0], (Class<O>) classes[1], (Class<C>) classes[2]);
+        return flowDoc;
     }
 
     @Override
-    public String getFlowType() {
-        return IParallelFlow.super.getFlowType() + ":" + ClassUtils.getShortClassName(ParallelFlow.class);
+    public String getFlowName() {
+        return IParallelFlow.super.getFlowName() + ":" + ClassUtils.getShortClassName(ParallelFlow.class);
     }
 }

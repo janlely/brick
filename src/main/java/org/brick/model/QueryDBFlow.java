@@ -3,7 +3,9 @@ package org.brick.model;
 import net.jodah.typetools.TypeResolver;
 import org.apache.commons.lang3.ClassUtils;
 import org.brick.core.FlowDoc;
+import org.brick.core.FlowType;
 
+import java.util.concurrent.Flow;
 import java.util.function.BiFunction;
 
 public class QueryDBFlow<I,O,C> implements IQueryDBFlow<I,O,C>{
@@ -19,9 +21,10 @@ public class QueryDBFlow<I,O,C> implements IQueryDBFlow<I,O,C>{
     }
     @Override
     public FlowDoc<I, O, C> getFlowDoc() {
-        FlowDoc<I,O,C> flowDoc = new FlowDoc<>(this.desc, getFlowType());
-        Class<?>[] classes = TypeResolver.resolveRawArguments(QueryDBFlow.class, this.getClass());
-        return flowDoc.types((Class<I>) classes[0], (Class<O>) classes[1], (Class<C>) classes[2]);
+        FlowDoc<I,O,C> flowDoc = new FlowDoc<>(this.desc, FlowType.EFFECT, this.getFlowName());
+//        Class<?>[] classes = TypeResolver.resolveRawArguments(QueryDBFlow.class, this.getClass());
+//        return flowDoc.types((Class<I>) classes[0], (Class<O>) classes[1], (Class<C>) classes[2]);
+        return flowDoc;
     }
 
     @Override
@@ -30,7 +33,7 @@ public class QueryDBFlow<I,O,C> implements IQueryDBFlow<I,O,C>{
     }
 
     @Override
-    public String getFlowType() {
-        return IQueryDBFlow.super.getFlowType() + ":" + ClassUtils.getShortClassName(QueryDBFlow.class);
+    public String getFlowName() {
+        return IQueryDBFlow.super.getFlowName() + ":" + ClassUtils.getShortClassName(QueryDBFlow.class);
     }
 }

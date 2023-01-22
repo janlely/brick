@@ -17,7 +17,7 @@ public interface IYesNoBranchFlow<I,O,C> extends SubFlow.ISubFlow<I, O, C> {
     }
 
     @Override
-    default String getFlowType() {
-        return SubFlow.ISubFlow.super.getFlowType() + ":" + ClassUtils.getShortClassName(IYesNoBranchFlow.class);
+    default String getFlowName() {
+        return SubFlow.ISubFlow.super.getFlowName() + ":" + ClassUtils.getShortClassName(IYesNoBranchFlow.class);
     }
 }
