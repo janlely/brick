@@ -199,7 +199,7 @@ public interface IImportFlow<ERR,E,S,O1,O, UE, UC> extends IFlow<ImportEnv<ERR,E
                         }))
                 .pure(new PureFunction<>("collect response",
                         (i,c) -> toFinalResponse(i,c)))
-                .build(null, null, null);
+                .build();
 
         return new FlowMaker<ImportEnv<ERR,E,S, UE,O1>, O, ImportContext<UC>>("Main flow of importing date from anything")
                 .flowBuilder()
@@ -208,6 +208,6 @@ public interface IImportFlow<ERR,E,S,O1,O, UE, UC> extends IFlow<ImportEnv<ERR,E
                         ? i.isNoMoreDataToParse() || !i.getErrors().isEmpty()
                         : i.isNoMoreDataToParse(), chunkFlow, c -> getCollector(c)))
                 .local(new ModifyContext<>("call after function which may produce side effects", this::after))
-                .build(null, null, null);
+                .build();
     }
 }

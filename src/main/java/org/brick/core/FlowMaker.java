@@ -48,7 +48,7 @@ public class FlowMaker<I,O,C> {
             this.flowMaker = fLowMaker;
         }
 
-        public Flow<I,T,C> build(Class<I> i, Class<O> t, Class<C> c) {
+        public Flow<I,T,C> build() {
             return new SubFlow.ISubFlow<>() {
                 @Override
                 public FlowDoc<I, T, C> getFlowDoc() {

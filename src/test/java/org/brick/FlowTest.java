@@ -32,7 +32,7 @@ public class FlowTest {
                     System.out.println(String.format("PureFunction5 input: %d, context: %d", i, c));
                     return String.valueOf(i + 1);
                 }))
-                .build(Integer.class, String.class, Integer.class);
+                .build();
         Flow<Integer, Integer, Integer> case1 = new FlowMaker<Integer, Integer, Integer>("Test Case 1")
                 .asyncExecutor(Executors.newSingleThreadExecutor())
                 .flowBuilder()
@@ -40,7 +40,7 @@ public class FlowTest {
                     System.out.println(String.format("PureFunction6 input: %d, context: %d", i, c));
                     return i+1;
                 }))
-                .build(Integer.class, Integer.class, Integer.class);
+                .build();
         Flow<Integer, Integer, Integer> case2 = new FlowMaker<Integer, Integer, Integer>("Test case 2")
                 .asyncExecutor(Executors.newSingleThreadExecutor())
                 .flowBuilder()
@@ -48,7 +48,7 @@ public class FlowTest {
                     System.out.println(String.format("PureFunction7 input: %d, context: %d", i, c));
                     return i * 10;
                 }))
-                .build(Integer.class, Integer.class, Integer.class);
+                .build();
 
         Flow<String, String, Integer> asyncFlow = new FlowMaker<String, String, Integer>("Test async flow")
                 .flowBuilder()
@@ -56,7 +56,7 @@ public class FlowTest {
                     System.out.println(String.format("AsyncPure input: %s, context: %d", i, c));
                     return "hello world";
                 }))
-                .build(String.class, String.class, Integer.class);
+                .build();
 
 
         String result = new FlowMaker<String, String, Integer>("Main Flow")
@@ -117,7 +117,7 @@ public class FlowTest {
                             return i;
                         }))
                 .flow(subFlow)
-                .build(String.class, String.class, Integer.class)
+                .build()
                 .run("hello", a);
         System.out.println("result: " + result);
     }
