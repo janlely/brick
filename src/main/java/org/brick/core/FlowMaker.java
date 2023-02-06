@@ -94,7 +94,8 @@ public class FlowMaker<I,O,C> {
                         return (T) o;
                     } catch (FlowException e) {
                         if (!flowMaker.exceptionHandlers.containsKey(e.getType())) {
-                            throw new RuntimeException("No ExceptionHandler for FlowException of type: " + e.getType(), e.getCause());
+                            System.out.println("unhandled FlowException by this flow of type: " + e.getType());
+                            throw e;
                         }
                         return (T) flowMaker.exceptionHandlers.get(e.getType()).handler(e.getContent());
                     }
