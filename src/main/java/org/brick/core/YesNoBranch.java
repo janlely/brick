@@ -7,12 +7,14 @@ import java.util.function.BiFunction;
 public class YesNoBranch<I,O,C> implements IYesNoBranchFlow<I,O,C> {
 
 	private BiFunction<I,C,Boolean> condChecker;
-	private SubFlow.ISubFlow<I,O,C> yesFlow;
-	private SubFlow.ISubFlow<I,O,C> noFlow;
+	private Flow<I,O,C> yesFlow;
+	private Flow<I,O,C> noFlow;
 	private String desc;
 
-	public YesNoBranch(String desc, BiFunction<I,C,Boolean> condChecker, SubFlow.ISubFlow<I,O,C> yesFlow,
-					   SubFlow.ISubFlow<I,O,C> noFlow) {
+	public YesNoBranch(String desc, BiFunction<I,C,Boolean> condChecker, Flow<I,O,C> yesFlow,
+					   Flow<I,O,C> noFlow) {
+		assert SubFlow.ISubFlow.class.isAssignableFrom(yesFlow.getClass());
+		assert SubFlow.ISubFlow.class.isAssignableFrom(noFlow.getClass());
 		this.condChecker = condChecker;
 		this.yesFlow = yesFlow;
 		this.noFlow = noFlow;
@@ -26,12 +28,12 @@ public class YesNoBranch<I,O,C> implements IYesNoBranchFlow<I,O,C> {
 
 	@Override
 	public SubFlow.ISubFlow<I, O, C> yes() {
-		return this.yesFlow;
+		return (SubFlow.ISubFlow<I, O, C>) this.yesFlow;
 	}
 
 	@Override
 	public SubFlow.ISubFlow<I, O, C> no() {
-		return this.noFlow;
+		return (SubFlow.ISubFlow<I, O, C>) this.noFlow;
 	}
 
 	@Override
@@ -44,8 +46,6 @@ public class YesNoBranch<I,O,C> implements IYesNoBranchFlow<I,O,C> {
 		FlowDoc<I,O,C> flowDoc = new FlowDoc<>(this.desc, FlowType.BRANCH, this.getFlowName());
 		flowDoc.add(this.yesFlow.getFlowDoc());
 		flowDoc.add(this.noFlow.getFlowDoc());
-//		Class<?>[] classes = TypeResolver.resolveRawArguments(YesNoBranch.class, this.getClass());
-//		return flowDoc.types((Class<I>) classes[0], (Class<O>) classes[1], (Class<C>) classes[2]);
 		return flowDoc;
 	}
 }

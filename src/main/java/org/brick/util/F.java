@@ -1,5 +1,7 @@
 package org.brick.util;
 
+import org.brick.types.Pair;
+
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -54,4 +56,7 @@ public class F {
     }
 
 
+    public static <L,R,T> Function<Pair<L,R>, T> uncurry(BiFunction<L,R,T> func) {
+        return p -> func.apply(Pair.getLeft(p), Pair.getRight(p));
+    }
 }

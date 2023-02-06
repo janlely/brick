@@ -9,11 +9,13 @@ public class AbortWhenFlow<I,O,C> implements SubFlow.ISubFlow<I, Either<I,O>,C> 
 
     private String desc;
     private BiFunction<I,C,Boolean> condChecker;
-    private SubFlow.ISubFlow<I,O,C> abortFlow;
+    private Flow<I,O,C> abortFlow;
 
     public AbortWhenFlow(String desc,
                          BiFunction<I,C,Boolean> condChecker,
-                         SubFlow.ISubFlow<I,O,C> abortFlow) {
+                         Flow<I,O,C> abortFlow) {
+
+        assert SubFlow.ISubFlow.class.isAssignableFrom(abortFlow.getClass());
         this.desc = desc;
         this.abortFlow = abortFlow;
         this.condChecker = condChecker;
@@ -22,9 +24,7 @@ public class AbortWhenFlow<I,O,C> implements SubFlow.ISubFlow<I, Either<I,O>,C> 
     @Override
     public FlowDoc<I, Either<I,O>, C> getFlowDoc() {
         FlowDoc<I,Either<I,O>,C> flowDoc = new FlowDoc<>(this.desc, FlowType.ABORT, getFlowName());
-//        Class<?>[] classes = TypeResolver.resolveRawArguments(AbortWhenFlow.class, this.getClass());
         flowDoc.add(this.abortFlow.getFlowDoc());
-//        return flowDoc.types((Class<I>) classes[0], (Class<Either<I,O>>) classes[1], (Class<C>) classes[2]);
         return flowDoc;
     }
 

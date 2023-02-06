@@ -2,11 +2,15 @@ package org.brick.core;
 
 import org.apache.commons.lang3.ClassUtils;
 import org.apache.commons.lang3.SerializationUtils;
+import org.brick.exception.ExceptionHandler;
+import org.brick.exception.FlowException;
 import org.brick.types.Either;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 
 public class FlowMaker<I,O,C> {
@@ -15,8 +19,11 @@ public class FlowMaker<I,O,C> {
     private ExecutorService executor;
     private FlowDoc<I,O,C> flowDoc;
 
+    private Map<Integer, ExceptionHandler> exceptionHandlers;
+
     public FlowMaker(String desc) {
         this.flowDoc = new FlowDoc<>(desc, FlowType.SUB_FLOW, ClassUtils.getShortClassName(FlowMaker.class));
+        this.exceptionHandlers = new HashMap<>();
     }
 
     public FlowMaker<I,O,C> asyncExecutor(ExecutorService executor) {
@@ -60,32 +67,44 @@ public class FlowMaker<I,O,C> {
 
                 @Override
                 public T run(I input, C context) {
-                    Object i = input;
-                    Object o = null;
-                    for (Flow flow : flowMaker.flows) {
-                        if (flow.getClass().equals(ModifyContext.class)) {
-                            context = (C) ModifyContext.class.cast(flow).modify(context);
-                            continue;
-                        }
-                        if (flow.isAsync()) {
-                            final Object i1 = SerializationUtils.clone((Serializable) i);
-                            C finalContext = context;
-                            flowMaker.executor.submit(() -> flow.run(i1, finalContext));
-                            continue;
-                        }
-                        if (flow.isEnd()) {
-                            Either either = (Either) flow.run(i, context);
-                            if (Either.isRight(either)) {
-                                return (T) Either.getRight(either);
+                    try {
+                        Object i = input;
+                        Object o = null;
+                        for (Flow flow : flowMaker.flows) {
+                            if (flow.getClass().equals(ModifyContext.class)) {
+                                context = (C) ModifyContext.class.cast(flow).modify(context);
+                                continue;
                             }
-                            continue;
+                            if (flow.isAsync()) {
+                                final Object i1 = SerializationUtils.clone((Serializable) i);
+                                C finalContext = context;
+                                flowMaker.executor.submit(() -> flow.run(i1, finalContext));
+                                continue;
+                            }
+                            if (flow.isEnd()) {
+                                Either either = (Either) flow.run(i, context);
+                                if (Either.isRight(either)) {
+                                    return (T) Either.getRight(either);
+                                }
+                                continue;
+                            }
+                            o = flow.run(i, context);
+                            i = o;
                         }
-                        o = flow.run(i, context);
-                        i = o;
+                        return (T) o;
+                    } catch (FlowException e) {
+                        if (!flowMaker.exceptionHandlers.containsKey(e.getType())) {
+                            throw new RuntimeException("No ExceptionHandler for FlowException of type: " + e.getType(), e.getCause());
+                        }
+                        return (T) flowMaker.exceptionHandlers.get(e.getType()).handler(e.getContent());
                     }
-                    return (T) o;
                 }
             };
+        }
+
+        public Builder<I,O,C,T> exception(int type, ExceptionHandler<O> handler) {
+            this.flowMaker.exceptionHandlers.putIfAbsent(type, handler);
+            return this;
         }
 
         /**
