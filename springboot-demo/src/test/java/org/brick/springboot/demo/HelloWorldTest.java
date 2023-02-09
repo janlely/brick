@@ -19,13 +19,13 @@ public class HelloWorldTest {
         HelloWorldFlow.HelloRequest req = new HelloWorldFlow.HelloRequest();
         req.setName("jay");
         assert new FlowTester<Void, String, Pair<HelloWorldFlow.HelloRequest, HelloWorldFlow.HelloContext>>()
-                .startUnit(helloWorldFlow.getFirstStep())
+                .linkUnit(helloWorldFlow.getFirstStep())
                 .pass(s -> StringUtils.equals(s, "jay"))
                 .build()
                 .run(null, new Pair(req, context));
 
         assert new FlowTester<Void, String, Pair<HelloWorldFlow.HelloRequest, HelloWorldFlow.HelloContext>>()
-                .startUnit(helloWorldFlow.getFirstStep())
+                .linkUnit(helloWorldFlow.getFirstStep())
                 .linkUnit(helloWorldFlow.getSecondStep())
                 .pass(s -> StringUtils.equals(s, "yaj"))
                 .build().run(null, new Pair<>(req, context));

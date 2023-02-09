@@ -2,7 +2,6 @@ package org.brick.unit;
 
 
 import org.brick.Flow;
-import org.brick.FlowDoc;
 import org.brick.UnitFunction;
 import org.brick.types.Either;
 
@@ -16,17 +15,16 @@ public class FlowTester<I,O,C> {
         throw new RuntimeException("Method not implemented");
     }
 
-
-    public <T> Builder<I,O,C,T> startUnit(UnitFunction<I,T,C> unit) {
-        return new Builder<I,O,C,I>().linkUnit(unit);
+    public <T> Builder<I,C,T> linkUnit(UnitFunction<I,T,C> unit) {
+        return new Builder<I,C,I>().linkUnit(unit);
     }
 
-    public <T> Builder<I,O,C,T> startFlow(Flow<I,T,C> flow) {
-        return new Builder<I,O,C,I>().linkFlow(flow);
+    public <T> Builder<I,C,T> linkFlow(Flow<I,T,C> flow) {
+        return new Builder<I,C,I>().linkFlow(flow);
     }
 
-    public static class Builder<I,O,C,T> {
-        Function<O,Boolean> passCond;
+    public static class Builder<I,C,T> {
+        Function<T,Boolean> passCond;
 //        Either<UnitFunction<I,O,C>, Flow<I,O,C>> target;
 
         List<Either<Flow, UnitFunction>> units;
@@ -45,27 +43,25 @@ public class FlowTester<I,O,C> {
                                 ? Either.getLeft(unit).run(i, context)
                                 : Either.getRight(unit).exec(i, context);
                     }
-                    return passCond.apply((O) i);
+                    return passCond.apply((T) i);
                 }
             };
         }
 
-        public <O1> Builder<I,O,C,O1> linkUnit(UnitFunction<T,O1,C> unit) {
+        public <O1> Builder<I,C,O1> linkUnit(UnitFunction<T,O1,C> unit) {
             this.units.add(Either.right(unit));
-            return (Builder<I, O, C, O1>) this;
+            return (Builder<I, C, O1>) this;
         }
 
-        public <O1> Builder<I,O,C,O1> linkFlow(Flow<T,O1,C> flow) {
+        public <O1> Builder<I,C,O1> linkFlow(Flow<T,O1,C> flow) {
             this.units.add(Either.left(flow));
-            return (Builder<I, O, C, O1>) this;
+            return (Builder<I, C, O1>) this;
         }
 
-        public Builder<I,O,C,T> pass(Function<O,Boolean> passCond) {
+        public Builder<I,C,T> pass(Function<T,Boolean> passCond) {
             this.passCond = passCond;
             return this;
         }
-
-
 
     }
 }
