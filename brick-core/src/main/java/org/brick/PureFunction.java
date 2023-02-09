@@ -2,8 +2,6 @@ package org.brick;
 
 import org.apache.commons.lang3.ClassUtils;
 
-import java.util.function.BiFunction;
-
 public class PureFunction<I,O,C> implements IPureFunction<I,O,C> {
 
     private String desc;

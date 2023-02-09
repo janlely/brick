@@ -25,7 +25,6 @@ public class FlowTester<I,O,C> {
 
     public static class Builder<I,C,T> {
         Function<T,Boolean> passCond;
-//        Either<UnitFunction<I,O,C>, Flow<I,O,C>> target;
 
         List<Either<Flow, UnitFunction>> units;
 
