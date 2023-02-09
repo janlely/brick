@@ -2,45 +2,65 @@ package org.brick.unit;
 
 
 import org.brick.Flow;
+import org.brick.FlowDoc;
 import org.brick.UnitFunction;
 import org.brick.types.Either;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Function;
 
-public interface FlowTester {
+public class FlowTester<I,O,C> {
 
-    boolean run();
+    public boolean run(I input, C context) {
+        throw new RuntimeException("Method not implemented");
+    }
 
-    class Builder<I,O,C> {
-        I input;
-        C context;
+
+    public <T> Builder<I,O,C,T> startUnit(UnitFunction<I,T,C> unit) {
+        return new Builder<I,O,C,I>().linkUnit(unit);
+    }
+
+    public <T> Builder<I,O,C,T> startFlow(Flow<I,T,C> flow) {
+        return new Builder<I,O,C,I>().linkFlow(flow);
+    }
+
+    public static class Builder<I,O,C,T> {
         Function<O,Boolean> passCond;
-        Either<UnitFunction<I,O,C>, Flow<I,O,C>> target;
+//        Either<UnitFunction<I,O,C>, Flow<I,O,C>> target;
 
-        FlowTester build() {
-            return () -> passCond.apply(Either.isLeft(target)
-                    ? Either.getLeft(target).exec(input, context)
-                    : Either.getRight(target).run(input, context));
-        }
+        List<Either<Flow, UnitFunction>> units;
 
-        public <U extends UnitFunction<I,O,C>> Builder<I,O,C> targetUnit(U unit) {
-            this.target = Either.left(unit);
-            return this;
+        public Builder() {
+            this.units = new ArrayList<>();
         }
 
-        public <F extends Flow<I,O,C>> Builder<I,O,C> targetUnit(F flow) {
-            this.target = Either.right(flow);
-            return this;
+        public FlowTester<I,T,C> build() {
+            return new FlowTester<>() {
+                @Override
+                public boolean run(I input, C context) {
+                    Object i = input;
+                    for (Either<Flow, UnitFunction> unit : units) {
+                        i = Either.isLeft(unit)
+                                ? Either.getLeft(unit).run(i, context)
+                                : Either.getRight(unit).exec(i, context);
+                    }
+                    return passCond.apply((O) i);
+                }
+            };
         }
-        public Builder<I,O,C> input(I input) {
-            this.input = input;
-            return this;
+
+        public <O1> Builder<I,O,C,O1> linkUnit(UnitFunction<T,O1,C> unit) {
+            this.units.add(Either.right(unit));
+            return (Builder<I, O, C, O1>) this;
         }
-        public Builder<I,O,C> context(C context) {
-            this.context = context;
-            return this;
+
+        public <O1> Builder<I,O,C,O1> linkFlow(Flow<T,O1,C> flow) {
+            this.units.add(Either.left(flow));
+            return (Builder<I, O, C, O1>) this;
         }
-        public Builder<I,O,C> pass(Function<O,Boolean> passCond) {
+
+        public Builder<I,O,C,T> pass(Function<O,Boolean> passCond) {
             this.passCond = passCond;
             return this;
         }

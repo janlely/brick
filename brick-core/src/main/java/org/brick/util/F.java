@@ -44,6 +44,10 @@ public class F {
         return (a,b) -> function.apply(a);
     }
 
+    public static <A,T> Pair<T,?> first(Function<A,T> func, Pair<A,?> pair) {
+        return new Pair<>(func.apply(Pair.getLeft(pair)), Pair.getRight(pair));
+    }
+
     /**
      * (a -> Bool) -> (a -> Bool)
      * like (not . f) in Haskell
