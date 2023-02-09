@@ -1,5 +1,6 @@
 package org.brick.springboot.demo.flows;
 
+import jakarta.annotation.PostConstruct;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -30,9 +31,10 @@ public class HelloWorldFlow {
 
 
     @Getter
-    private final Flow<Void, HelloResponse, Pair<HelloRequest, HelloContext>> flow;
+    private Flow<Void, HelloResponse, Pair<HelloRequest, HelloContext>> flow;
 
-    public HelloWorldFlow() {
+    @PostConstruct
+    public void buildFlow() {
         this.flow = new FlowMaker<Void, HelloResponse, Pair<HelloRequest, HelloContext>>("Main flow of hello world")
                 .flowBuilder()
                 .pure(new PureFunction<>("Get name from the HelloRequest", firstStep))
@@ -40,10 +42,6 @@ public class HelloWorldFlow {
                 .pure(new PureFunction<>("Final: make response", finalStep))
                 .build();
     }
-
-//    @PostConstruct
-//    public void makeFlow() {
-//    }
 
     @Component
     public static class FirstStep implements UnitFunction<Void, String, Pair<HelloRequest, HelloContext>> {
