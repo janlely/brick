@@ -29,10 +29,11 @@ public class HelloWorldFlow {
     private FinalStep finalStep;
 
 
-    public final Flow<Void, HelloResponse, Pair<HelloRequest, HelloContext>> mainFlow;
+    @Getter
+    private final Flow<Void, HelloResponse, Pair<HelloRequest, HelloContext>> flow;
 
     public HelloWorldFlow() {
-        this.mainFlow = new FlowMaker<Void, HelloResponse, Pair<HelloRequest, HelloContext>>("Main flow of hello world")
+        this.flow = new FlowMaker<Void, HelloResponse, Pair<HelloRequest, HelloContext>>("Main flow of hello world")
                 .flowBuilder()
                 .pure(new PureFunction<>("Get name from the HelloRequest", firstStep))
                 .pure(new PureFunction<>("Reverse the name", secondStep))
