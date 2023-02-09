@@ -28,12 +28,12 @@ public class FlowLinker<I,O,C> {
         }
 
 
-        public <O1, U extends UnitFunction<T,O1,C>> Builder<I,O,C,O1> linkUnit(U unit) {
+        public <O1> Builder<I,O,C,O1> linkUnit(UnitFunction<T,O1,C> unit) {
             this.units.add(Either.right(unit));
             return (Builder<I, O, C, O1>) this;
         }
 
-        public <O1, F extends Flow<T,O1,C>> Builder<I,O,C,O1> linkFlow(F flow) {
+        public <O1> Builder<I,O,C,O1> linkFlow(Flow<T,O1,C> flow) {
             this.units.add(Either.left(flow));
             return (Builder<I, O, C, O1>) this;
         }
