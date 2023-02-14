@@ -1,5 +1,3 @@
-# Fuck off !! The SHIT !! JAVA !! CODE !!
-
 # 源于函数式编程思想的Java编程方式
 brick的目标是解决Java业务编程中的代码质量控制的问题，其核心思想是将程序看成是流程(Flow)和计算(Function)的组合，流程本身也是流程与计算的组合。 使用brick来编写业务代码可以有以下几个好处：
 * 设计即代码：业务的详细设计本质上是流程设计，FlowMaker以写代码的方式创建流程
@@ -12,6 +10,7 @@ brick的目标是解决Java业务编程中的代码质量控制的问题，其�
 
 # FlowMaker
 要求使用FlowMaker来创建一个流程，利用Buidler来向流程中添加计算或者子流程。brick认为分支、循环等控制逻辑本质上也可以建模成流程，并提供了YesNoBranchFlow,loop,abort,MultiBranchFlow等类或方法来处理程序中的控制逻辑。FlowMaker也使用了类型检测：要求每一步的输入类型必须是上一步的输出类型。 下面是一个简单的伪代码的例子（具体的例子在源码中）:
+```java
 Flow<Input, Output, Context> flow = new FlowMaker<Input, Output, Context>("某个业务逻辑的主流程")
   .asyncExecutor(Executors.newSingleThreadExecutor()) //流程中可以有异步，需要添加异步执行器
   .flowBuidler() //流程的Buidler
@@ -34,9 +33,12 @@ Flow<Input, Output, Context> flow = new FlowMaker<Input, Output, Context>("某�
       collector)) //收集每一次循环结果的收集器
   .abort(new AbortWhenFlow("一个if-return分支")) //添加一个if-return分支
   .build()
+```
+
 
 # FlowTester
 用于进行测试的工具，可以测试一个计算单元，也可以把多个计算单元连接起来测试，例子如下：
+```java
 public void testHelloWorld() {
     HelloWorldFlow.HelloContext context = new HelloWorldFlow.HelloContext();
     HelloWorldFlow.HelloRequest req = new HelloWorldFlow.HelloRequest();
@@ -53,3 +55,6 @@ public void testHelloWorld() {
             .pass(s -> StringUtils.equals(s, "yaj")) //测试是否通过的判断逻辑
             .build().run(null, new Pair<>(req, context));
 }
+```
+
+
