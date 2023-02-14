@@ -9,7 +9,7 @@ brick的目标是解决Java业务编程中的代码质量控制的问题，其�
 * 流程复用：可以由专家来对可以进行高度抽象的业务逻辑用FlowMaker进行流程抽象，封装成接口用于共享，例如[importFlow](https://github.com/janlely/brick/blob/main/brick-lib/src/main/java/org/brick/lib/importflow/IImportFlow.java)
 
 # FlowMaker
-要求使用FlowMaker来创建一个流程，利用Buidler来向流程中添加计算或者子流程。brick认为分支、循环等控制逻辑本质上也可以建模成流程，并提供了YesNoBranchFlow,loop,abort,MultiBranchFlow等类或方法来处理程序中的控制逻辑。FlowMaker也使用了类型检测：要求每一步的输入类型必须是上一步的输出类型。 下面是一个简单的伪代码的例子（具体的例子在源码中）:
+要求使用FlowMaker来创建一个流程，利用Buidler来向流程中添加计算或者子流程。brick认为分支、循环等控制逻辑本质上也可以建模成流程，并提供了YesNoBranchFlow,loop,abort,MultiBranchFlow等类或方法来处理程序中的控制逻辑。FlowMaker还提供了一些如MapReduce的基本抽象。FlowMaker也使用了类型检测：要求每一步的输入类型必须是上一步的输出类型。 下面是一个简单的伪代码的例子（具体的例子在源码中）:
 ```java
 Flow<Input, Output, Context> flow = new FlowMaker<Input, Output, Context>("某个业务逻辑的主流程")
   .asyncExecutor(Executors.newSingleThreadExecutor()) //流程中可以有异步，需要添加异步执行器
