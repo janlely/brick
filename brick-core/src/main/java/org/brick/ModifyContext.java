@@ -2,14 +2,16 @@ package org.brick;
 
 import org.apache.commons.lang3.ClassUtils;
 
+import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 public class ModifyContext<I,C> implements Flow<I,I,C>{
 
-    private Function<C,C> modifier;
+    private BiConsumer<I,C> modifier;
     private String desc;
 
-    public ModifyContext(String desc, Function<C,C> modifier) {
+    public ModifyContext(String desc, BiConsumer<I,C> modifier) {
         this.desc = desc;
         this.modifier = modifier;
     }
@@ -29,7 +31,12 @@ public class ModifyContext<I,C> implements Flow<I,I,C>{
         return input;
     }
 
-    public C modify(C context) {
-        return this.modifier.apply(context);
+    public C mod(I input, C context) {
+        modify(input, context);
+        return context;
+    }
+
+    public void modify(I input, C context) {
+        this.modifier.accept(input, context);
     }
 }

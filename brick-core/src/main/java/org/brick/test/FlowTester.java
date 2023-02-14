@@ -1,4 +1,4 @@
-package org.brick.unit;
+package org.brick.test;
 
 
 import org.brick.Flow;

@@ -3,7 +3,7 @@ package org.brick.springboot.demo;
 import org.apache.commons.lang3.StringUtils;
 import org.brick.springboot.demo.flows.HelloWorldFlow;
 import org.brick.types.Pair;
-import org.brick.unit.FlowTester;
+import org.brick.test.FlowTester;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

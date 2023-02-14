@@ -69,10 +69,9 @@ public class FlowMaker<I,O,C> {
                 public T run(I input, C context) {
                     try {
                         Object i = input;
-                        Object o = null;
                         for (Flow flow : flowMaker.flows) {
                             if (flow.getClass().equals(ModifyContext.class)) {
-                                context = (C) ModifyContext.class.cast(flow).modify(context);
+                                context = (C) ModifyContext.class.cast(flow).mod(i, context);
                                 continue;
                             }
                             if (flow.isAsync()) {
@@ -88,10 +87,9 @@ public class FlowMaker<I,O,C> {
                                 }
                                 continue;
                             }
-                            o = flow.run(i, context);
-                            i = o;
+                            i = flow.run(i, context);
                         }
-                        return (T) o;
+                        return (T) i;
                     } catch (FlowException e) {
                         if (!flowMaker.exceptionHandlers.containsKey(e.getType())) {
                             System.out.println("unhandled FlowException by this flow of type: " + e.getType());
@@ -122,6 +120,17 @@ public class FlowMaker<I,O,C> {
         }
 
         /**
+         * insert a map-reduce flow
+         * @param flow
+         * @return
+         * @param <O1>
+         */
+        public <O1> Builder<I,O,C,O1> mapReduce(MapReduceFlow<T,O1,C,?,?,?> flow) {
+            this.flowMaker.flows.add(flow);
+            return (Builder<I, O, C, O1>) this;
+        }
+
+        /**
          * like if-return
          * @param flow
          * @return
@@ -137,7 +146,7 @@ public class FlowMaker<I,O,C> {
          * @param modifyFlow
          * @return
          */
-        public Builder<I,O,C,T> local(ModifyContext<I,C> modifyFlow) {
+        public Builder<I,O,C,T> local(ModifyContext<T,C> modifyFlow) {
             this.flowMaker.flows.add(modifyFlow);
             return this;
         }

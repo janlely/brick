@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.StringUtils;
 import org.brick.Flow;
+import org.brick.FlowVisualizer;
 import org.brick.lib.importflow.ActionCombinators;
 import org.brick.lib.importflow.ActionExecutor;
 import org.brick.lib.importflow.ActionInfo;
@@ -18,7 +19,6 @@ import org.brick.lib.importflow.ImportContext;
 import org.brick.lib.importflow.ImportEnv;
 import org.brick.types.Either;
 import org.brick.types.Pair;
-import org.brick.util.FlowVisualizer;
 import org.junit.Test;
 
 import java.io.ByteArrayInputStream;

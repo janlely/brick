@@ -1,4 +1,4 @@
-package org.brick.util;
+package org.brick;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

@@ -14,6 +14,7 @@ import org.brick.types.Either;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.BiConsumer;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
@@ -203,11 +204,11 @@ public interface IImportFlow<ERR,E,S,O1,O, UE, UC> extends IFlow<ImportEnv<ERR,E
 
         return new FlowMaker<ImportEnv<ERR,E,S, UE,O1>, O, ImportContext<UC>>("Main flow of importing date from anything")
                 .flowBuilder()
-                .local(new ModifyContext<>("call before function which may produce side effects", this::before))
+                .local(new ModifyContext<>("call before function which may produce side effects", (i, c) -> before(c)))
                 .loop(new LoopFlow<>("handler input chunk by chunk", (i, c) -> c.getConfig().isQuickAbort()
                         ? i.isNoMoreDataToParse() || !i.getErrors().isEmpty()
                         : i.isNoMoreDataToParse(), chunkFlow, c -> getCollector(c)))
-                .local(new ModifyContext<>("call after function which may produce side effects", this::after))
+                .local(new ModifyContext<>("call after function which may produce side effects", (i,c) -> after(c)))
                 .build();
     }
 }
