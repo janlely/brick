@@ -41,11 +41,19 @@ public class F {
      * @return
      */
     public static <A,B,C> BiFunction<A,B,C> first(Function<A,C> function) {
-        return (a,b) -> function.apply(a);
+        return (a,__) -> function.apply(a);
     }
 
-    public static <A,T> Pair<T,?> first(Function<A,T> func, Pair<A,?> pair) {
-        return new Pair<>(func.apply(Pair.getLeft(pair)), Pair.getRight(pair));
+    /**
+     * like (fst . second f) where f :: a -> b
+     * @param function
+     * @param <A>
+     * @param <B>
+     * @param <C>
+     * @return
+     */
+    public static <A,B,C> BiFunction<A,B,C> second(Function<B,C> function) {
+        return (__,b) -> function.apply(b);
     }
 
     /**
@@ -62,5 +70,17 @@ public class F {
 
     public static <L,R,T> Function<Pair<L,R>, T> uncurry(BiFunction<L,R,T> func) {
         return p -> func.apply(Pair.getLeft(p), Pair.getRight(p));
+    }
+
+    public static <A,B,C> Function<A,C> combo(Function<A,B> fst, Function<B,C> snd) {
+        return a -> snd.apply(fst.apply(a));
+    }
+
+    public static <A,B,C,D> Function<A,D> combo(Function<A,B> fst, Function<B,C> snd, Function<C,D> trd) {
+        return a -> trd.apply(snd.apply(fst.apply(a)));
+    }
+
+    public static <A,B,C,D,E> Function<A,E> combo(Function<A,B> fst, Function<B,C> snd, Function<C,D> trd, Function<D,E> fth) {
+        return a -> fth.apply(trd.apply(snd.apply(fst.apply(a))));
     }
 }
