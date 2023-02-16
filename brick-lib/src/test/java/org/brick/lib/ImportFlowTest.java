@@ -10,6 +10,8 @@ import lombok.SneakyThrows;
 import org.apache.commons.lang3.StringUtils;
 import org.brick.Flow;
 import org.brick.FlowVisualizer;
+import org.brick.common.types.Either;
+import org.brick.common.types.Pair;
 import org.brick.lib.importflow.ActionCombinators;
 import org.brick.lib.importflow.ActionExecutor;
 import org.brick.lib.importflow.ActionInfo;
@@ -17,8 +19,6 @@ import org.brick.lib.importflow.ActionResponse;
 import org.brick.lib.importflow.IImportFlow;
 import org.brick.lib.importflow.ImportContext;
 import org.brick.lib.importflow.ImportEnv;
-import org.brick.types.Either;
-import org.brick.types.Pair;
 import org.junit.Test;
 
 import java.io.ByteArrayInputStream;

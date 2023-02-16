@@ -8,8 +8,8 @@ import org.brick.LoopFlow;
 import org.brick.ModifyContext;
 import org.brick.ModifyInputFlow;
 import org.brick.PureFunction;
+import org.brick.common.types.Either;
 import org.brick.lib.IFlow;
-import org.brick.types.Either;
 
 import java.io.InputStream;
 import java.util.List;

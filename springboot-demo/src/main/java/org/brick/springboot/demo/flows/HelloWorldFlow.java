@@ -11,7 +11,7 @@ import org.brick.Flow;
 import org.brick.FlowMaker;
 import org.brick.PureFunction;
 import org.brick.UnitFunction;
-import org.brick.types.Pair;
+import org.brick.common.types.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
