@@ -3,7 +3,7 @@ package org.brick.test;
 
 import org.brick.Flow;
 import org.brick.UnitFunction;
-import org.brick.types.Either;
+import org.brick.common.types.Either;
 
 import java.util.ArrayList;
 import java.util.List;

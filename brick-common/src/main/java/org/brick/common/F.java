@@ -1,6 +1,7 @@
-package org.brick.util;
+package org.brick.common;
 
-import org.brick.types.Pair;
+
+import org.brick.common.types.Pair;
 
 import java.util.function.BiFunction;
 import java.util.function.Function;

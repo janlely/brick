@@ -1,7 +1,7 @@
 package org.brick;
 
 import org.apache.commons.lang3.ClassUtils;
-import org.brick.types.Either;
+import org.brick.common.types.Either;
 
 import java.util.function.BiFunction;
 

@@ -27,7 +27,7 @@
     </dependency>
     <dependency>
       <groupId>org.brick</groupId>
-      <artifactId>brick-util</artifactId>
+      <artifactId>brick-common</artifactId>
       <version>1.0-SNAPSHOT</version>
     </dependency>
     <dependency>

@@ -1,4 +1,4 @@
-package org.brick.types;
+package org.brick.common.types;
 
 /**
  * like (,) in Haskell
