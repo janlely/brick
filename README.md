@@ -59,4 +59,7 @@ public void testHelloWorld() {
 ```
 
 # 最佳实践（建议）
-* 主流程类型：new FlowMaker<Void, ResponseType, Pair<RequestType, UserContext>>
+* 主流程类型：
+```java
+new FlowMaker<Void, ResponseType, Pair<RequestType, UserContext>>
+```
