@@ -26,12 +26,12 @@ Flow<Input, Output, Context> flow = new FlowMaker<Input, Output, Context>("某�
         new CaseFlow<>(1, case1),   //case 1的分支
         new CaseFlow<>(2, case2)))  //case 2的分支
   .effect(new SideEffect("添加一个有副作用的计算", (i,c) -> ...))
+  .abort(new AbortWhenFlow("一个if-return分支")) //添加一个if-return分支
   .flowAsync(...) //添加一个异步流程
   .loop(new LoopFlow<>("一个循环的流程",
       (i,c) -> .., //流程的终止条件
       someFlow, //用于循环执行的子流程
       collector)) //收集每一次循环结果的收集器
-  .abort(new AbortWhenFlow("一个if-return分支")) //添加一个if-return分支
   .build()
 ```
 
