@@ -1,9 +1,9 @@
 package org.brick;
 
 import org.apache.commons.lang3.StringUtils;
+import org.brick.common.utils.F;
 import org.brick.model.ModifyDBFlow;
 import org.brick.model.ParallelFlow;
-import org.brick.common.utils.F;
 import org.junit.Test;
 
 import java.util.List;

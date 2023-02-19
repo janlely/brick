@@ -2,9 +2,9 @@ package org.brick;
 
 import org.apache.commons.lang3.ClassUtils;
 import org.apache.commons.lang3.SerializationUtils;
+import org.brick.common.types.Either;
 import org.brick.exception.ExceptionHandler;
 import org.brick.exception.FlowException;
-import org.brick.common.types.Either;
 
 import java.io.Serializable;
 import java.util.ArrayList;

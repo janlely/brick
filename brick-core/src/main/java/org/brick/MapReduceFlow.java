@@ -2,7 +2,6 @@ package org.brick;
 
 import org.apache.commons.lang3.ClassUtils;
 
-import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Collector;

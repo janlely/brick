@@ -3,8 +3,6 @@ package org.brick;
 import org.apache.commons.lang3.ClassUtils;
 
 import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
-import java.util.function.Function;
 
 public class ModifyContext<I,C> implements Flow<I,I,C>{
 

@@ -14,7 +14,6 @@ import org.brick.lib.IFlow;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.BiConsumer;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
