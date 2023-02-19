@@ -1,4 +1,4 @@
-package org.brick.common;
+package org.brick.common.utils;
 
 
 import org.brick.common.types.Pair;
@@ -83,5 +83,21 @@ public class F {
 
     public static <A,B,C,D,E> Function<A,E> combo(Function<A,B> fst, Function<B,C> snd, Function<C,D> trd, Function<D,E> fth) {
         return a -> fth.apply(trd.apply(snd.apply(fst.apply(a))));
+    }
+
+    /**
+     * (a1 -> b1 -> c) -> (a -> a1) -> (b -> b1) -> (a -> b -> c)
+     * @param func
+     * @param func1
+     * @param func2
+     * @return
+     * @param <A>
+     * @param <A1>
+     * @param <B>
+     * @param <B1>
+     * @param <C>
+     */
+    public static <A,A1,B,B1,C> BiFunction<A,B,C> bimap(BiFunction<A1,B1,C> func, Function<A,A1> func1, Function<B,B1> func2) {
+        return (a,b) -> func.apply(func1.apply(a), func2.apply(b));
     }
 }

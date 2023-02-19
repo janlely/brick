@@ -140,6 +140,11 @@ public class FlowMaker<I,O,C> {
             return this;
         }
 
+        public Builder<I,O,C,T> throwWhen(ThrowWhenFlow<T,C> flow) {
+            this.flowMaker.flows.add(flow);
+            return this;
+        }
+
         /**
          * modify context
          * like Reader.local in haskell

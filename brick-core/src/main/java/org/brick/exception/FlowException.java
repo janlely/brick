@@ -8,6 +8,12 @@ public class FlowException extends RuntimeException{
     int type;
     Object content;
 
+    public FlowException(int type, Object content) {
+        super();
+        this.type = type;
+        this.content = content;
+    }
+
     public FlowException(int type, Object content, Exception e) {
         super(e);
         this.type = type;
