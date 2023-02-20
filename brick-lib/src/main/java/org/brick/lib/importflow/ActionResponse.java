@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @Builder
-public class ActionResponse {
+public class ActionResponse<T> {
     private ActionInfo info;
-    private Object response;
+    private T response;
 }

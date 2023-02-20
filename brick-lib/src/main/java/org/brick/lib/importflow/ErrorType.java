@@ -1,4 +1,4 @@
-package org.brick.lib.importf;
+package org.brick.lib.importflow;
 
 import lombok.Getter;
 

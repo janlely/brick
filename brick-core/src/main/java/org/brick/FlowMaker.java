@@ -135,7 +135,7 @@ public class FlowMaker<I,O,C> {
          * @param flow
          * @return
          */
-        public Builder<I,O,C,T> abort(AbortWhenFlow<T,O,C> flow) {
+        public Builder<I,O,C,T> abortWhen(AbortWhenFlow<T,O,C> flow) {
             this.flowMaker.flows.add(flow);
             return this;
         }
@@ -161,6 +161,7 @@ public class FlowMaker<I,O,C> {
          * @param flow
          * @return
          */
+        @Deprecated
         public Builder<I,O,C,O> loop(LoopFlow<T,O,C,?> flow) {
             this.flowMaker.flows.add(flow);
             return (Builder<I, O, C, O>) this;

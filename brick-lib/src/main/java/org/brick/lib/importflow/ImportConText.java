@@ -1,10 +1,12 @@
-package org.brick.lib.importf;
+package org.brick.lib.importflow;
 
+import lombok.Builder;
 import lombok.Data;
 
 import java.util.List;
 
 @Data
+@Builder
 public class ImportConText<UC,E,S> {
 
     private UC userContext;
@@ -12,6 +14,7 @@ public class ImportConText<UC,E,S> {
     private TempData<E,S> temp;
 
     @Data
+    @Builder
     public static class Config {
         private int chunkSize;
         private boolean prepareActionParallel;

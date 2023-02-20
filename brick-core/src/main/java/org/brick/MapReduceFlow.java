@@ -35,7 +35,9 @@ public class MapReduceFlow<I,O,C,I1,O1,C1> implements SubFlow.ISubFlow<I,O,C> {
     }
     @Override
     public FlowDoc<I, O, C> getFlowDoc() {
-        return new FlowDoc<>(this.desc, FlowType.SUB_FLOW, this.getFlowName());
+        FlowDoc<I, O, C> flowDoc = new FlowDoc<>(this.desc, FlowType.SUB_FLOW, this.getFlowName());
+        flowDoc.innerFlowDocs.add(this.mapFlow.getFlowDoc());
+        return flowDoc;
     }
 
     @Override

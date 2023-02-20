@@ -1,4 +1,4 @@
-package org.brick.lib.importf;
+package org.brick.lib.importflow;
 
 import org.brick.Flow;
 import org.brick.FlowMaker;
@@ -76,7 +76,7 @@ public interface ImportFlow<E,O,O1,ER,S,UC> extends IFlow<InputStream, O, Import
                                         (i,c) -> c.getConfig().isPrepareActionParallel()
                                                 ? i.parallelStream().map(a -> getActionExecutor().execute(a)).collect(Collectors.toList())
                                                 : i.stream().map(a -> getActionExecutor().execute(a)).collect(Collectors.toList())))
-                                .throwWhen(new ThrowWhenFlow<>("throw exception when needed",
+                                .throwWhen(new ThrowWhenFlow<>("throw exception when error happened",
                                         this::exitWhenPrepareActionFailed,
                                         (i,c) -> new FlowException(ErrorType.PREPARE_ACTION_RAILED.type, i)))
                                 .pure(new PureFunction<>("collect supporting data",

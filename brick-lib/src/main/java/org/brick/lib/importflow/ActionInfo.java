@@ -5,8 +5,8 @@ import lombok.Data;
 
 @Data
 @Builder
-public class ActionInfo<I> {
+public class ActionInfo<T> {
 
     private Integer type;
-    private I actionData;
+    private T actionData;
 }
