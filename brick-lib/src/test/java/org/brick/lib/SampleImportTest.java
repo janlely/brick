@@ -72,7 +72,7 @@ public class SampleImportTest {
     }
 
 
-    public static class SampleImportFlow implements ImportFlow<Elem, Output, Output, Error, Support, UserContext> {
+    public static class SampleImportFlow implements ImportFlow<Elem, Output, Error, Support, UserContext> {
 
         private ActionCombinators actionCombinators;
         private ActionExecutor actionExecutor;

@@ -19,41 +19,106 @@ import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public interface ImportFlow<E,O,O1,ER,S,UC> extends IFlow<InputStream, O, ImportConText<UC,E,S>> {
+/**
+ * abstraction of file import flow
+ * @param <E> type of import Element
+ * @param <O> type of output
+ * @param <ER> type of error
+ * @param <S> type of supporting data
+ * @param <UC> type of user context
+ */
+public interface ImportFlow<E,O,ER,S,UC> extends IFlow<InputStream, O, ImportConText<UC,E,S>> {
 
+    /**
+     * read input stream, make it a Stream<E>
+     * @param ins
+     * @return
+     */
     Stream<E> read(InputStream ins);
 
-    Collector<O1,?,O> chunkCollect(ImportConText<UC,E,S> context);
+    /**
+     * collect response of every chunk response
+     * @param context
+     * @return
+     */
+    Collector<O,?,O> chunkCollect(ImportConText<UC,E,S> context);
 
+    /**
+     * preCheck, you can check content format here
+     * @param elem
+     * @return
+     */
     Optional<ER> preCheck(E elem);
 
+    /**
+     * produce actions to getting supporting data
+     * @param elem
+     * @param context
+     * @return
+     */
     List<ActionInfo> toPrepareAction(E elem, ImportConText<UC,E,S> context);
 
+    /**
+     * action combinators, you can combine actions with same type to lift efficiency
+     * @return
+     */
     ActionCombinators getCombinator();
 
+    /**
+     * action executor
+     * @return
+     */
     ActionExecutor getActionExecutor();
 
+    /**
+     * if you want to abort when prepare action failed
+     * @param responses
+     * @param conText
+     * @return
+     */
     boolean exitWhenPrepareActionFailed(List<ActionResponse> responses, ImportConText<UC,E,S> conText);
 
+    /**
+     * collect response of prepare action to supporting data
+     * @param conText
+     * @return
+     */
     Collector<ActionResponse,?,S> supportDataCollect(ImportConText<UC,E,S> conText);
 
+    /**
+     * do post check if you want
+     * @param elem
+     * @param conText
+     * @return
+     */
     Optional<ER> postCheck(E elem, ImportConText<UC,E,S> conText);
 
+    /**
+     * produce final actions for import
+     * @param elem
+     * @param conText
+     * @return
+     */
     List<ActionInfo> toFinalActions(E elem, ImportConText<UC,E,S> conText);
 
-    Collector<ActionResponse,?,O1> responseCollect(ImportConText<UC,E,S> conText);
+    /**
+     * collect response of final actions to O
+     * @param conText
+     * @return
+     */
+    Collector<ActionResponse,?,O> responseCollect(ImportConText<UC,E,S> conText);
 
     default Flow<InputStream, O, ImportConText<UC,E,S>> getFlow() {
         return new FlowMaker<InputStream, O, ImportConText<UC,E,S>>("main flow of importing data")
                 .flowBuilder()
-                .mapReduce(new MapReduceFlow<InputStream, O, ImportConText<UC,E,S>, List<E>, O1, ImportConText<UC,E,S>>(
+                .mapReduce(new MapReduceFlow<InputStream, O, ImportConText<UC,E,S>, List<E>, O, ImportConText<UC,E,S>>(
                         "process by chunk",
                         F.bimap(StreamUtil::chunk,
                                 this::read,
                                 F.combo(ImportConText<UC,E,S>::getConfig, ImportConText.Config::getChunkSize)),
                         F.second(Function.identity()),
                         this::chunkCollect,
-                        new FlowMaker<List<E>, O1, ImportConText<UC,E,S>>("process of every chunk")
+                        new FlowMaker<List<E>, O, ImportConText<UC,E,S>>("process of every chunk")
                                 .flowBuilder()
                                 .local(new ModifyContext<>("put chunk into context",
                                         (i,c) -> c.getTemp().setElems(i)))
