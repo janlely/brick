@@ -8,6 +8,7 @@ import org.brick.PureFunction;
 import org.brick.ThrowWhenFlow;
 import org.brick.common.utils.F;
 import org.brick.common.utils.StreamUtil;
+import org.brick.exception.ExceptionHandler;
 import org.brick.exception.FlowException;
 import org.brick.lib.IFlow;
 
@@ -108,9 +109,16 @@ public interface ImportFlow<E,O,ER,S,UC> extends IFlow<InputStream, O, ImportCon
      */
     Collector<ActionResponse,?,O> responseCollect(ImportConText<UC,E,S> conText);
 
+    ExceptionHandler<O> preCheckErrorHandler();
+    ExceptionHandler<O> postCheckErrorHanlder();
+    ExceptionHandler<O> prepareActionErrorHanlder();
+
     default Flow<InputStream, O, ImportConText<UC,E,S>> getFlow() {
         return new FlowMaker<InputStream, O, ImportConText<UC,E,S>>("main flow of importing data")
                 .flowBuilder()
+                .exception(ErrorType.PRE_CHECK_ERROR.type, this.preCheckErrorHandler())
+                .exception(ErrorType.POST_CHECK_ERROR.type, this.postCheckErrorHanlder())
+                .exception(ErrorType.PREPARE_ACTION_RAILED.type, this.preCheckErrorHandler())
                 .mapReduce(new MapReduceFlow<InputStream, O, ImportConText<UC,E,S>, List<E>, O, ImportConText<UC,E,S>>(
                         "process by chunk",
                         F.bimap(StreamUtil::chunk,

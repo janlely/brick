@@ -1,8 +1,10 @@
 package org.brick.lib;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.lang3.StringUtils;
@@ -10,6 +12,7 @@ import org.brick.Flow;
 import org.brick.FlowVisualizer;
 import org.brick.common.reader.LineReader;
 import org.brick.common.types.Pair;
+import org.brick.exception.ExceptionHandler;
 import org.brick.lib.importflow.Action;
 import org.brick.lib.importflow.ActionCombinators;
 import org.brick.lib.importflow.ActionExecutor;
@@ -197,6 +200,36 @@ public class SampleImportTest {
                 return a;
             });
         }
+
+        @Override
+        public ExceptionHandler<Output> preCheckErrorHandler() {
+            return content -> {
+                List<Error> errors = (List<Error>) content;
+                return Output.builder()
+                        .failed(errors.size())
+                        .build();
+            };
+        }
+
+        @Override
+        public ExceptionHandler<Output> postCheckErrorHanlder() {
+            return content -> {
+                List<Error> errors = (List<Error>) content;
+                return Output.builder()
+                        .failed(errors.size())
+                        .build();
+            };
+        }
+
+        @Override
+        public ExceptionHandler<Output> prepareActionErrorHanlder() {
+            return content -> {
+                List<ActionResponse> responses = (List<ActionResponse>) content;
+                return Output.builder()
+                        .failed(Long.valueOf(responses.stream().filter(a -> a.getResponse() == null).count()).intValue())
+                        .build();
+            };
+        }
     }
 
     @Data
@@ -208,6 +241,9 @@ public class SampleImportTest {
     }
 
     @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class Output {
         private int succeed;
         private int failed;
