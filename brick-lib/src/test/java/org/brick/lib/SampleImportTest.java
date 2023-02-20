@@ -212,7 +212,7 @@ public class SampleImportTest {
         }
 
         @Override
-        public ExceptionHandler<Output> postCheckErrorHanlder() {
+        public ExceptionHandler<Output> postCheckErrorHandler() {
             return content -> {
                 List<Error> errors = (List<Error>) content;
                 return Output.builder()
@@ -222,7 +222,7 @@ public class SampleImportTest {
         }
 
         @Override
-        public ExceptionHandler<Output> prepareActionErrorHanlder() {
+        public ExceptionHandler<Output> prepareActionErrorHandler() {
             return content -> {
                 List<ActionResponse> responses = (List<ActionResponse>) content;
                 return Output.builder()
