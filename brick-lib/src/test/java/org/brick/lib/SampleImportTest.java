@@ -12,7 +12,7 @@ import org.brick.Flow;
 import org.brick.FlowVisualizer;
 import org.brick.common.reader.LineReader;
 import org.brick.common.types.Pair;
-import org.brick.exception.ExceptionHandler;
+import org.brick.exception.ErrorHandler;
 import org.brick.lib.importflow.Action;
 import org.brick.lib.importflow.ActionCombinators;
 import org.brick.lib.importflow.ActionExecutor;
@@ -22,7 +22,6 @@ import org.brick.lib.importflow.ImportConText;
 import org.brick.lib.importflow.ImportFlow;
 import org.junit.Test;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
@@ -202,7 +201,7 @@ public class SampleImportTest {
         }
 
         @Override
-        public ExceptionHandler<Output> preCheckErrorHandler() {
+        public ErrorHandler<Output> preCheckErrorHandler() {
             return content -> {
                 List<Error> errors = (List<Error>) content;
                 return Output.builder()
@@ -212,7 +211,7 @@ public class SampleImportTest {
         }
 
         @Override
-        public ExceptionHandler<Output> postCheckErrorHandler() {
+        public ErrorHandler<Output> postCheckErrorHandler() {
             return content -> {
                 List<Error> errors = (List<Error>) content;
                 return Output.builder()
@@ -222,7 +221,7 @@ public class SampleImportTest {
         }
 
         @Override
-        public ExceptionHandler<Output> prepareActionErrorHandler() {
+        public ErrorHandler<Output> prepareActionErrorHandler() {
             return content -> {
                 List<ActionResponse> responses = (List<ActionResponse>) content;
                 return Output.builder()

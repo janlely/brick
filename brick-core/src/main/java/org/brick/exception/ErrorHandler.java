@@ -1,6 +1,6 @@
 package org.brick.exception;
 
-public interface ExceptionHandler<O> {
+public interface ErrorHandler<O> {
 
     O handler(Object content);
 }

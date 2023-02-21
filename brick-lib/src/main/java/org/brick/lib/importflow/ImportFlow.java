@@ -8,8 +8,8 @@ import org.brick.PureFunction;
 import org.brick.ThrowWhenFlow;
 import org.brick.common.utils.F;
 import org.brick.common.utils.StreamUtil;
-import org.brick.exception.ExceptionHandler;
-import org.brick.exception.FlowException;
+import org.brick.exception.ErrorHandler;
+import org.brick.exception.FlowError;
 import org.brick.lib.IFlow;
 
 import java.io.InputStream;
@@ -109,16 +109,16 @@ public interface ImportFlow<E,O,ER,S,UC> extends IFlow<InputStream, O, ImportCon
      */
     Collector<ActionResponse,?,O> responseCollect(ImportConText<UC,E,S> conText);
 
-    ExceptionHandler<O> preCheckErrorHandler();
-    ExceptionHandler<O> postCheckErrorHandler();
-    ExceptionHandler<O> prepareActionErrorHandler();
+    ErrorHandler<O> preCheckErrorHandler();
+    ErrorHandler<O> postCheckErrorHandler();
+    ErrorHandler<O> prepareActionErrorHandler();
 
     default Flow<InputStream, O, ImportConText<UC,E,S>> getFlow() {
         return new FlowMaker<InputStream, O, ImportConText<UC,E,S>>("main flow of importing data")
                 .flowBuilder()
-                .exception(ErrorType.PRE_CHECK_ERROR.type, this.preCheckErrorHandler())
-                .exception(ErrorType.POST_CHECK_ERROR.type, this.postCheckErrorHandler())
-                .exception(ErrorType.PREPARE_ACTION_RAILED.type, this.prepareActionErrorHandler())
+                .errorHandler(ErrorType.PRE_CHECK_ERROR.type, this.preCheckErrorHandler())
+                .errorHandler(ErrorType.POST_CHECK_ERROR.type, this.postCheckErrorHandler())
+                .errorHandler(ErrorType.PREPARE_ACTION_RAILED.type, this.prepareActionErrorHandler())
                 .mapReduce(new MapReduceFlow<InputStream, O, ImportConText<UC,E,S>, List<E>, O, ImportConText<UC,E,S>>(
                         "process by chunk",
                         F.bimap(StreamUtil::chunk,
@@ -137,7 +137,7 @@ public interface ImportFlow<E,O,ER,S,UC> extends IFlow<InputStream, O, ImportCon
                                                 .collect(Collectors.toList())))
                                 .throwWhen(new ThrowWhenFlow<>("throw exception if preCheck has error",
                                         F.first(F.not(List::isEmpty)),
-                                        (i,c) -> new FlowException(ErrorType.PRE_CHECK_ERROR.type, i)))
+                                        (i,c) -> new FlowError(ErrorType.PRE_CHECK_ERROR.type, i)))
                                 .pure(new PureFunction<>("produce prepareActions for supporting data",
                                         (__,c) -> c.getTemp().getElems()
                                                 .parallelStream().flatMap(e -> toPrepareAction(e, c).stream())
@@ -151,7 +151,7 @@ public interface ImportFlow<E,O,ER,S,UC> extends IFlow<InputStream, O, ImportCon
                                                 : i.stream().map(a -> getActionExecutor().execute(a)).collect(Collectors.toList())))
                                 .throwWhen(new ThrowWhenFlow<>("throw exception when error happened",
                                         this::exitWhenPrepareActionFailed,
-                                        (i,c) -> new FlowException(ErrorType.PREPARE_ACTION_RAILED.type, i)))
+                                        (i,c) -> new FlowError(ErrorType.PREPARE_ACTION_RAILED.type, i)))
                                 .pure(new PureFunction<>("collect supporting data",
                                         (i,c) -> i.parallelStream().collect(this.supportDataCollect(c))))
                                 .local(new ModifyContext<>("put supporting data into context",
@@ -165,7 +165,7 @@ public interface ImportFlow<E,O,ER,S,UC> extends IFlow<InputStream, O, ImportCon
                                                 .collect(Collectors.toList())))
                                 .throwWhen(new ThrowWhenFlow<>("throw exception when post check failed",
                                         F.first(F.not(List::isEmpty)),
-                                        (i,c) -> new FlowException(ErrorType.POST_CHECK_ERROR.type, i)))
+                                        (i,c) -> new FlowError(ErrorType.POST_CHECK_ERROR.type, i)))
                                 .pure(new PureFunction<>("produce finalActions",
                                         (__,c) -> c.getTemp().getElems().parallelStream()
                                                 .flatMap(e -> toFinalActions(e,c).stream())

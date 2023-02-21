@@ -3,8 +3,8 @@ package org.brick;
 import org.apache.commons.lang3.ClassUtils;
 import org.apache.commons.lang3.SerializationUtils;
 import org.brick.common.types.Either;
-import org.brick.exception.ExceptionHandler;
-import org.brick.exception.FlowException;
+import org.brick.exception.ErrorHandler;
+import org.brick.exception.FlowError;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -19,7 +19,7 @@ public class FlowMaker<I,O,C> {
     private ExecutorService executor;
     private FlowDoc<I,O,C> flowDoc;
 
-    private Map<Integer, ExceptionHandler> exceptionHandlers;
+    private Map<Integer, ErrorHandler> exceptionHandlers;
 
     public FlowMaker(String desc) {
         this.flowDoc = new FlowDoc<>(desc, FlowType.SUB_FLOW, ClassUtils.getShortClassName(FlowMaker.class));
@@ -90,7 +90,7 @@ public class FlowMaker<I,O,C> {
                             i = flow.run(i, context);
                         }
                         return (T) i;
-                    } catch (FlowException e) {
+                    } catch (FlowError e) {
                         if (!flowMaker.exceptionHandlers.containsKey(e.getType())) {
                             System.out.println("unhandled FlowException by this flow of type: " + e.getType());
                             throw e;
@@ -101,7 +101,7 @@ public class FlowMaker<I,O,C> {
             };
         }
 
-        public Builder<I,O,C,T> exception(int type, ExceptionHandler<O> handler) {
+        public Builder<I,O,C,T> errorHandler(int type, ErrorHandler<O> handler) {
             this.flowMaker.exceptionHandlers.putIfAbsent(type, handler);
             return this;
         }

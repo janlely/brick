@@ -1,19 +1,19 @@
 package org.brick;
 
 import org.apache.commons.lang3.ClassUtils;
-import org.brick.exception.FlowException;
+import org.brick.exception.FlowError;
 
 import java.util.function.BiFunction;
 
 public class ThrowWhenFlow<I,C> implements Flow<I,I,C>{
 
     private BiFunction<I,C,Boolean> cond;
-    private BiFunction<I,C,FlowException> exception;
+    private BiFunction<I,C, FlowError> exception;
 
     private String desc;
 
     public ThrowWhenFlow(String desc, BiFunction<I,C,Boolean> cond,
-                         BiFunction<I,C,FlowException> exception) {
+                         BiFunction<I,C, FlowError> exception) {
         this.desc = desc;
         this.cond = cond;
         this.exception = exception;
