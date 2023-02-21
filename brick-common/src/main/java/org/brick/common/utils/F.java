@@ -9,15 +9,14 @@ import java.util.function.Function;
 public class F {
 
     /**
-     * like const in Haskell
-     * a -> b -> c
+     * equal to: const
      * @param output
      * @param <I>
      * @param <O>
      * @return
      */
-    public  static <I,O> Function<I,O> constFunction(O output) {
-        return i -> output;
+    public  static <I,O> Function<I,O> constF(O output) {
+        return __ -> output;
     }
 
     /**
@@ -29,12 +28,12 @@ public class F {
      * @param <O>
      * @return
      */
-    public  static <I1,I2,O> BiFunction<I1,I2,O> constBiFunction(O output) {
+    public  static <I1,I2,O> BiFunction<I1,I2,O> constBi(O output) {
         return (i1,i2) -> output;
     }
 
     /**
-     * like (fst . first f) where f :: a -> b
+     * equal to: flip . const
      * @param function
      * @param <A>
      * @param <B>
@@ -46,7 +45,7 @@ public class F {
     }
 
     /**
-     * like (fst . second f) where f :: a -> b
+     * equal to: const
      * @param function
      * @param <A>
      * @param <B>
@@ -69,18 +68,59 @@ public class F {
     }
 
 
+    /**
+     * equal to: uncurry :: (a -> b -> c) -> (a,b) -> c
+     * @param func
+     * @return
+     * @param <L>
+     * @param <R>
+     * @param <T>
+     */
     public static <L,R,T> Function<Pair<L,R>, T> uncurry(BiFunction<L,R,T> func) {
         return p -> func.apply(Pair.getLeft(p), Pair.getRight(p));
     }
 
+    /**
+     * equal to: .
+     * @param fst
+     * @param snd
+     * @return
+     * @param <A>
+     * @param <B>
+     * @param <C>
+     */
     public static <A,B,C> Function<A,C> combo(Function<A,B> fst, Function<B,C> snd) {
         return a -> snd.apply(fst.apply(a));
     }
 
+    /**
+     * equal to: \f1 f2 f3 -> f3 . f2 . f1
+     * @param fst
+     * @param snd
+     * @param trd
+     * @return
+     * @param <A>
+     * @param <B>
+     * @param <C>
+     * @param <D>
+     */
     public static <A,B,C,D> Function<A,D> combo(Function<A,B> fst, Function<B,C> snd, Function<C,D> trd) {
         return a -> trd.apply(snd.apply(fst.apply(a)));
     }
 
+    /**
+     * equal to: \f1 f2 f3 f4 -> f4 . f3 . f2 . f1
+     * @param fst
+     * @param snd
+     * @param trd
+     * @param fth
+     * @return
+     * @param <A>
+     * @param <B>
+     * @param <C>
+     * @param <D>
+     * @param <E>
+     */
     public static <A,B,C,D,E> Function<A,E> combo(Function<A,B> fst, Function<B,C> snd, Function<C,D> trd, Function<D,E> fth) {
         return a -> fth.apply(trd.apply(snd.apply(fst.apply(a))));
     }

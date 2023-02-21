@@ -93,7 +93,7 @@ public class FlowTest {
                         (s, c) -> List.of(1, 2, 3, 4),
                         (e, c) -> e % 2 == 0,
                         (e, c) -> e * 2,
-                        F.constBiFunction(true),
+                        F.constBi(true),
                         Collectors.summingInt(i -> i)))
                 .flow(new CaseBranch<>(
                         "Sample CaseBranch",
