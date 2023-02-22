@@ -119,66 +119,66 @@ public interface ImportFlow<E,O,ER,S,UC> extends IFlow<InputStream, O, ImportCon
                 .errorHandler(ErrorType.PRE_CHECK_ERROR.type, this.preCheckErrorHandler())
                 .errorHandler(ErrorType.POST_CHECK_ERROR.type, this.postCheckErrorHandler())
                 .errorHandler(ErrorType.PREPARE_ACTION_RAILED.type, this.prepareActionErrorHandler())
-                .mapReduce(new MapReduceFlow<InputStream, O, ImportConText<UC,E,S>, List<E>, O, ImportConText<UC,E,S>>(
+                .mapReduce(new MapReduceFlow<>(
                         "process by chunk",
                         F.bimap(StreamUtil::chunk,
                                 this::read,
-                                F.combo(ImportConText<UC,E,S>::getConfig, ImportConText.Config::getChunkSize)),
+                                F.combo(ImportConText<UC, E, S>::getConfig, ImportConText.Config::getChunkSize)),
                         F.second(Function.identity()),
                         this::chunkCollect,
-                        new FlowMaker<List<E>, O, ImportConText<UC,E,S>>("process of every chunk")
+                        new FlowMaker<List<E>, O, ImportConText<UC, E, S>>("process of every chunk")
                                 .flowBuilder()
                                 .local(new ModifyContext<>("put chunk into context",
-                                        (i,c) -> c.getTemp().setElems(i)))
+                                        (i, c) -> c.getTemp().setElems(i)))
                                 .pure(new PureFunction<>("preCheck",
-                                        (i,c) -> i.parallelStream().map(this::preCheck)
+                                        (i, c) -> i.parallelStream().map(this::preCheck)
                                                 .filter(Optional::isPresent)
                                                 .map(Optional::get)
                                                 .collect(Collectors.toList())))
                                 .throwWhen(new ThrowWhenFlow<>("throw exception if preCheck has error",
                                         F.first(F.not(List::isEmpty)),
-                                        (i,c) -> new FlowError(ErrorType.PRE_CHECK_ERROR.type, i)))
+                                        (i, c) -> new FlowError(ErrorType.PRE_CHECK_ERROR.type, i)))
                                 .pure(new PureFunction<>("produce prepareActions for supporting data",
-                                        (__,c) -> c.getTemp().getElems()
+                                        (__, c) -> c.getTemp().getElems()
                                                 .parallelStream().flatMap(e -> toPrepareAction(e, c).stream())
                                                 .collect(Collectors.groupingBy(ActionInfo::getType))
                                                 .entrySet().stream()
                                                 .flatMap(entry -> getCombinator().getCombinator(entry.getKey()).combine(entry.getValue()).stream())
                                                 .collect(Collectors.toList())))
                                 .pure(new PureFunction<>("execute prepareActions",
-                                        (i,c) -> c.getConfig().isPrepareActionParallel()
+                                        (i, c) -> c.getConfig().isPrepareActionParallel()
                                                 ? i.parallelStream().map(a -> getActionExecutor().execute(a)).collect(Collectors.toList())
                                                 : i.stream().map(a -> getActionExecutor().execute(a)).collect(Collectors.toList())))
                                 .throwWhen(new ThrowWhenFlow<>("throw exception when error happened",
                                         this::exitWhenPrepareActionFailed,
-                                        (i,c) -> new FlowError(ErrorType.PREPARE_ACTION_RAILED.type, i)))
+                                        (i, c) -> new FlowError(ErrorType.PREPARE_ACTION_RAILED.type, i)))
                                 .pure(new PureFunction<>("collect supporting data",
-                                        (i,c) -> i.parallelStream().collect(this.supportDataCollect(c))))
+                                        (i, c) -> i.parallelStream().collect(this.supportDataCollect(c))))
                                 .local(new ModifyContext<>("put supporting data into context",
-                                        (i,c) -> c.getTemp().setSupportingData(i)))
+                                        (i, c) -> c.getTemp().setSupportingData(i)))
                                 .pure(new PureFunction<>("post check",
-                                        (__,c) -> c.getTemp().getElems()
+                                        (__, c) -> c.getTemp().getElems()
                                                 .parallelStream()
-                                                .map(e -> postCheck(e,c))
+                                                .map(e -> postCheck(e, c))
                                                 .filter(Optional::isPresent)
                                                 .map(Optional::get)
                                                 .collect(Collectors.toList())))
                                 .throwWhen(new ThrowWhenFlow<>("throw exception when post check failed",
                                         F.first(F.not(List::isEmpty)),
-                                        (i,c) -> new FlowError(ErrorType.POST_CHECK_ERROR.type, i)))
+                                        (i, c) -> new FlowError(ErrorType.POST_CHECK_ERROR.type, i)))
                                 .pure(new PureFunction<>("produce finalActions",
-                                        (__,c) -> c.getTemp().getElems().parallelStream()
-                                                .flatMap(e -> toFinalActions(e,c).stream())
+                                        (__, c) -> c.getTemp().getElems().parallelStream()
+                                                .flatMap(e -> toFinalActions(e, c).stream())
                                                 .collect(Collectors.groupingBy(ActionInfo::getType))
                                                 .entrySet().stream()
                                                 .flatMap(entry -> getCombinator().getCombinator(entry.getKey())
                                                         .combine(entry.getValue()).stream()).collect(Collectors.toList())))
                                 .pure(new PureFunction<>("execute final actions",
-                                        (i,c) -> c.getConfig().isFinalActionParallel()
+                                        (i, c) -> c.getConfig().isFinalActionParallel()
                                                 ? i.parallelStream().map(a -> getActionExecutor().execute(a)).collect(Collectors.toList())
                                                 : i.stream().map(a -> getActionExecutor().execute(a)).collect(Collectors.toList())))
                                 .pure(new PureFunction<>("collect response",
-                                        (i,c) -> i.parallelStream().collect(responseCollect(c))))
+                                        (i, c) -> i.parallelStream().collect(responseCollect(c))))
                                 .build()))
                 .build();
     }
