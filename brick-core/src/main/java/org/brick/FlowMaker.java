@@ -191,6 +191,10 @@ public class FlowMaker<I,O,C> {
             return (Builder<I, O, C, O1>) this;
         }
 
+        public <O1> Builder<I,O,C,O1> countDown(CountDownFlow<T,O1,?,C> countDownFlow) {
+            this.flowMaker.flows.add(countDownFlow);
+            return (Builder<I, O, C, O1>) this;
+        }
         /**
          * add a async flow
          * @param flow
