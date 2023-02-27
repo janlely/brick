@@ -3,9 +3,7 @@ package org.brick;
 import org.apache.commons.lang3.ClassUtils;
 
 import java.util.List;
-import java.util.concurrent.RecursiveTask;
 import java.util.function.BiFunction;
-import java.util.stream.Stream;
 
 public class FoldlFlow<I,ID,C> implements Flow<List<I>,ID,C>{
 
