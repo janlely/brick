@@ -130,7 +130,8 @@ public class FlowMaker<I,O,C> {
             return (Builder<I, O, C, O1>) this;
         }
 
-        public <O1> Builder<I,O,C,O1> foldl(FoldlFlow<T,O1,C> foldlFlow) {
+        public <O1> Builder<I,O,C,O1> foldl(Flow<T,O1,C> foldlFlow) {
+            assert foldlFlow.getClass().equals(FoldlFlow.class);
             this.flowMaker.flows.add(foldlFlow);
             return (Builder<I, O, C, O1>) this;
         }

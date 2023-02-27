@@ -13,7 +13,7 @@ public class FoldlFlow<I,ID,C> implements Flow<List<I>,ID,C>{
     private BiFunction<ID,I,ID> foldFunc;
     private ID id;
 
-    public FoldlFlow(String desc, BiFunction<ID,I,ID> foldFunc, ID id) {
+    public FoldlFlow(String desc, ID id, BiFunction<ID,I,ID> foldFunc) {
         this.desc = desc;
         this.foldFunc = foldFunc;
         this.id = id;
