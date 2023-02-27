@@ -58,8 +58,28 @@ public void testHelloWorld() {
 }
 ```
 
-# 最佳实践（建议）
-* 主流程类型：
-```java
-new FlowMaker<Void, ResponseType, Pair<RequestType, UserContext>>
-```
+# 最佳实践
+见springboot-demo
+* 一个api一个flow
+* flow的input类型为Void
+* api的入参放到context中，如果还有别的context可以用Pair进行组合
+* flow单独一个class，并添加Component注解
+* flow中添加post方法，并用PostConstruct注解，在其中使用FlowMaker创建流程
+* 简单的计算直接用lambda表达式
+* 复杂的计算实现UnitFunction，并添加Component注解
+
+# 关于debug
+* 信任brick的控制逻辑
+* 只debug计算逻辑
+* 需要的时候用trace来查看每一步的output和context
+* ```java
+   new FlowMaker<I,O,C>("some desc")
+      .flowBuilder()
+      .pure(new PureFunction<>("step 1", ...))
+      .trace(new TraceFlow((input, context) -> {
+         # set breakpoint here
+         System.out.printLn("just a breakpoint");
+      }))
+      ...
+  ```
+
