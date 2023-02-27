@@ -185,6 +185,11 @@ public class FlowMaker<I,O,C> {
             return (Builder<I, O, C, O1>) this;
         }
 
+        public Builder<I,O,C,T> trace(TraceFlow<T,C> traceFlow) {
+            this.flowMaker.flows.add(traceFlow);
+            return this;
+        }
+
         /**
          * add a pure function into flow list
          * @param flow
