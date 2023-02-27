@@ -130,6 +130,11 @@ public class FlowMaker<I,O,C> {
             return (Builder<I, O, C, O1>) this;
         }
 
+        public <O1> Builder<I,O,C,O1> foldl(FoldlFlow<T,O1,C> foldlFlow) {
+            this.flowMaker.flows.add(foldlFlow);
+            return (Builder<I, O, C, O1>) this;
+        }
+
         /**
          * like if-return
          * @param flow

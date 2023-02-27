@@ -7,6 +7,7 @@ public enum FlowType {
     ABORT,
     LOOP,
     SUB_FLOW,
+    FOLDL_FLOW,
     COUNT_DOWN,
     CONTEXT_MODIFY;
 }
