@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.stream.Collector;
+import java.util.zip.CheckedOutputStream;
 
 public class CountDownFlow<I,O,O1,C> implements Flow<I,O,C> {
 
@@ -18,17 +19,18 @@ public class CountDownFlow<I,O,O1,C> implements Flow<I,O,C> {
     private ExecutorService executorService;
     public CountDownFlow(String desc, ExecutorService executorService,
                          int count, Collector<O1,?,O> collector, Flow<I,O1,C> ...flows) {
+
+        assert count != 0;
         this.desc = desc;
         this.executorService = executorService;
         this.count = count;
         this.collector = collector;
         this.flows = new ArrayList<>();
         for (Flow<I, O1, C> flow : flows) {
+            assert SubFlow.ISubFlow.class.isAssignableFrom(flow.getClass());
             this.flows.add(flow);
         }
-        if (this.flows.size() != this.count) {
-            throw new RuntimeException("flow size does not match the count value");
-        }
+        assert this.flows.size() == count;
     }
     @Override
     public FlowDoc<I, O, C> getFlowDoc() {

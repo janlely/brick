@@ -27,6 +27,7 @@ public class MapReduceFlow<I,O,C,I1,O1,C1> implements SubFlow.ISubFlow<I,O,C> {
     public MapReduceFlow(String desc, BiFunction<I,C, Stream<I1>> sourceFunc,
                          BiFunction<I,C,C1> contextFunc,
                          Function<C,Collector<O1,?,O>> collector, Flow<I1,O1,C1> mapFlow) {
+        assert SubFlow.ISubFlow.class.isAssignableFrom(mapFlow.getClass());
         this.desc = desc;
         this.sourceFunc = sourceFunc;
         this.contextFunc = contextFunc;
