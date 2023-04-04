@@ -26,6 +26,7 @@ Flow<Input, Output, Context> flow = new FlowMaker<Input, Output, Context>("某�
         new CaseFlow<>(1, case1),   //case 1的分支
         new CaseFlow<>(2, case2)))  //case 2的分支
   .effect(new SideEffect("添加一个有副作用的计算", (i,c) -> ...))
+  .countDown(new CountDownFlow("多分支异步计算，再收集结果"))
   .mapReduce(new MapReduceFlow("添加一个map-reduce计算流程", ...))
   .abort(new AbortWhenFlow("一个if-return分支")) //添加一个if-return分支
   .flowAsync(...) //添加一个异步流程
