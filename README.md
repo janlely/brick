@@ -78,7 +78,7 @@ public void testHelloWorld() {
       .flowBuilder()
       .pure(new PureFunction<>("step 1", ...))
       .trace(new TraceFlow((input, context) -> {
-         # set breakpoint here
+         // set breakpoint here
          System.out.printLn("just a breakpoint");
       }))
       ...
