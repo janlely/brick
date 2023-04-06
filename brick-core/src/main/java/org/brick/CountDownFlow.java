@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collector;
 import java.util.zip.CheckedOutputStream;
 
@@ -17,11 +18,13 @@ public class CountDownFlow<I,O,O1,C> implements Flow<I,O,C> {
     private List<Flow<I,O1,C>> flows;
     private Collector<O1,?,O> collector;
     private ExecutorService executorService;
-    public CountDownFlow(String desc, ExecutorService executorService,
+    private long timeout;
+    public CountDownFlow(String desc, long timeout, ExecutorService executorService,
                          int count, Collector<O1,?,O> collector, Flow<I,O1,C> ...flows) {
 
         assert count != 0;
         this.desc = desc;
+        this.timeout = timeout;
         this.executorService = executorService;
         this.count = count;
         this.collector = collector;
@@ -57,7 +60,7 @@ public class CountDownFlow<I,O,O1,C> implements Flow<I,O,C> {
                 latch.countDown();
             });
         }
-        latch.wait();
+        latch.await(timeout, TimeUnit.MILLISECONDS);
         return results.stream().collect(this.collector);
     }
 }
