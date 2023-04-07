@@ -10,5 +10,6 @@ public enum FlowType {
     TRACE_FLOW,
     FOLDL_FLOW,
     COUNT_DOWN,
-    CONTEXT_MODIFY;
+    CONTEXT_MODIFY,
+    CONST_FLOW;
 }

@@ -41,4 +41,22 @@ public class FlowHelper {
     }
 
 
+    public static <I,O,C> SubFlow.ISubFlow<I,O,C> fromConst(O value) {
+        return new SubFlow.ISubFlow<>() {
+            @Override
+            public FlowDoc<I, O, C> getFlowDoc() {
+                return new FlowDoc<>("ConstFlow", FlowType.CONST_FLOW, "ConstFLOW");
+            }
+
+            @Override
+            public O run(I input, C context) {
+                return value;
+            }
+
+            @Override
+            public String getFlowName() {
+                return SubFlow.ISubFlow.super.getFlowName() + ":ConstFlow";
+            }
+        };
+    }
 }
