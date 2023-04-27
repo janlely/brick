@@ -1,5 +1,6 @@
 package org.brick;
 
+import com.fasterxml.jackson.core.io.InputDecorator;
 import org.apache.commons.lang3.ClassUtils;
 
 import java.util.ArrayList;
@@ -8,18 +9,21 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Collector;
 
-public class LoopFlow<I,O,C,O1> implements Flow<I,O,C>{
+public class LoopFlow<I,O,C> implements Flow<I,O,C>{
 
-    private Flow<I,O1,C> innerFlow;
-    private Function<C, Collector<O1,?,O>> collector;
-    private BiFunction<I,C,Boolean> endCond;
+    private Flow<I,O,C> innerFlow;
+    private BiFunction<I,C,Boolean> loopCond;
+    private InputeUpdater<I,O,C> inputeUpdater;
+    private BiFunction<I,C,O> defaultValue;
     private String desc;
 
-    public LoopFlow(String desc, BiFunction<I,C,Boolean> endCond ,Flow<I,O1,C> innerFlow,  Function<C, Collector<O1,?,O>> collector) {
+    public LoopFlow(String desc, BiFunction<I,C,O> defaultValue, BiFunction<I,C,Boolean> loopCond,
+                    InputeUpdater<I,O,C> inputeUpdater, Flow<I,O,C> innerFlow) {
         assert SubFlow.ISubFlow.class.isAssignableFrom(innerFlow.getClass());
         this.innerFlow = innerFlow;
-        this.collector = collector;
-        this.endCond = endCond;
+        this.defaultValue = defaultValue;
+        this.loopCond = loopCond;
+        this.inputeUpdater = inputeUpdater;
         this.desc = desc;
     }
 
@@ -37,10 +41,16 @@ public class LoopFlow<I,O,C,O1> implements Flow<I,O,C>{
 
     @Override
     public O run(I input, C context) {
-        List<O1> results = new ArrayList<>();
-        while(!this.endCond.apply(input, context)) {
-            results.add(this.innerFlow.run(input, context));
+        I i = input;
+        O o = this.defaultValue.apply(input, context);
+        while(this.loopCond.apply(i, context)) {
+            o = this.innerFlow.run(i, context);
+            i = this.inputeUpdater.update(i,o, context);
         }
-        return results.stream().collect(this.collector.apply(context));
+        return o;
+    }
+
+    public interface InputeUpdater<I,O,C> {
+        I update(I input, O output, C context);
     }
 }

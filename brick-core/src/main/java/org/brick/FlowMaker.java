@@ -168,9 +168,9 @@ public class FlowMaker<I,O,C> {
          * @return
          */
         @Deprecated
-        public Builder<I,O,C,O> loop(LoopFlow<T,O,C,?> flow) {
+        public <O1> Builder<I,O,C,O1> loop(LoopFlow<T,O1,C> flow) {
             this.flowMaker.flows.add(flow);
-            return (Builder<I, O, C, O>) this;
+            return (Builder<I, O, C, O1>) this;
         }
 
         /**
