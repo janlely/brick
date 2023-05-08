@@ -4,13 +4,17 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>io.github.janlely</groupId>
-  <artifactId>brick-core</artifactId>
-  <version>1.0.0</version>
+  <parent>
+    <groupId>io.github.janlely</groupId>
+    <artifactId>brick</artifactId>
+    <version>1.0.0</version>
+  </parent>
 
-  <name>brick</name>
+  <artifactId>brick-core</artifactId>
+  <packaging>jar</packaging>
+  <name>brick-core</name>
   <!-- FIXME change it to the project's website -->
-  <url>http://www.example.com</url>
+  <url>https://github.com/janlely/brick</url>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -18,33 +22,42 @@
     <maven.compiler.target>11</maven.compiler.target>
   </properties>
 
+  <description>core library of brick</description>
+
+  <scm>
+    <url>https://github.com/janlely/brick</url>
+  </scm>
+
+  <licenses>
+    <license>
+      <name>${project.parent.licenses.license.name}</name>
+      <url>${project.parent.licenses.license.url}</url>
+      <distribution>${project.parent.licenses.license.distribution}</distribution>
+    </license>
+  </licenses>
   <dependencies>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.11</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>io.github.janlely</groupId>
       <artifactId>brick-common</artifactId>
-      <version>1.0.0</version>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
-      <version>1.18.20</version>
     </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
-      <version>3.12.0</version>
     </dependency>
 
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>
-      <version>2.13.2.2</version>
     </dependency>
 
   </dependencies>
@@ -58,6 +71,30 @@
           <source>11</source>
           <target>11</target>
         </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>generate-javadoc</id>
+            <goals>
+              <goal>javadoc</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>
