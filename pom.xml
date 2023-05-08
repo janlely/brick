@@ -74,5 +74,12 @@
       </plugins>
     </pluginManagement>
   </build>
-  <!-- FIXME change it to the project's website -->
+
+  <distributionManagement>
+    <repository>
+      <id>github</id>
+      <name>GitHub Packages</name>
+      <url>https://maven.pkg.github.com/janlely/brick</url>
+    </repository>
+  </distributionManagement>
 </project>
