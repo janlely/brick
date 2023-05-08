@@ -1,6 +1,6 @@
 package org.brick.springboot.demo.controller;
 
-import org.brick.common.types.Pair;
+import io.github.janlely.brick.common.types.Pair;
 import org.brick.springboot.demo.flows.HelloWorldFlow;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;

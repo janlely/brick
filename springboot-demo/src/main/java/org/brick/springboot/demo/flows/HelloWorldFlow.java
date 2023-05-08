@@ -1,5 +1,10 @@
 package org.brick.springboot.demo.flows;
 
+import io.github.janlely.brick.common.types.Pair;
+import io.github.janlely.brick.core.Flow;
+import io.github.janlely.brick.core.FlowMaker;
+import io.github.janlely.brick.core.PureFunction;
+import io.github.janlely.brick.core.UnitFunction;
 import jakarta.annotation.PostConstruct;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -7,11 +12,6 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
-import org.brick.Flow;
-import org.brick.FlowMaker;
-import org.brick.PureFunction;
-import org.brick.UnitFunction;
-import org.brick.common.types.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
