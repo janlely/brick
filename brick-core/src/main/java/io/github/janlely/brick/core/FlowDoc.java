@@ -8,28 +8,48 @@ import com.fasterxml.jackson.databind.ser.std.StringSerializer;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * the doc of the flow
+ * @param <I> the input type
+ * @param <O> the output type
+ * @param <C> the context
+ */
 public class FlowDoc<I,O,C> {
 
-//    @JsonSerialize(using = ClassSerializer.class)
-//    protected Class<I> inputClass;
-//    @JsonSerialize(using = ClassSerializer.class)
-//    protected Class<O> outputClass;
-//    @JsonSerialize(using = ClassSerializer.class)
-//    protected Class<C> contextClass;
+    /**
+     * the description
+     */
     @JsonSerialize(using = StringSerializer.class)
     protected String desc;
+    /**
+     * the type of flow
+     */
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     protected FlowType flowType;
+    /**
+     * the name of flow
+     */
     @JsonSerialize(using = StringSerializer.class)
     protected String flowName;
 
+    /**
+     * the doc of the inner flows
+     */
     @JsonManagedReference
     List<FlowDoc> innerFlowDocs;
 
+    /**
+     * the constructor
+     */
     public FlowDoc() {
         this.innerFlowDocs = new ArrayList<>();
     }
 
+    /**
+     * @param desc the description
+     * @param flowType the type of flow
+     * @param flowName the name of flow
+     */
     public FlowDoc(String desc, FlowType flowType, String flowName) {
         this.desc = desc;
         this.flowType = flowType;
@@ -37,25 +57,21 @@ public class FlowDoc<I,O,C> {
         this.innerFlowDocs = new ArrayList<>();
     }
 
+    /**
+     * @param doc add a child flow doc
+     */
     public void add(FlowDoc doc) {
         this.innerFlowDocs.add(doc);
     }
 
-    protected FlowDoc<I,O,C> setFlowType(FlowType flowType) {
-        this.flowType = flowType;
-        return this;
-    }
-
+    /**
+     * @param flowName the name of flow
+     * @return this
+     */
     protected FlowDoc<I,O,C> setFlowName(String flowName) {
         this.flowName = flowName;
         return this;
     }
 
-//    public FlowDoc<I,O,C> types(Class<I> inputClass, Class<O> outputClass, Class<C> contextClass) {
-//        this.inputClass = inputClass;
-//        this.outputClass = outputClass;
-//        this.contextClass = contextClass;
-//        return this;
-//    }
 
 }

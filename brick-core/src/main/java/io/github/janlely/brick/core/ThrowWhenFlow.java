@@ -5,13 +5,32 @@ import io.github.janlely.brick.core.exception.FlowError;
 
 import java.util.function.BiFunction;
 
+/**
+ * the throw when abstraction
+ * @param <I> the input type
+ * @param <C> the context type
+ */
 public class ThrowWhenFlow<I,C> implements Flow<I,I,C>{
 
+    /**
+     * condition to throw
+     */
     private BiFunction<I,C,Boolean> cond;
+    /**
+     * exception to throw out
+     */
     private BiFunction<I,C, FlowError> exception;
 
+    /**
+     * the description
+     */
     private String desc;
 
+    /**
+     * @param desc the description
+     * @param cond the condition
+     * @param exception the exception
+     */
     public ThrowWhenFlow(String desc, BiFunction<I,C,Boolean> cond,
                          BiFunction<I,C, FlowError> exception) {
         this.desc = desc;

@@ -37,7 +37,21 @@
     </license>
   </licenses>
 
+  <developers>
+    <developer>
+      <id>janlely</id>
+      <name>janlely</name>
+      <email>janlely@163.com</email>
+      <organization>github.com/janlely</organization>
+    </developer>
+  </developers>
+
   <dependencies>
+    <dependency>
+      <groupId>io.github.janlely</groupId>
+      <artifactId>jparser</artifactId>
+      <version>0.9.0</version>
+    </dependency>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
@@ -62,7 +76,7 @@
           <execution>
             <id>generate-javadoc</id>
             <goals>
-              <goal>javadoc</goal>
+              <goal>jar</goal>
             </goals>
           </execution>
         </executions>
@@ -78,6 +92,16 @@
             </goals>
           </execution>
         </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-gpg-plugin</artifactId>
+        <configuration>
+          <gpgArguments>
+            <arg>--pinentry-mode</arg>
+            <arg>loopback</arg>
+          </gpgArguments>
+        </configuration>
       </plugin>
     </plugins>
   </build>

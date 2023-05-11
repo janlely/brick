@@ -5,12 +5,32 @@ import org.apache.commons.lang3.ClassUtils;
 
 import java.util.function.BiFunction;
 
+/**
+ * just like if-return
+ * @param <I> the input type
+ * @param <O> the output type
+ * @param <C> the context
+ */
 public class AbortWhenFlow<I,O,C> implements SubFlow.ISubFlow<I, Either<I,O>,C> {
 
+    /**
+     * description
+     */
     private String desc;
+    /**
+     * condition checker
+     */
     private BiFunction<I,C,Boolean> condChecker;
+    /**
+     * the abort flow
+     */
     private Flow<I,O,C> abortFlow;
 
+    /**
+     * @param desc the description
+     * @param condChecker the condition checker
+     * @param abortFlow the abort flow
+     */
     public AbortWhenFlow(String desc,
                          BiFunction<I,C,Boolean> condChecker,
                          Flow<I,O,C> abortFlow) {

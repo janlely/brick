@@ -2,11 +2,27 @@ package io.github.janlely.brick.core;
 
 import org.apache.commons.lang3.ClassUtils;
 
+/**
+ * the side effect
+ * @param <I> the input type
+ * @param <O> the output type
+ * @param <C> the context type
+ */
 public class SideEffect<I,O,C> implements ISideEffect<I,O,C>{
 
+    /**
+     * the description
+     */
     private String desc;
+    /**
+     * compute unit
+     */
     private UnitFunction<I,O,C> unit;
 
+    /**
+     * @param desc the description
+     * @param unit the unit
+     */
     public SideEffect(String desc, UnitFunction<I,O,C> unit) {
         this.desc = desc;
         this.unit = unit;

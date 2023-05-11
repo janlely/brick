@@ -13,48 +13,82 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 
+/**
+ * the flow maker
+ * @param <I> the input type
+ * @param <O> the output type
+ * @param <C> the context
+ */
 public class FlowMaker<I,O,C> {
 
+    /**
+     * the flows
+     */
     private List<Flow> flows;
+    /**
+     * the executor service
+     */
     private ExecutorService executor;
+    /**
+     * the doc
+     */
     private FlowDoc<I,O,C> flowDoc;
 
+    /**
+     * the exception handlers
+     */
     private Map<Integer, ErrorHandler> exceptionHandlers;
 
+    /**
+     * @param desc the description
+     */
     public FlowMaker(String desc) {
         this.flowDoc = new FlowDoc<>(desc, FlowType.SUB_FLOW, ClassUtils.getShortClassName(FlowMaker.class));
         this.exceptionHandlers = new HashMap<>();
     }
 
+    /**
+     * @param executor the executor service
+     * @return this
+     */
     public FlowMaker<I,O,C> asyncExecutor(ExecutorService executor) {
         this.executor = executor;
         return this;
     }
 
-    //创建新的带Context的流程
+    /**
+     * @return the flow buidler
+     */
     public Builder<I,O,C,I> flowBuilder() {
         this.flows = new ArrayList<>();
         return new Builder<>(this);
     }
 
 
-    //流程构造器
-
     /**
-     *
-     * @param <I>
-     * @param <O>
-     * @param <C>
-     * @param <T> type of output of current step
+     * the flow buidler
+     * @param <I> the input type
+     * @param <O> the final output type
+     * @param <C> the context type
+     * @param <T> the sub output type
      */
     public static class Builder<I,O,C,T> {
 
+        /**
+         * the flow maker
+         */
         private FlowMaker<I,O,C> flowMaker;
 
+        /**
+         * @param fLowMaker the flow maker
+         */
         public Builder(FlowMaker<I,O,C> fLowMaker) {
             this.flowMaker = fLowMaker;
         }
 
+        /**
+         * @return the flow
+         */
         public Flow<I,T,C> build() {
             return new SubFlow.ISubFlow<>() {
                 @Override
@@ -75,8 +109,8 @@ public class FlowMaker<I,O,C> {
                                 continue;
                             }
                             if (flow.isAsync()) {
-                                final Object i1 = SerializationUtils.clone((Serializable) i);
                                 C finalContext = context;
+                                final Object i1 = i;
                                 flowMaker.executor.submit(() -> flow.run(i1, finalContext));
                                 continue;
                             }
@@ -101,17 +135,21 @@ public class FlowMaker<I,O,C> {
             };
         }
 
-        public Builder<I,O,C,T> errorHandler(int type, ErrorHandler<O> handler) {
+        /**
+         * @param type the custom type of the exception
+         * @param handler the exception handler
+         * @return this
+         */
+        public Builder<I,O,C,T> onError(int type, ErrorHandler<O> handler) {
             this.flowMaker.exceptionHandlers.putIfAbsent(type, handler);
             return this;
         }
 
         /**
-         * insert a sub-flow
-         * @param flow the flow
-         * @param <O1> type of the output type of the flow
-         * @param <F> type of the flow
-         * @return
+         * @param flow add a sub flow
+         * @param <O1> the output type of the sub flow
+         * @param <F> the type of the sub flow
+         * @return this
          */
         public <O1, F extends Flow<T,O1,C>> Builder<I,O,C,O1> flow(F flow) {
             assert SubFlow.ISubFlow.class.isAssignableFrom(flow.getClass());
@@ -120,16 +158,34 @@ public class FlowMaker<I,O,C> {
         }
 
         /**
+         * @param flow add a sub flow
+         * @param <O1> the output type of the sub flow
+         * @param <F> the type of the sub flow
+         * @return this
+         */
+        public <O1, F extends Flow<T,O1,C>> Builder<I,O,C,O1> branch(F flow) {
+            assert IYesNoBranchFlow.class.isAssignableFrom(flow.getClass()) || IMultiBranchFlow.class.isAssignableFrom(flow.getClass());
+            this.flowMaker.flows.add(flow);
+            return (Builder<I, O, C, O1>) this;
+        }
+
+        /**
          * insert a map-reduce flow
-         * @param flow
-         * @return
-         * @param <O1>
+         * @param flow the map-reduce flow
+         * @param <O1> the type of the map-reduce flow
+         * @return this
          */
         public <O1> Builder<I,O,C,O1> mapReduce(MapReduceFlow<T,O1,C,?,?,?> flow) {
             this.flowMaker.flows.add(flow);
             return (Builder<I, O, C, O1>) this;
         }
 
+        /**
+         * add a foldl
+         * @param foldlFlow the fold flow
+         * @param <O1> the type of the fold flow
+         * @return this
+         */
         public <O1> Builder<I,O,C,O1> foldl(Flow<T,O1,C> foldlFlow) {
             assert foldlFlow.getClass().equals(FoldlFlow.class);
             this.flowMaker.flows.add(foldlFlow);
@@ -138,14 +194,18 @@ public class FlowMaker<I,O,C> {
 
         /**
          * like if-return
-         * @param flow
-         * @return
+         * @param flow the abort flow
+         * @return this
          */
-        public Builder<I,O,C,T> abortWhen(AbortWhenFlow<T,O,C> flow) {
+        public Builder<I,O,C,T> abort(AbortWhenFlow<T,O,C> flow) {
             this.flowMaker.flows.add(flow);
             return this;
         }
 
+        /**
+         * @param flow the error to throw
+         * @return this
+         */
         public Builder<I,O,C,T> throwWhen(ThrowWhenFlow<T,C> flow) {
             this.flowMaker.flows.add(flow);
             return this;
@@ -154,8 +214,8 @@ public class FlowMaker<I,O,C> {
         /**
          * modify context
          * like Reader.local in haskell
-         * @param modifyFlow
-         * @return
+         * @param modifyFlow the context modifier
+         * @return this
          */
         public Builder<I,O,C,T> local(ModifyContext<T,C> modifyFlow) {
             this.flowMaker.flows.add(modifyFlow);
@@ -164,10 +224,9 @@ public class FlowMaker<I,O,C> {
 
         /**
          * loop a flow
-         * @param flow
-         * @return
+         * @param flow the loop flow
+         * @return this
          */
-        @Deprecated
         public <O1> Builder<I,O,C,O1> loop(LoopFlow<T,O1,C> flow) {
             this.flowMaker.flows.add(flow);
             return (Builder<I, O, C, O1>) this;
@@ -175,16 +234,21 @@ public class FlowMaker<I,O,C> {
 
         /**
          * add a effect flow into flow list
-         * @param flow
-         * @param <O1>
-         * @param <S>
-         * @return
+         * @param flow the effect flow
+         * @param <O1> the output type of the effect flow
+         * @param <S> the type of the effect flow
+         * @return this
          */
         public <O1, S extends ISideEffect<T,O1,C>> Builder<I,O,C,O1> effect(S flow) {
             this.flowMaker.flows.add(flow);
             return (Builder<I, O, C, O1>) this;
         }
 
+        /**
+         * add a trace flow
+         * @param traceFlow the trace flow
+         * @return this
+         */
         public Builder<I,O,C,T> trace(TraceFlow<T,C> traceFlow) {
             this.flowMaker.flows.add(traceFlow);
             return this;
@@ -192,38 +256,43 @@ public class FlowMaker<I,O,C> {
 
         /**
          * add a pure function into flow list
-         * @param flow
-         * @param <O1>
-         * @param <P>
-         * @return
+         * @param flow the pure function
+         * @param <O1> the output type of the pure
+         * @param <P> the type of the pure
+         * @return this
          */
         public <O1, P extends IPureFunction<T,O1,C>> Builder<I,O,C,O1> pure(P flow) {
             this.flowMaker.flows.add(flow);
             return (Builder<I, O, C, O1>) this;
         }
 
+        /**
+         * add a count down flow
+         * @param countDownFlow the flow
+         * @param <O1> the output type of the count down
+         * @return this
+         */
         public <O1> Builder<I,O,C,O1> countDown(CountDownFlow<T,O1,?,C> countDownFlow) {
             this.flowMaker.flows.add(countDownFlow);
             return (Builder<I, O, C, O1>) this;
         }
         /**
          * add a async flow
-         * @param flow
-         * @param <I1>
-         * @param <O1>
-         * @param <F>
+         * @param flow the type of async flow
+         * @param <O1> the output type of the async flow
+         * @param <F> the type of the async flow
          * @return
          */
-        public <I1 extends Serializable, O1, F extends Flow<I1,O1,C>> Builder<I,O,C,I1> flowAsync(F flow) {
+        public <O1, F extends Flow<T,O1,C>> Builder<I,O,C,T> async(F flow) {
             assert this.flowMaker.executor != null;
             assert SubFlow.ISubFlow.class.isAssignableFrom(flow.getClass());
-            this.flowMaker.flows.add(new SubFlow.ISubFlow<I1,O1,C>() {
+            this.flowMaker.flows.add(new SubFlow.ISubFlow<T,O1,C>() {
                 @Override
                 public FlowDoc getFlowDoc() {
                     return flow.getFlowDoc();
                 }
                 @Override
-                public O1 run(I1 input, C context) {
+                public O1 run(T input, C context) {
                     return flow.run(input, context);
                 }
                 @Override
@@ -235,7 +304,7 @@ public class FlowMaker<I,O,C> {
                     return "Async: " + flow.getFlowName();
                 }
             });
-            return (Builder<I, O, C, I1>) this;
+            return this;
         }
 
 

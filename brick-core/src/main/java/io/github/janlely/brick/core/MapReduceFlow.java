@@ -8,7 +8,7 @@ import java.util.stream.Collector;
 import java.util.stream.Stream;
 
 /**
- *
+ * the map-reduce abstraction
  * @param <I> input of the flow
  * @param <O> output of the flow
  * @param <C> context of the flow
@@ -18,12 +18,34 @@ import java.util.stream.Stream;
  */
 public class MapReduceFlow<I,O,C,I1,O1,C1> implements SubFlow.ISubFlow<I,O,C> {
 
+    /**
+     * the description
+     */
     private String desc;
+    /**
+     * the function to generate source stream
+     */
     private BiFunction<I,C, Stream<I1>> sourceFunc;
+    /**
+     * the function to make context
+     */
     private BiFunction<I,C,C1> contextFunc;
+    /**
+     * the mapper flow
+     */
     private Flow<I1,O1,C1> mapFlow;
+    /**
+     * the result collector
+     */
     private Function<C, Collector<O1,?,O>> collector;
 
+    /**
+     * @param desc the description
+     * @param sourceFunc the source function
+     * @param contextFunc the context function
+     * @param collector the result collector
+     * @param mapFlow the mapper flow
+     */
     public MapReduceFlow(String desc, BiFunction<I,C, Stream<I1>> sourceFunc,
                          BiFunction<I,C,C1> contextFunc,
                          Function<C,Collector<O1,?,O>> collector, Flow<I1,O1,C1> mapFlow) {

@@ -6,8 +6,17 @@ import java.util.List;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
+/**
+ * stream util
+ */
 public class StreamUtil {
 
+    /**
+     * @param stream the input stream
+     * @param size the chunk size
+     * @param <T> the elemen type
+     * @return the result stream
+     */
     public static <T> Stream<List<T>> chunk(Stream<T> stream, int size) {
         Iterator<T> iterator = stream.iterator();
         Iterator<List<T>> listIterator = new Iterator<>() {

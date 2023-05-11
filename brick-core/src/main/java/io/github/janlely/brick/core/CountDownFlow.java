@@ -10,14 +10,48 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collector;
 
+/**
+ * CountDownLatch
+ * @param <I> the input type
+ * @param <O> the output type
+ * @param <O1> the output type of each count flow
+ * @param <C> the context
+ */
 public class CountDownFlow<I,O,O1,C> implements Flow<I,O,C> {
 
+    /**
+     * the description
+     */
     private String desc;
+    /**
+     * how many counts
+     */
     private int count;
+    /**
+     * flows
+     */
     private List<Flow<I,O1,C>> flows;
+    /**
+     * result collector
+     */
     private Collector<O1,?,O> collector;
+    /**
+     * the async executor service
+     */
     private ExecutorService executorService;
+    /**
+     * the timeout
+     */
     private long timeout;
+
+    /**
+     * @param desc the description
+     * @param timeout the timeout
+     * @param executorService the executor service
+     * @param count the cout
+     * @param collector the result collector
+     * @param flows the flows
+     */
     public CountDownFlow(String desc, long timeout, ExecutorService executorService,
                          int count, Collector<O1,?,O> collector, Flow<I,O1,C> ...flows) {
 

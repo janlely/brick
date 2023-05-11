@@ -2,12 +2,28 @@ package io.github.janlely.brick.core;
 
 import org.apache.commons.lang3.ClassUtils;
 
+/**
+ * the pure function
+ * @param <I> the input type
+ * @param <O> the output type
+ * @param <C> the contex type
+ */
 public class PureFunction<I,O,C> implements IPureFunction<I,O,C> {
 
+    /**
+     * the description
+     */
     private String desc;
 
+    /**
+     * compute unit
+     */
     private UnitFunction<I,O,C> unit;
 
+    /**
+     * @param desc the description
+     * @param unit the unit
+     */
     public PureFunction(String desc, UnitFunction<I,O,C> unit) {
         this.desc = desc;
         this.unit = unit;

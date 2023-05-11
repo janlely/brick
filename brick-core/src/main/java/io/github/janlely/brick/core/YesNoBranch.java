@@ -4,13 +4,37 @@ import org.apache.commons.lang3.ClassUtils;
 
 import java.util.function.BiFunction;
 
+/**
+ * yes no branch implement
+ * @param <I> the input type
+ * @param <O> the output type
+ * @param <C> the context type
+ */
 public class YesNoBranch<I,O,C> implements IYesNoBranchFlow<I,O,C> {
 
+	/**
+	 * the condition checker
+	 */
 	private BiFunction<I,C,Boolean> condChecker;
+	/**
+	 * the yes flow
+	 */
 	private Flow<I,O,C> yesFlow;
+	/**
+	 * the no flow
+	 */
 	private Flow<I,O,C> noFlow;
+	/**
+	 * the description
+	 */
 	private String desc;
 
+	/**
+	 * @param desc the description
+	 * @param condChecker the condition checker
+	 * @param yesFlow the yes flow
+	 * @param noFlow the no flow
+	 */
 	public YesNoBranch(String desc, BiFunction<I,C,Boolean> condChecker, Flow<I,O,C> yesFlow,
 					   Flow<I,O,C> noFlow) {
 		assert SubFlow.ISubFlow.class.isAssignableFrom(yesFlow.getClass());

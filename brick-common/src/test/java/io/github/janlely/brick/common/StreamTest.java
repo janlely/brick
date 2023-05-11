@@ -12,6 +12,6 @@ public class StreamTest {
     @Test
     public void testChunk() {
         List<List<Integer>> list = StreamUtil.chunk(Stream.of(1, 2, 3, 4, 5, 6,7), 2).collect(Collectors.toList());
-        System.out.println("dd");
+        assert list.size() == 4;
     }
 }
