@@ -7,7 +7,7 @@ brick的目标是解决Java业务编程中的代码质量控制的问题，其�
     * 使用FlowMaker创建的代码可以清晰的看出业务逻辑的具体流程
     * 纯函数与副作用分离的方式，可以进一步减少代码的复杂性
 * 流程复用：可以由专家来对可以进行高度抽象的业务逻辑用FlowMaker进行流程抽象，封装成接口用于共享，例如[importFlow](https://github.com/janlely/brick/blob/main/brick-lib/src/main/java/org/brick/lib/importflow/IImportFlow.java)
-# Maven(jdk11+ is required)
+# Maven (jdk11+ is required)
 ```xml
 <dependency>
   <groupId>io.github.janlely</groupId>
