@@ -16,11 +16,11 @@ Flow<Input, Output, Context> flow = new FlowMaker<Input, Output, Context>("某�
   .flowBuidler() //流程的Buidler
   .pure(new PureFunction("添加一个纯计算", (i,c) -> ...)) //pure方法添加一个无副作用的纯计算
   .flow(new FlowMaker<I,O,C>("子流程").flowBuilder().pure(...).flow(...).build()) //flow方法用于添加一个子流程
-  .flow(new YesNoBranch<>("一个if-else分支",  //if-else分支本质上也是流程
+  .branch(new YesNoBranch<>("一个if-else分支",  //if-else分支本质上也是流程
       (i,c)- > ..., //分支判断逻辑
       new FlowMaker<I,O,C>.flowBuilder()....build(), //yes分支
       new FlowMaker<I,O,C>.flowBuilder()....build()))  //no分支
-  .flow(new CaseBranch<>(           //switch-case分支流程
+  .branch(new CaseBranch<>(           //switch-case分支流程
         "Sample CaseBranch",
         i -> i % 2 == 0 ? 1 : 2,    //case 值
         new CaseFlow<>(1, case1),   //case 1的分支
@@ -31,9 +31,10 @@ Flow<Input, Output, Context> flow = new FlowMaker<Input, Output, Context>("某�
   .abort(new AbortWhenFlow("一个if-return分支")) //添加一个if-return分支
   .flowAsync(...) //添加一个异步流程
   .loop(new LoopFlow<>("一个循环的流程",
-      (i,c) -> .., //流程的终止条件
-      someFlow, //用于循环执行的子流程
-      collector)) //收集每一次循环结果的收集器
+      (i,c) -> ...,//循环不执行时默认的返回值
+      (i,c) -> .., //流程的继续条件
+      (i,o,c) -> ...//执行一次之后需要更新input
+      someFlow)) //用于循环执行的子流程
   .build()
 ```
 
