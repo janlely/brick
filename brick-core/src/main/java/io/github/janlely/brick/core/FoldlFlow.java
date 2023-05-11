@@ -4,7 +4,6 @@ import io.github.janlely.brick.common.types.Pair;
 import org.apache.commons.lang3.ClassUtils;
 
 import java.util.List;
-import java.util.function.BiFunction;
 
 /**
  * the foldl flow, like foldl in haskell

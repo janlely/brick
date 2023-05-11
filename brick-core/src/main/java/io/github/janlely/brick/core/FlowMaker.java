@@ -1,12 +1,10 @@
 package io.github.janlely.brick.core;
 
 import io.github.janlely.brick.common.types.Either;
-import org.apache.commons.lang3.ClassUtils;
-import org.apache.commons.lang3.SerializationUtils;
 import io.github.janlely.brick.core.exception.ErrorHandler;
 import io.github.janlely.brick.core.exception.FlowError;
+import org.apache.commons.lang3.ClassUtils;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

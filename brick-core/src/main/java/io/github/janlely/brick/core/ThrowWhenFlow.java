@@ -1,7 +1,7 @@
 package io.github.janlely.brick.core;
 
-import org.apache.commons.lang3.ClassUtils;
 import io.github.janlely.brick.core.exception.FlowError;
+import org.apache.commons.lang3.ClassUtils;
 
 import java.util.function.BiFunction;
 
