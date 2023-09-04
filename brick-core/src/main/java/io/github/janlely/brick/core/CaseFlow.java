@@ -2,6 +2,8 @@ package io.github.janlely.brick.core;
 
 import org.apache.commons.lang3.ClassUtils;
 
+import java.util.Set;
+
 /**
  * @param <I> the input type
  * @param <O> the output type
@@ -13,7 +15,7 @@ public class CaseFlow<I,O,C,P> implements SubFlow.ISubFlow<I,O,C> {
     /**
      * the pattern value
      */
-    private P value;
+    private Set<P> value;
     /**
      * the case flow
      */
@@ -23,7 +25,7 @@ public class CaseFlow<I,O,C,P> implements SubFlow.ISubFlow<I,O,C> {
      * @param value the pattern value
      * @param flow the case flow
      */
-    public CaseFlow(P value, Flow<I,O,C> flow) {
+    public CaseFlow(Set<P> value, Flow<I,O,C> flow) {
         assert SubFlow.ISubFlow.class.isAssignableFrom(flow.getClass());
         this.value = value;
         this.flow = (SubFlow.ISubFlow<I, O, C>) flow;
@@ -32,7 +34,7 @@ public class CaseFlow<I,O,C,P> implements SubFlow.ISubFlow<I,O,C> {
     /**
      * @return get the pattern value
      */
-    public P getValue() {
+    public Set<P> getValue() {
         return this.value;
     }
 

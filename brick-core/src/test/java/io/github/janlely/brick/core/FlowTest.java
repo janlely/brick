@@ -8,6 +8,7 @@ import lombok.Data;
 import org.junit.Test;
 
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -72,9 +73,9 @@ public class FlowTest {
                 .pure(new PureFunction<>("mod 3", (i,context) -> i % 3))
                 .branch(new CaseBranch<>("sample case branch",
                         F.first(Function.identity()),
-                        new CaseFlow<>(0, FlowHelper.fromPure(new PureFunction<>("* 1", (i, context) -> 1 * i))),
-                        new CaseFlow<>(1, FlowHelper.fromPure(new PureFunction<>("* 2", (i, context) -> 2 * i))),
-                        new CaseFlow<>(2, FlowHelper.fromPure(new PureFunction<>("* 3", (i, context) -> 3 * i)))))
+                        new CaseFlow<>(Set.of(0), FlowHelper.fromPure(new PureFunction<>("* 1", (i, context) -> 1 * i))),
+                        new CaseFlow<>(Set.of(1), FlowHelper.fromPure(new PureFunction<>("* 2", (i, context) -> 2 * i))),
+                        new CaseFlow<>(Set.of(2), FlowHelper.fromPure(new PureFunction<>("* 3", (i, context) -> 3 * i)))))
                 .loop(new LoopFlow<>("sample loop", F.constBi("0"),
                         (i, __) -> i > 0,
                         (i, o, c) -> {

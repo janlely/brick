@@ -37,7 +37,9 @@ public class CaseBranch<I,O,C,P> implements IMultiBranchFlow<I,O,C,P> {
         this.desc = desc;
         this.caseValueFunc = caseValueFunc;
         for (CaseFlow<I,O,C,P> flow : flows) {
-            flowMap.put(flow.getValue(), flow.getFlow());
+            for (P p : flow.getValue()) {
+                flowMap.put(p, flow.getFlow());
+            }
         }
     }
 
