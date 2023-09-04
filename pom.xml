@@ -8,12 +8,12 @@
   <artifactId>brick</artifactId>
   <packaging>pom</packaging>
   <name>brick</name>
-  <version>1.0.0</version>
+  <version>1.0.1</version>
   <description>a flow based programming library</description>
   <url>https://github.com/janlely/brick</url>
 
   <properties>
-    <project.version>1.0.0</project.version>
+    <project.version>1.0.1</project.version>
   </properties>
 
   <licenses>
