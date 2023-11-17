@@ -47,5 +47,9 @@ public enum FlowType {
     /**
      * const
      */
-    CONST_FLOW;
+    CONST_FLOW,
+    /**
+     * map
+     */
+    MAP_FLOW;
 }

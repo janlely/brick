@@ -190,6 +190,19 @@ public class FlowMaker<I,O,C> {
             return (Builder<I, O, C, O1>) this;
         }
 
+
+        /**
+         * map flow
+         * @param mapFlow the map flow
+         * @param <O1> the type of the output
+         * @return this
+         */
+        public <O1> Builder<I,O,C,O1> map(Flow<T,O1,C> mapFlow) {
+            assert mapFlow.getClass().equals(MapFlow.class);
+            this.flowMaker.flows.add(mapFlow);
+            return (Builder<I, O, C, O1>) this;
+        }
+
         /**
          * like if-return
          * @param flow the abort flow
