@@ -63,4 +63,13 @@ public class FlowTester<I,O,C> {
         }
 
     }
+
+    public static <I,O,C> FlowTester<I,O,C> forFlow(Flow<I,O,C> flow, Function<O, Boolean> passCond) {
+        return new FlowTester<>() {
+            @Override
+            public boolean run(I input, C context) {
+                return passCond.apply(flow.run(input, context));
+            }
+        };
+    }
 }
