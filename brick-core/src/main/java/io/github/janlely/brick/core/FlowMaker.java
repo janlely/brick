@@ -1,8 +1,9 @@
 package io.github.janlely.brick.core;
 
 import io.github.janlely.brick.common.types.Either;
-import io.github.janlely.brick.core.exception.ErrorHandler;
+import io.github.janlely.brick.core.exception.KnownErrorHandler;
 import io.github.janlely.brick.core.exception.FlowError;
+import io.github.janlely.brick.core.exception.UnknownErrorHandler;
 import org.apache.commons.lang3.ClassUtils;
 
 import java.util.ArrayList;
@@ -35,14 +36,15 @@ public class FlowMaker<I,O,C> {
     /**
      * the exception handlers
      */
-    private Map<Integer, ErrorHandler> exceptionHandlers;
+    private Map<Integer, KnownErrorHandler> errorHandlers;
+    private UnknownErrorHandler<O> globalErrorHandler;
 
     /**
      * @param desc the description
      */
     public FlowMaker(String desc) {
         this.flowDoc = new FlowDoc<>(desc, FlowType.SUB_FLOW, ClassUtils.getShortClassName(FlowMaker.class));
-        this.exceptionHandlers = new HashMap<>();
+        this.errorHandlers = new HashMap<>();
     }
 
     /**
@@ -123,14 +125,40 @@ public class FlowMaker<I,O,C> {
                         }
                         return (T) i;
                     } catch (FlowError e) {
-                        if (!flowMaker.exceptionHandlers.containsKey(e.getType())) {
+                        if (!flowMaker.errorHandlers.containsKey(e.getType())) {
                             System.out.println("unhandled FlowException by this flow of type: " + e.getType());
                             throw e;
                         }
-                        return (T) flowMaker.exceptionHandlers.get(e.getType()).handler(e.getContent());
+                        return (T) flowMaker.errorHandlers.get(e.getType()).handler(e.getContent());
+                    } catch (Exception e) {
+                        if (flowMaker.globalErrorHandler == null) {
+                            throw e;
+                        }
+                        return (T) flowMaker.globalErrorHandler.handler(e);
                     }
                 }
             };
+        }
+
+        /**
+         * on known error
+         * @param type
+         * @param handler
+         * @return
+         */
+        public Builder<I,O,C,T> onKnownError(int type, KnownErrorHandler<O> handler) {
+            this.flowMaker.errorHandlers.putIfAbsent(type, handler);
+            return this;
+        }
+
+        /**
+         * on unknown error
+         * @param handler
+         * @return
+         */
+        public Builder<I,O,C,T> onUnknownError(UnknownErrorHandler<O> handler) {
+            this.flowMaker.globalErrorHandler = handler;
+            return this;
         }
 
         /**
@@ -138,8 +166,8 @@ public class FlowMaker<I,O,C> {
          * @param handler the exception handler
          * @return this
          */
-        public Builder<I,O,C,T> onError(int type, ErrorHandler<O> handler) {
-            this.flowMaker.exceptionHandlers.putIfAbsent(type, handler);
+        public Builder<I,O,C,T> onError(int type, KnownErrorHandler<O> handler) {
+            this.flowMaker.errorHandlers.putIfAbsent(type, handler);
             return this;
         }
 

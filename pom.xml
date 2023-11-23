@@ -8,7 +8,7 @@
   <artifactId>brick</artifactId>
   <packaging>pom</packaging>
   <name>brick</name>
-  <version>1.0.1</version>
+  <version>1.0.2</version>
   <description>a flow based programming library</description>
   <url>https://github.com/janlely/brick</url>
 

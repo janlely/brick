@@ -31,11 +31,11 @@ public class HelloWorldFlow {
 
 
     @Getter
-    private Flow<Void, HelloResponse, Pair<HelloRequest, HelloContext>> flow;
+    private Flow<Void, HelloResponse, Context> flow;
 
     @PostConstruct
     public void buildFlow() {
-        this.flow = new FlowMaker<Void, HelloResponse, Pair<HelloRequest, HelloContext>>("Main flow of hello world")
+        this.flow = new FlowMaker<Void, HelloResponse, Context>("Main flow of hello world")
                 .flowBuilder()
                 .pure(new PureFunction<>("Get name from the HelloRequest", firstStep))
                 .pure(new PureFunction<>("Reverse the name", secondStep))
@@ -44,28 +44,28 @@ public class HelloWorldFlow {
     }
 
     @Component
-    public static class FirstStep implements UnitFunction<Void, String, Pair<HelloRequest, HelloContext>> {
+    public static class FirstStep implements UnitFunction<Void, String, Context> {
 
         @Override
-        public String exec(Void input, Pair<HelloRequest, HelloContext> context) {
-            return Pair.getLeft(context).getName();
+        public String exec(Void input, Context context) {
+            return context.getRequest().getName();
         }
     }
 
     @Component
-    public static class SecondStep implements UnitFunction<String, String, Pair<HelloRequest, HelloContext>> {
+    public static class SecondStep implements UnitFunction<String, String, Context> {
 
         @Override
-        public String exec(String input, Pair<HelloRequest, HelloContext> context) {
+        public String exec(String input, Context context) {
             return StringUtils.reverse(input);
         }
     }
 
     @Component
-    public static class FinalStep implements UnitFunction<String, HelloResponse, Pair<HelloRequest, HelloContext>> {
+    public static class FinalStep implements UnitFunction<String, HelloResponse, Context> {
 
         @Override
-        public HelloResponse exec(String input, Pair<HelloRequest, HelloContext> context) {
+        public HelloResponse exec(String input, Context context) {
             return HelloResponse.builder()
                     .eman(input)
                     .build();
@@ -84,7 +84,12 @@ public class HelloWorldFlow {
         private String eman;
     }
 
-    public static class HelloContext {
+    @Data
+    public static class Context {
 
+        private HelloRequest request;
+        public Context(HelloRequest request) {
+            this.request = request;
+        }
     }
 }

@@ -21,6 +21,6 @@ public class HelloWorld {
     @PostMapping(value = "/world", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public HelloWorldFlow.HelloResponse hello(@RequestBody HelloWorldFlow.HelloRequest request) {
-        return helloWorldFlow.getFlow().run(null, new Pair<>(request, new HelloWorldFlow.HelloContext()));
+        return helloWorldFlow.getFlow().run(null, new HelloWorldFlow.Context(request));
     }
 }

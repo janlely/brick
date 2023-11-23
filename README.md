@@ -50,20 +50,20 @@ Flow<Input, Output, Context> flow = new FlowMaker<Input, Output, Context>("某�
 用于进行测试的工具，可以测试一个计算单元，也可以把多个计算单元连接起来测试，例子如下：
 ```java
 public void testHelloWorld() {
-    HelloWorldFlow.HelloContext context = new HelloWorldFlow.HelloContext();
-    HelloWorldFlow.HelloRequest req = new HelloWorldFlow.HelloRequest();
+    HelloWorldFlow.Request req = new HelloWorldFlow.HelloRequest();
+    HelloWorldFlow.Context context = new HelloWorldFlow.Context(req);
     req.setName("jay");
-    assert new FlowTester<Void, String, Pair<HelloWorldFlow.HelloRequest, HelloWorldFlow.HelloContext>>()
+    assert new FlowTester<Void, String, HelloWorldFlow.Context>()
             .linkUnit(helloWorldFlow.getFirstStep()) //测试一个计算单元
             .pass(s -> StringUtils.equals(s, "jay"))
             .build()
-            .run(null, new Pair(req, context));
+            .run(null, context);
 
-    assert new FlowTester<Void, String, Pair<HelloWorldFlow.HelloRequest, HelloWorldFlow.HelloContext>>()
+    assert new FlowTester<Void, String, HelloWorldFlow.Context>()
             .linkUnit(helloWorldFlow.getFirstStep()) //第一个计算单元
             .linkUnit(helloWorldFlow.getSecondStep()) //连接另一个计算单元
             .pass(s -> StringUtils.equals(s, "yaj")) //测试是否通过的判断逻辑
-            .build().run(null, new Pair<>(req, context));
+            .build().run(null, context);
 }
 ```
 
@@ -71,7 +71,7 @@ public void testHelloWorld() {
 见springboot-demo
 * 一个api一个flow
 * flow的input类型为Void
-* api的入参放到context中，如果还有别的context可以用Pair进行组合
+* api的入参放到context中
 * flow单独一个class，并添加Component注解
 * flow中添加post方法，并用PostConstruct注解，在其中使用FlowMaker创建流程
 * 简单的计算直接用lambda表达式
@@ -85,10 +85,12 @@ public void testHelloWorld() {
    new FlowMaker<I,O,C>("some desc")
       .flowBuilder()
       .pure(new PureFunction<>("step 1", ...))
-      .trace(new TraceFlow((input, context) -> {
-         // set breakpoint here
-         System.out.printLn("just a breakpoint");
-      }))
+      .trace(new TraceFlow<>() {
+          @Override
+          public void trace(List<JobInstanceDTO> input, Context context) {
+              System.out.println("hello");
+          }
+      })
       ...
   ```
 
