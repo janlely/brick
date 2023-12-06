@@ -37,7 +37,7 @@ public class FlowMaker<I,O,C> {
      * the exception handlers
      */
     private Map<Integer, KnownErrorHandler> errorHandlers;
-    private UnknownErrorHandler<O> globalErrorHandler;
+    private UnknownErrorHandler<O,C> globalErrorHandler;
 
     /**
      * @param desc the description
@@ -129,12 +129,12 @@ public class FlowMaker<I,O,C> {
                             System.out.println("unhandled FlowException by this flow of type: " + e.getType());
                             throw e;
                         }
-                        return (T) flowMaker.errorHandlers.get(e.getType()).handler(e.getContent());
+                        return (T) flowMaker.errorHandlers.get(e.getType()).handler(e.getContent(), context);
                     } catch (Exception e) {
                         if (flowMaker.globalErrorHandler == null) {
                             throw e;
                         }
-                        return (T) flowMaker.globalErrorHandler.handler(e);
+                        return (T) flowMaker.globalErrorHandler.handler(e, context);
                     }
                 }
             };
@@ -146,7 +146,7 @@ public class FlowMaker<I,O,C> {
          * @param handler
          * @return
          */
-        public Builder<I,O,C,T> onKnownError(int type, KnownErrorHandler<O> handler) {
+        public Builder<I,O,C,T> onKnownError(int type, KnownErrorHandler<O,C> handler) {
             this.flowMaker.errorHandlers.putIfAbsent(type, handler);
             return this;
         }
@@ -156,7 +156,7 @@ public class FlowMaker<I,O,C> {
          * @param handler
          * @return
          */
-        public Builder<I,O,C,T> onUnknownError(UnknownErrorHandler<O> handler) {
+        public Builder<I,O,C,T> onUnknownError(UnknownErrorHandler<O,C> handler) {
             this.flowMaker.globalErrorHandler = handler;
             return this;
         }
@@ -166,7 +166,7 @@ public class FlowMaker<I,O,C> {
          * @param handler the exception handler
          * @return this
          */
-        public Builder<I,O,C,T> onError(int type, KnownErrorHandler<O> handler) {
+        public Builder<I,O,C,T> onError(int type, KnownErrorHandler<O,C> handler) {
             this.flowMaker.errorHandlers.putIfAbsent(type, handler);
             return this;
         }

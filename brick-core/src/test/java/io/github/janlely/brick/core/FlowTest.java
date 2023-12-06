@@ -37,7 +37,7 @@ public class FlowTest {
         Flow<Void, String, UserSession> flow = new FlowMaker<Void, String, UserSession>("a sample api flow")
                 .asyncExecutor(Executors.newSingleThreadExecutor())
                 .flowBuilder()
-                .onError(1, content -> {
+                .onError(1, (content, context) -> {
                     System.out.println("got error: " + content);
                     return "errored";
                 })
